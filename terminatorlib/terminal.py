@@ -1480,7 +1480,7 @@ class Terminal(Gtk.VBox):
             dbg("Using custom URL handler: %s" %
                 self.config['custom_url_handler'])
             try:
-                subprocess.Popen([self.config['custom_url_handler'], url])
+                subprocess.run([self.config['custom_url_handler'], url])
                 return
             except:
                 dbg('custom url handler did not work, falling back to defaults')
@@ -1492,7 +1492,7 @@ class Terminal(Gtk.VBox):
             dbg('Gtk.show_uri did not work, falling through to xdg-open')
 
         try:
-            subprocess.Popen(["xdg-open", url])
+            subprocess.run(['xdg-open', url])
         except:
             dbg('xdg-open did not work, falling back to webbrowser.open')
             import webbrowser

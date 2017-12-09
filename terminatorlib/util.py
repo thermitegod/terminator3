@@ -337,7 +337,7 @@ def spawn_new_terminator(cwd, args):
             return False
       
     dbg("Spawning: %s" % cmd)
-    subprocess.Popen([cmd]+args)
+    subprocess.run([cmd]+args)
 
 def display_manager():
     """Try to detect which display manager we run under"""
