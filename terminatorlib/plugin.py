@@ -25,10 +25,10 @@
 
 import sys
 import os
-import borg
-from config import Config
-from util import dbg, err, get_config_dir
-from terminator import Terminator
+from terminatorlib import borg
+from terminatorlib.config import Config
+from terminatorlib.terminator import Terminator
+from terminatorlib.util import dbg, err, get_config_dir
 
 class Plugin(object):
     """Definition of our base plugin class"""
@@ -104,7 +104,7 @@ class PluginRegistry(borg.Borg):
                                 continue
                             if item not in self.instances:
                                 self.instances[item] = func()
-                    except Exception, ex:
+                    except Exception as ex:
                         err('PluginRegistry::load_plugins: Importing plugin %s \
 failed: %s' % (plugin, ex))
 
@@ -132,7 +132,7 @@ for %s' % (len(self.instances), capability))
     def is_enabled(self, plugin):
         """Return a boolean value indicating whether a plugin is enabled or
         not"""
-        return(self.instances.has_key(plugin))
+        return(plugin in self.instances)
 
     def enable(self, plugin):
         """Enable a plugin"""

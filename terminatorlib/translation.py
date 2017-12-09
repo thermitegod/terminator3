@@ -17,8 +17,8 @@
 
 """Terminator by Chris Jones <cmsj@tenshu.net>"""
 
-from version import APP_NAME
-from util import dbg
+from terminatorlib.version import APP_NAME
+from terminatorlib.util import dbg
 
 _ = None
 

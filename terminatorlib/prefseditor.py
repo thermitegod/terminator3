@@ -10,14 +10,14 @@ write it to a config file
 import os
 from gi.repository import GObject, Gtk, Gdk
 
-from util import dbg, err
-import config
-from keybindings import Keybindings, KeymapError
-from translation import _
-from encoding import TerminatorEncoding
-from terminator import Terminator
-from plugin import PluginRegistry
-from version import APP_NAME
+from terminatorlib import config
+from terminatorlib.util import dbg, err
+from terminatorlib.keybindings import Keybindings, KeymapError
+from terminatorlib.translation import _
+from terminatorlib.encoding import TerminatorEncoding
+from terminatorlib.terminator import Terminator
+from terminatorlib.plugin import PluginRegistry
+from terminatorlib.version import APP_NAME
 
 def color2hex(widget):
     """Pull the colour values out of a Gtk ColorPicker widget and return them
@@ -184,9 +184,9 @@ class PrefsEditor:
             librarypath = os.path.join(head, 'preferences.glade')
             gladefile = open(librarypath, 'r')
             gladedata = gladefile.read()
-        except Exception, ex:
-            print "Failed to find preferences.glade"
-            print ex
+        except Exception as ex:
+            print("Failed to find preferences.glade")
+            print(ex)
             return
 
         self.builder.add_from_string(gladedata)
@@ -207,7 +207,7 @@ class PrefsEditor:
         try:
             self.config.inhibit_save()
             self.set_values()
-        except Exception, e:
+        except Exception as e:
             err('Unable to set values: %s' % e)
         self.config.uninhibit_save()
 
@@ -382,7 +382,7 @@ class PrefsEditor:
             keyval = 0
             mask = 0
             value = keybindings[keybinding]
-            if value is not None and value != '':
+            if value:
                 try:
                     (keyval, mask) = self.keybindings._parsebinding(value)
                 except KeymapError:
@@ -564,7 +564,7 @@ class PrefsEditor:
         # NOTE: The palette selector is set after the colour pickers
         # Palette colour pickers
         colourpalette = self.config['palette'].split(':')
-        for i in xrange(1, 17):
+        for i in range(1, 17):
             widget = guiget('palette_colorpicker_%d' % i)
             widget.set_color(Gdk.color_parse(colourpalette[i - 1]))
         # Now set the palette selector widget
@@ -652,7 +652,7 @@ class PrefsEditor:
         encodingstore = guiget('EncodingListStore')
         value = self.config['encoding']
         encodings = TerminatorEncoding().get_list()
-        encodings.sort(lambda x, y: cmp(x[2].lower(), y[2].lower()))
+        encodings.sort(key=lambda s:s[2].lower())
 
         for encoding in encodings:
             if encoding[1] is None:
@@ -899,20 +899,20 @@ class PrefsEditor:
         else:
             sensitive = False
 
-        for num in xrange(1, 17):
+        for num in range(1, 17):
             picker = guiget('palette_colorpicker_%d' % num)
             picker.set_sensitive(sensitive)
 
         if value in self.palettes:
             palette = self.palettes[value]
             palettebits = palette.split(':')
-            for num in xrange(1, 17):
+            for num in range(1, 17):
                 # Update the visible elements
                 picker = guiget('palette_colorpicker_%d' % num)
                 picker.set_color(Gdk.color_parse(palettebits[num - 1]))
         elif value == 'custom':
             palettebits = []
-            for num in xrange(1, 17):
+            for num in range(1, 17):
                 picker = guiget('palette_colorpicker_%d' % num)
                 palettebits.append(color2hex(picker))
             palette = ':'.join(palettebits)
@@ -940,7 +940,7 @@ class PrefsEditor:
         guiget = self.builder.get_object
 
         # FIXME: We do this at least once elsewhere. refactor!
-        for num in xrange(1, 17):
+        for num in range(1, 17):
             picker = guiget('palette_colorpicker_%d' % num)
             value = color2hex(picker)
             palettebits.append(value)
@@ -1591,8 +1591,7 @@ class LayoutEditor:
         self.profile_profile_to_ids= {}
         chooser = self.builder.get_object('layout_profile_chooser')
 
-        profiles = self.config.list_profiles()
-        profiles.sort()
+        profiles = sorted(self.config.list_profiles())
         i = 0
         for profile in profiles:
             self.profile_ids_to_profile[i] = profile
@@ -1650,17 +1649,17 @@ class LayoutEditor:
         command.set_sensitive(True)
         chooser.set_sensitive(True)
         workdir.set_sensitive(True)
-        if layout_item.has_key('command') and layout_item['command'] != '':
+        if 'command' in layout_item and layout_item['command']:
             command.set_text(layout_item['command'])
         else:
             command.set_text('')
 
-        if layout_item.has_key('profile') and layout_item['profile'] != '':
+        if 'profile' in layout_item and layout_item['profile']:
             chooser.set_active(self.profile_profile_to_ids[layout_item['profile']])
         else:
             chooser.set_active(0)
 
-        if layout_item.has_key('directory') and layout_item['directory'] != '':
+        if 'directory' in layout_item and layout_item['directory']:
             workdir.set_text(layout_item['directory'])
         else:
             workdir.set_text('')
@@ -1689,9 +1688,8 @@ class LayoutEditor:
         self.config.save()
 
 if __name__ == '__main__':
-    import util
+    from terminatorlib import terminal, util
     util.DEBUG = True
-    import terminal
     TERM = terminal.Terminal()
     PREFEDIT = PrefsEditor(TERM)
 

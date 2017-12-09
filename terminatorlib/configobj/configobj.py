@@ -518,7 +518,7 @@ class Section(dict):
         self._initialise()
         # we do this explicitly so that __setitem__ is used properly
         # (rather than just passing to ``dict.__init__``)
-        for entry, value in indict.iteritems():
+        for entry, value in indict.items():
             self[entry] = value
             
             
@@ -566,11 +566,11 @@ class Section(dict):
         """Fetch the item and do string interpolation."""
         val = dict.__getitem__(self, key)
         if self.main.interpolation: 
-            if isinstance(val, basestring):
+            if isinstance(val, str):
                 return self._interpolate(key, val)
             if isinstance(val, list):
                 def _check(entry):
-                    if isinstance(entry, basestring):
+                    if isinstance(entry, str):
                         return self._interpolate(key, entry)
                     return entry
                 new = [_check(entry) for entry in val]
@@ -593,7 +593,7 @@ class Section(dict):
         ``unrepr`` must be set when setting a value to a dictionary, without
         creating a new sub-section.
         """
-        if not isinstance(key, basestring):
+        if not isinstance(key, str):
             raise ValueError('The key "%s" is not a string.' % key)
         
         # add the comment
@@ -627,11 +627,11 @@ class Section(dict):
             if key not in self:
                 self.scalars.append(key)
             if not self.main.stringify:
-                if isinstance(value, basestring):
+                if isinstance(value, str):
                     pass
                 elif isinstance(value, (list, tuple)):
                     for entry in value:
-                        if not isinstance(entry, basestring):
+                        if not isinstance(entry, str):
                             raise TypeError('Value is not a string "%s".' % entry)
                 else:
                     raise TypeError('Value is not a string "%s".' % value)
@@ -972,7 +972,7 @@ class Section(dict):
             return False
         else:
             try:
-                if not isinstance(val, basestring):
+                if not isinstance(val, str):
                     # TODO: Why do we raise a KeyError here?
                     raise KeyError()
                 else:
@@ -1237,7 +1237,7 @@ class ConfigObj(Section):
         
         
     def _load(self, infile, configspec):
-        if isinstance(infile, basestring):
+        if isinstance(infile, str):
             self.filename = infile
             if os.path.isfile(infile):
                 h = open(infile, 'rb')
@@ -1292,22 +1292,7 @@ class ConfigObj(Section):
             raise TypeError('infile must be a filename, file like object, or list of lines.')
         
         if infile:
-            # don't do it for the empty ConfigObj
-            infile = self._handle_bom(infile)
-            # infile is now *always* a list
-            #
-            # Set the newlines attribute (first line ending it finds)
-            # and strip trailing '\n' or '\r' from lines
-            for line in infile:
-                if (not line) or (line[-1] not in ('\r', '\n', '\r\n')):
-                    continue
-                for end in ('\r\n', '\n', '\r'):
-                    if line.endswith(end):
-                        self.newlines = end
-                        break
-                break
-
-            infile = [line.rstrip('\r\n') for line in infile]
+            infile = infile.splitlines()
             
         self._parse(infile)
         # if we had any errors, now is the time to raise them
@@ -1463,7 +1448,7 @@ class ConfigObj(Section):
                     else:
                         infile = newline
                     # UTF8 - don't decode
-                    if isinstance(infile, basestring):
+                    if isinstance(infile, str):
                         return infile.splitlines(True)
                     else:
                         return infile
@@ -1471,7 +1456,7 @@ class ConfigObj(Section):
                 return self._decode(infile, encoding)
             
         # No BOM discovered and no encoding specified, just return
-        if isinstance(infile, basestring):
+        if isinstance(infile, str):
             # infile read from a file will be a single string
             return infile.splitlines(True)
         return infile
@@ -1491,7 +1476,7 @@ class ConfigObj(Section):
         
         if is a string, it also needs converting to a list.
         """
-        if isinstance(infile, basestring):
+        if isinstance(infile, str):
             # can't be unicode
             # NOTE: Could raise a ``UnicodeDecodeError``
             return infile.decode(encoding).splitlines(True)
@@ -1518,7 +1503,7 @@ class ConfigObj(Section):
         Used by ``stringify`` within validate, to turn non-string values
         into strings.
         """
-        if not isinstance(value, basestring):
+        if not isinstance(value, str):
             return str(value)
         else:
             return value
@@ -1635,7 +1620,7 @@ class ConfigObj(Section):
                             comment = ''
                             try:
                                 value = unrepr(value)
-                            except Exception, e:
+                            except Exception as e:
                                 if type(e) == UnknownType:
                                     msg = 'Unknown name or type in value at line %s.'
                                 else:
@@ -1648,7 +1633,7 @@ class ConfigObj(Section):
                         comment = ''
                         try:
                             value = unrepr(value)
-                        except Exception, e:
+                        except Exception as e:
                             if isinstance(e, UnknownType):
                                 msg = 'Unknown name or type in value at line %s.'
                             else:
@@ -1771,7 +1756,7 @@ class ConfigObj(Section):
                 return self._quote(value[0], multiline=False) + ','
             return ', '.join([self._quote(val, multiline=False)
                 for val in value])
-        if not isinstance(value, basestring):
+        if not isinstance(value, str):
             if self.stringify:
                 value = str(value)
             else:
@@ -1923,11 +1908,11 @@ class ConfigObj(Section):
                                        raise_errors=True,
                                        file_error=True,
                                        _inspec=True)
-            except ConfigObjError, e:
+            except ConfigObjError as e:
                 # FIXME: Should these errors have a reference
                 #        to the already parsed ConfigObj ?
                 raise ConfigspecError('Parsing configspec failed: %s' % e)
-            except IOError, e:
+            except IOError as e:
                 raise IOError('Reading configspec failed: %s' % e)
         
         self.configspec = configspec
@@ -2161,7 +2146,7 @@ class ConfigObj(Section):
             if preserve_errors:
                 # We do this once to remove a top level dependency on the validate module
                 # Which makes importing configobj faster
-                from validate import VdtMissingValue
+                from terminatorlib.configobj.validate import VdtMissingValue
                 self._vdtMissingValue = VdtMissingValue
                 
             section = self
@@ -2195,7 +2180,7 @@ class ConfigObj(Section):
                                         val,
                                         missing=missing
                                         )
-            except validator.baseErrorClass, e:
+            except validator.baseErrorClass as e:
                 if not preserve_errors or isinstance(e, self._vdtMissingValue):
                     out[entry] = False
                 else:
@@ -2344,7 +2329,7 @@ class ConfigObj(Section):
         This method raises a ``ReloadError`` if the ConfigObj doesn't have
         a filename attribute pointing to a file.
         """
-        if not isinstance(self.filename, basestring):
+        if not isinstance(self.filename, str):
             raise ReloadError()
 
         filename = self.filename

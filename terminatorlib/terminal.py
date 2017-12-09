@@ -3,28 +3,27 @@
 # GPL v2 only
 """terminal.py - classes necessary to provide Terminal widgets"""
 
-from __future__ import division
 import os
 import signal
 import gi
 from gi.repository import GLib, GObject, Pango, Gtk, Gdk
 gi.require_version('Vte', '2.91')  # vte-0.38 (gnome-3.14)
 from gi.repository import Vte
+from itertools import product
 import subprocess
 import urllib
 
-from util import dbg, err, spawn_new_terminator, make_uuid, manual_lookup, display_manager
-import util
-from config import Config
-from cwd import get_default_cwd
-from factory import Factory
-from terminator import Terminator
-from titlebar import Titlebar
-from terminal_popup_menu import TerminalPopupMenu
-from searchbar import Searchbar
-from translation import _
-from signalman import Signalman
-import plugin
+from terminatorlib import plugin,util
+from terminatorlib.util import dbg, err, spawn_new_terminator, make_uuid, manual_lookup, display_manager
+from terminatorlib.config import Config
+from terminatorlib.cwd import get_default_cwd
+from terminatorlib.factory import Factory
+from terminatorlib.terminator import Terminator
+from terminatorlib.titlebar import Titlebar
+from terminatorlib.terminal_popup_menu import TerminalPopupMenu
+from terminatorlib.searchbar import Searchbar
+from terminatorlib.translation import _
+from terminatorlib.signalman import Signalman
 from terminatorlib.layoutlauncher import LayoutLauncher
 
 # pylint: disable-msg=R0904
@@ -232,7 +231,7 @@ class Terminal(Gtk.VBox):
         try:
             dbg('close: killing %d' % self.pid)
             os.kill(self.pid, signal.SIGHUP)
-        except Exception, ex:
+        except Exception as ex:
             # We really don't want to care if this failed. Deep OS voodoo is
             # not what we should be doing.
             dbg('os.kill failed: %s' % ex)
@@ -317,7 +316,7 @@ class Terminal(Gtk.VBox):
                     dbg('added plugin URL handler for %s (%s) as %d' % 
                         (name, urlplugin.__class__.__name__,
                         self.matches[name]))
-            except Exception, ex:
+            except Exception as ex:
                 err('Exception occurred adding plugin URL match: %s' % ex)
 
     def match_add(self, name, match):
@@ -714,15 +713,13 @@ class Terminal(Gtk.VBox):
         if len(colors) == 16:
             # RGB values for indices 16..255 copied from vte source in order to dim them
             shades = [0, 95, 135, 175, 215, 255]
-            for r in xrange(0, 6):
-                for g in xrange(0, 6):
-                    for b in xrange(0, 6):
-                        newcolor = Gdk.RGBA()
-                        setattr(newcolor, "red",   shades[r] / 255.0)
-                        setattr(newcolor, "green", shades[g] / 255.0)
-                        setattr(newcolor, "blue",  shades[b] / 255.0)
-                        self.palette_active.append(newcolor)
-            for y in xrange(8, 248, 10):
+            for r,g,b in product(range(0, 6), repeat=3):
+                newcolor = Gdk.RGBA()
+                setattr(newcolor, "red",   shades[r] / 255.0)
+                setattr(newcolor, "green", shades[g] / 255.0)
+                setattr(newcolor, "blue",  shades[b] / 255.0)
+                self.palette_active.append(newcolor)
+            for y in range(8, 248, 10):
                 newcolor = Gdk.RGBA()
                 setattr(newcolor, "red",   y / 255.0)
                 setattr(newcolor, "green", y / 255.0)
@@ -1048,7 +1045,7 @@ class Terminal(Gtk.VBox):
         bottommiddle = (alloc.width/2, alloc.height)
         middleleft = (0, alloc.height/2)
         middleright = (alloc.width, alloc.height/2)
-        #print "%f %f %d %d" %(coef1, coef2, b1,b2)
+        #print("%f %f %d %d" %(coef1, coef2, b1,b2))
         coord = ()
         if pos == "right":
             coord = (topright, topmiddle, bottommiddle, bottomright)
@@ -1468,7 +1465,7 @@ class Terminal(Gtk.VBox):
 %s plugin' % urlplugin.handler_name)
                             url = newurl
                         break
-            except Exception, ex:
+            except Exception as ex:
                 err('Exception occurred preparing URL: %s' % ex)
 
         return(url)
@@ -1629,20 +1626,20 @@ class Terminal(Gtk.VBox):
     def create_layout(self, layout):
         """Apply our layout"""
         dbg('Setting layout')
-        if layout.has_key('command') and layout['command'] != '':
+        if 'command' in layout and layout['command'] != '':
             self.layout_command = layout['command']
-        if layout.has_key('profile') and layout['profile'] != '':
+        if 'profile' in layout and layout['profile'] != '':
             if layout['profile'] in self.config.list_profiles():
                 self.set_profile(self, layout['profile'])
-        if layout.has_key('group') and layout['group'] != '':
+        if 'group' in layout and layout['group'] != '':
             # This doesn't need/use self.titlebar, but it's safer than sending
             # None
             self.really_create_group(self.titlebar, layout['group'])
-        if layout.has_key('title') and layout['title'] != '':
+        if 'title' in layout and layout['title'] != '':
             self.titlebar.set_custom_string(layout['title'])
-        if layout.has_key('directory') and layout['directory'] != '':
+        if 'directory' in layout and layout['directory'] != '':
             self.directory = layout['directory']
-        if layout.has_key('uuid') and layout['uuid'] != '':
+        if 'uuid' in layout and layout['uuid'] != '':
             self.uuid = make_uuid(layout['uuid'])
 
     def scroll_by_page(self, pages):

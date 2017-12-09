@@ -4,18 +4,16 @@
 """terminal_popup_menu.py - classes necessary to provide a terminal context 
 menu"""
 
-import string
-
 from gi.repository import Gtk
 
-from version import APP_NAME
-from translation import _
-from encoding import TerminatorEncoding
-from terminator import Terminator
-from util import err, dbg
-from config import Config
-from prefseditor import PrefsEditor
-import plugin
+from terminatorlib.version import APP_NAME
+from terminatorlib.translation import _
+from terminatorlib.encoding import TerminatorEncoding
+from terminatorlib.terminator import Terminator
+from terminatorlib.util import err, dbg
+from terminatorlib.config import Config
+from terminatorlib.prefseditor import PrefsEditor
+from terminatorlib import plugin
 
 class TerminalPopupMenu(object):
     """Class implementing the Terminal context menu"""
@@ -191,7 +189,7 @@ class TerminalPopupMenu(object):
             item.connect('activate', lambda x: PrefsEditor(self.terminal))
             menu.append(item)
 
-        profilelist = sorted(self.config.list_profiles(), key=string.lower)
+        profilelist = sorted(self.config.list_profiles(), key=str.lower)
 
         if len(profilelist) > 1:
             item = Gtk.MenuItem.new_with_mnemonic(_('Profiles'))
@@ -226,7 +224,7 @@ class TerminalPopupMenu(object):
 
             for menuitem in menuitems:
                 menu.append(menuitem)
-        except Exception, ex:
+        except Exception as ex:
             err('TerminalPopupMenu::show: %s' % ex)
 
         menu.show_all()
@@ -240,13 +238,13 @@ class TerminalPopupMenu(object):
         terminal = self.terminal
         active_encodings = terminal.config['active_encodings']
         item = Gtk.MenuItem.new_with_mnemonic(_("Encodings"))
-        menu.append (item)
-        submenu = Gtk.Menu ()
-        item.set_submenu (submenu)
-        encodings = TerminatorEncoding ().get_list ()
-        encodings.sort (lambda x, y: cmp (x[2].lower (), y[2].lower ()))
+        menu.append(item)
+        submenu = Gtk.Menu()
+        item.set_submenu(submenu)
+        encodings = TerminatorEncoding().get_list()
+        encodings.sort(key=lambda s:s[2].lower())
 
-        current_encoding = terminal.vte.get_encoding ()
+        current_encoding = terminal.vte.get_encoding()
         group = None
 
         if current_encoding not in active_encodings:
