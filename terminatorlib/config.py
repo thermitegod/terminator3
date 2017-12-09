@@ -535,7 +535,10 @@ class ConfigBase(Borg):
 
         configspec = ConfigObj(configspecdata)
         if DEBUG == True:
-            configspec.write(open('/tmp/terminator_configspec_debug.txt', 'w'))
+            with open(os.path.join(os.environ.get('TMPDIR','/tmp'),
+                                   'terminator_configspec_debug.txt'),
+                      mode='wt') as f:
+                configspec.write(f)
         return(configspec)
 
     def load(self):
@@ -661,7 +664,8 @@ class ConfigBase(Borg):
         if not os.path.isdir(config_dir):
             os.makedirs(config_dir)
         try:
-            parser.write(open(self.command_line_options.config, 'w'))
+            with open(self.command_line_options.config, mode='wt') as f:
+                parser.write(f)
         except Exception as ex:
             err('ConfigBase::save: Unable to save config: %s' % ex)
 

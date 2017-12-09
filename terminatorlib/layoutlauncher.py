@@ -36,8 +36,8 @@ class LayoutLauncher:
             # Figure out where our library is on-disk so we can open our UI
             (head, _tail) = os.path.split(config.__file__)
             librarypath = os.path.join(head, 'layoutlauncher.glade')
-            gladefile = open(librarypath, 'r')
-            gladedata = gladefile.read()
+            with open(librarypath, mode='rt') as f:
+                gladedata = f.read()
         except Exception as ex:
             print("Failed to find layoutlauncher.glade")
             print(ex)
