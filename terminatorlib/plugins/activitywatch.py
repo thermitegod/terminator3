@@ -22,6 +22,7 @@ try:
     #  is present on this computer.
     AVAILABLE = ['ActivityWatch', 'InactivityWatch']
 except (ImportError, ValueError):
+    AVAILABLE = []
     err('ActivityWatch plugin unavailable as we cannot import Notify')
 
 config = Config()
