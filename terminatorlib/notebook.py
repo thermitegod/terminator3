@@ -3,6 +3,7 @@
 # GPL v2 only
 """notebook.py - classes for the notebook widget"""
 
+from gi.repository import GLib
 from gi.repository import GObject
 from gi.repository import Gtk
 from gi.repository import Gdk
@@ -135,7 +136,7 @@ class Notebook(Container, Gtk.Notebook):
 
         if layout.has_key('active_page'):
             # Need to do it later, or layout changes result
-            GObject.idle_add(self.set_current_page, int(layout['active_page']))
+            GLib.idle_add(self.set_current_page, int(layout['active_page']))
         else:
             self.set_current_page(0)
 
@@ -191,7 +192,7 @@ class Notebook(Container, Gtk.Notebook):
             Gtk.main_iteration_do(False)
         self.get_toplevel().set_pos_by_ratio = False
 
-        GObject.idle_add(terminal.ensure_visible_and_focussed)
+        GLib.idle_add(terminal.ensure_visible_and_focussed)
 
     def add(self, widget, metadata=None):
         """Add a widget to the container"""
@@ -478,7 +479,7 @@ class Notebook(Container, Gtk.Notebook):
         self.pending_on_tab_switch_args = (notebook, page,  page_num,  data)
         if self.pending_on_tab_switch == True:
             return
-        GObject.idle_add(self.do_deferred_on_tab_switch)
+        GLib.idle_add(self.do_deferred_on_tab_switch)
         self.pending_on_tab_switch = True
 
     def do_deferred_on_tab_switch(self):
@@ -492,7 +493,7 @@ class Notebook(Container, Gtk.Notebook):
         tabs_last_active_term = data['tabs_last_active_term']
         if tabs_last_active_term:
             term = self.terminator.find_terminal_by_uuid(tabs_last_active_term.urn)
-            GObject.idle_add(term.ensure_visible_and_focussed)
+            GLib.idle_add(term.ensure_visible_and_focussed)
         return True
 
     def on_scroll_event(self, notebook, event):

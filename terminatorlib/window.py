@@ -7,7 +7,7 @@ import copy
 import time
 import uuid
 import gi
-from gi.repository import GObject
+from gi.repository import GLib, GObject
 from gi.repository import Gtk, Gdk, GdkX11
 
 from util import dbg, err, make_uuid, display_manager
@@ -606,7 +606,7 @@ class Window(Container, Gtk.Window):
         if self.pending_set_rough_geometry_hint == True:
             return
         self.pending_set_rough_geometry_hint = True
-        GObject.idle_add(self.do_deferred_set_rough_geometry_hints)
+        GLib.idle_add(self.do_deferred_set_rough_geometry_hints)
 
     def do_deferred_set_rough_geometry_hints(self):
         self.pending_set_rough_geometry_hint = False

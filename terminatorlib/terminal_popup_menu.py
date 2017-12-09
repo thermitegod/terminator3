@@ -290,7 +290,7 @@ class TerminalPopupMenu(object):
             else:
                 label = "%s %s" % (encoding[2], encoding[1])
     
-            radioitem = Gtk.RadioMenuItem(label=label, group=group)
+            radioitem = Gtk.RadioMenuItem(label=label)
             if group is None:
                 group = radioitem
     
