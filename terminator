@@ -64,8 +64,9 @@ if __name__ == '__main__':
     dbus_service = None
 
     dbg ("%s starting up, version %s" % (APP_NAME, APP_VERSION))
-  
-    OPTIONS = optionparse.parse_options()
+
+    optionparse.parse_options()
+    OPTIONS = optionparse.options
 
     if OPTIONS.select:
         # launch gui, return selection

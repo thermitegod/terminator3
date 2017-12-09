@@ -1363,10 +1363,7 @@ class Terminal(Gtk.VBox):
             self.vte.grab_focus()
 
         options = self.config.options_get()
-        if options and options.command:
-            command = options.command
-            options.command = None
-        elif options and options.execute:
+        if options and options.execute:
             command = options.execute
             options.execute = None
         elif self.config['use_custom_command']:
