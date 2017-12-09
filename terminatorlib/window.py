@@ -52,7 +52,7 @@ class Window(Container, Gtk.Window):
                             'terminal zoomed',
                             'whether the terminal is zoomed',
                             False,
-                            GObject.PARAM_READWRITE)
+                            GObject.ParamFlags.READWRITE)
     }
 
     def __init__(self):
