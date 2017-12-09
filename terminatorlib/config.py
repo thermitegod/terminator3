@@ -276,7 +276,6 @@ class Config(object):
         self.base = ConfigBase()
         self.set_profile(profile)
         self.inhibited = False
-        self.connect_gsetting_callbacks()
 
     def __getitem__(self, key, default=None):
         """Look up a configuration item"""
@@ -355,69 +354,20 @@ class Config(object):
         """List all configured layouts"""
         return(self.base.layouts.keys())
 
-    def connect_gsetting_callbacks(self):
-        """Get system settings and create callbacks for changes"""
-        dbg("GSetting connects for system changes")
-        # Have to preserve these to self, or callbacks don't happen
-        self.gsettings_interface=Gio.Settings.new('org.gnome.desktop.interface')
-        self.gsettings_interface.connect("changed::font-name", self.on_gsettings_change_event)
-        self.gsettings_interface.connect("changed::monospace-font-name", self.on_gsettings_change_event)
-        self.gsettings_wm=Gio.Settings.new('org.gnome.desktop.wm.preferences')
-        self.gsettings_wm.connect("changed::focus-mode", self.on_gsettings_change_event)
-
     def get_system_prop_font(self):
         """Look up the system font"""
         if self.system_prop_font is not None:
-            return(self.system_prop_font)
-        elif 'org.gnome.desktop.interface' not in Gio.Settings.list_schemas():
-            return
-        else:
-            gsettings=Gio.Settings.new('org.gnome.desktop.interface')
-            value = gsettings.get_value('font-name')
-            if value:
-                self.system_prop_font = value.get_string()
-            else:
-                self.system_prop_font = "Sans 10"
             return(self.system_prop_font)
 
     def get_system_mono_font(self):
         """Look up the system font"""
         if self.system_mono_font is not None:
             return(self.system_mono_font)
-        elif 'org.gnome.desktop.interface' not in Gio.Settings.list_schemas():
-            return
-        else:
-            gsettings=Gio.Settings.new('org.gnome.desktop.interface')
-            value = gsettings.get_value('monospace-font-name')
-            if value:
-                self.system_mono_font = value.get_string()
-            else:
-                self.system_mono_font = "Mono 10"
-            return(self.system_mono_font)
 
     def get_system_focus(self):
         """Look up the system focus setting"""
         if self.system_focus is not None:
             return(self.system_focus)
-        elif 'org.gnome.desktop.interface' not in Gio.Settings.list_schemas():
-            return
-        else:
-            gsettings=Gio.Settings.new('org.gnome.desktop.wm.preferences')
-            value = gsettings.get_value('focus-mode')
-            if value:
-                self.system_focus = value.get_string()
-            return(self.system_focus)
-
-    def on_gsettings_change_event(self, settings, key):
-        """Handle a gsetting change event"""
-        dbg('GSetting change event received. Invalidating caches')
-        self.system_focus = None
-        self.system_font = None
-        self.system_mono_font = None
-        # Need to trigger a reconfigure to change active terminals immediately
-        if "Terminator" not in globals():
-            from terminator import Terminator
-        Terminator().reconfigure()
 
     def save(self):
         """Cause ConfigBase to save our config to file"""
