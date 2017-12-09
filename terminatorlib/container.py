@@ -196,7 +196,7 @@ the tab will also close all terminals within it.')
         box.pack_start(labels, False, False, 6)
         dialog.vbox.pack_start(box, False, False, 12)
 
-        checkbox = Gtk.CheckButton(_("Do not show this message next time"))
+        checkbox = Gtk.CheckButton(label=_("Do not show this message next time"))
         dialog.vbox.pack_end(checkbox, True, True, 0)
     
         dialog.show_all()

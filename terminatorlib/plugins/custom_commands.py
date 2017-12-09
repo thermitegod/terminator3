@@ -86,7 +86,7 @@ class CustomCommandsMenu(plugin.MenuItem):
             lookup_name = '/'.join(branch_names[0:idx+1])
             target_submenu = submenus.get(lookup_name, None)
             if not target_submenu:
-              item = Gtk.MenuItem(_(branch_names[idx]))
+              item = Gtk.MenuItem(label=_(branch_names[idx]))
               parent_submenu.append(item)
               target_submenu = Gtk.Menu()
               item.set_submenu(target_submenu)
@@ -95,10 +95,10 @@ class CustomCommandsMenu(plugin.MenuItem):
           if iconinfo:
             image = Gtk.Image()
             image.set_from_icon_name(exe, Gtk.IconSize.MENU)
-            menuitem = Gtk.ImageMenuItem(leaf_name)
+            menuitem = Gtk.ImageMenuItem(label=leaf_name)
             menuitem.set_image(image)
           else:
-            menuitem = Gtk.MenuItem(leaf_name)
+            menuitem = Gtk.MenuItem(label=leaf_name)
           terminals = terminal.terminator.get_target_terms(terminal)
           menuitem.connect("activate", self._execute, {'terminals' : terminals, 'command' : command['command'] })
           target_submenu.append(menuitem)
@@ -186,42 +186,42 @@ class CustomCommandsMenu(plugin.MenuItem):
 
       button_box = Gtk.VBox()
 
-      button = Gtk.Button(_("Top"))
+      button = Gtk.Button(label=_("Top"))
       button_box.pack_start(button, False, True, 0)
       button.connect("clicked", self.on_goto_top, ui) 
       button.set_sensitive(False)
       ui['button_top'] = button
 
-      button = Gtk.Button(_("Up"))
+      button = Gtk.Button(label=_("Up"))
       button_box.pack_start(button, False, True, 0)
       button.connect("clicked", self.on_go_up, ui)
       button.set_sensitive(False)
       ui['button_up'] = button
 
-      button = Gtk.Button(_("Down"))
+      button = Gtk.Button(label=_("Down"))
       button_box.pack_start(button, False, True, 0)
       button.connect("clicked", self.on_go_down, ui) 
       button.set_sensitive(False)
       ui['button_down'] = button
 
-      button = Gtk.Button(_("Last"))
+      button = Gtk.Button(label=_("Last"))
       button_box.pack_start(button, False, True, 0)
       button.connect("clicked", self.on_goto_last, ui) 
       button.set_sensitive(False)
       ui['button_last'] = button
 
-      button = Gtk.Button(_("New"))
+      button = Gtk.Button(label=_("New"))
       button_box.pack_start(button, False, True, 0)
       button.connect("clicked", self.on_new, ui) 
       ui['button_new'] = button
 
-      button = Gtk.Button(_("Edit"))
+      button = Gtk.Button(label=_("Edit"))
       button_box.pack_start(button, False, True, 0)
       button.set_sensitive(False)
       button.connect("clicked", self.on_edit, ui) 
       ui['button_edit'] = button
 
-      button = Gtk.Button(_("Delete"))
+      button = Gtk.Button(label=_("Delete"))
       button_box.pack_start(button, False, True, 0)
       button.connect("clicked", self.on_delete, ui) 
       button.set_sensitive(False)

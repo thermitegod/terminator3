@@ -62,19 +62,19 @@ class Searchbar(Gtk.HBox):
         close.show_all()
 
         # Next Button
-        self.next = Gtk.Button(_('Next'))
+        self.next = Gtk.Button(label=_('Next'))
         self.next.show()
         self.next.set_sensitive(False)
         self.next.connect('clicked', self.next_search)
 
         # Previous Button
-        self.prev = Gtk.Button(_('Prev'))
+        self.prev = Gtk.Button(label=_('Prev'))
         self.prev.show()
         self.prev.set_sensitive(False)
         self.prev.connect('clicked', self.prev_search)
 
         # Wrap checkbox
-        self.wrap = Gtk.CheckButton(_('Wrap'))
+        self.wrap = Gtk.CheckButton(label=_('Wrap'))
         self.wrap.show()
         self.wrap.set_sensitive(True)
         self.wrap.connect('toggled', self.wrap_toggled)

@@ -201,13 +201,11 @@ class TerminalPopupMenu(object):
 
             current = terminal.get_profile()
 
-            group = None
-
             for profile in profilelist:
                 profile_label = profile
                 if profile_label == 'default':
                     profile_label = profile.capitalize()
-                item = Gtk.RadioMenuItem(profile_label, group)
+                item = Gtk.RadioMenuItem(label=profile_label)
                 if profile == current:
                     item.set_active(True)
                 item.connect('activate', terminal.force_set_profile, profile)
@@ -263,7 +261,7 @@ class TerminalPopupMenu(object):
             else:
                 extratext = ""
     
-            radioitem = Gtk.RadioMenuItem (_(encoding) + extratext, group)
+            radioitem = Gtk.RadioMenuItem(label=_(encoding) + extratext)
     
             if encoding == current_encoding:
                 radioitem.set_active (True)
@@ -292,7 +290,7 @@ class TerminalPopupMenu(object):
             else:
                 label = "%s %s" % (encoding[2], encoding[1])
     
-            radioitem = Gtk.RadioMenuItem (label, group)
+            radioitem = Gtk.RadioMenuItem(label=label, group=group)
             if group is None:
                 group = radioitem
     

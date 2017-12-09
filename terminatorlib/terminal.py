@@ -246,7 +246,7 @@ class Terminal(Gtk.VBox):
         """Create a GtkHBox containing the terminal and a scrollbar"""
 
         terminalbox = Gtk.HBox()
-        self.scrollbar = Gtk.VScrollbar(self.vte.get_vadjustment())
+        self.scrollbar = Gtk.VScrollbar(adjustment=self.vte.get_vadjustment())
         self.scrollbar.set_no_show_all(True)
 
         terminalbox.pack_start(self.vte, True, True, 0)
@@ -463,7 +463,7 @@ class Terminal(Gtk.VBox):
             menu.append(Gtk.SeparatorMenuItem())
 
         if self.group != None:
-            item = Gtk.MenuItem(_('Remove group %s') % self.group)
+            item = Gtk.MenuItem(label=_('Remove group %s') % self.group)
             item.connect('activate', self.ungroup, self.group)
             menu.append(item)
 
@@ -478,14 +478,14 @@ class Terminal(Gtk.VBox):
                 menu.append(item)
 
         if len(self.terminator.groups) > 0:
-            item = Gtk.MenuItem(_('Remove all groups'))
+            item = Gtk.MenuItem(label=_('Remove all groups'))
             item.connect('activate', lambda x: self.emit('ungroup-all'))
             menu.append(item)
 
         if self.group != None:
             menu.append(Gtk.SeparatorMenuItem())
 
-            item = Gtk.MenuItem(_('Close group %s') % self.group)
+            item = Gtk.MenuItem(label=_('Close group %s') % self.group)
             item.connect('activate', lambda x:
                          self.terminator.closegroupedterms(self.group))
             menu.append(item)
