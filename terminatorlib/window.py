@@ -75,7 +75,7 @@ class Window(Container, Gtk.Window):
 
         self.title = WindowTitle(self)
         self.title.update()
-        
+
         self.preventHide = False
 
         options = self.config.options_get()
@@ -85,13 +85,13 @@ class Window(Container, Gtk.Window):
 
             if options.role:
                 self.set_role(options.role)
-            
+
             if options.forcedicon is not None:
                 icon_to_apply = options.forcedicon
 
             if options.geometry:
                 if not self.parse_geometry(options.geometry):
-                    err('Window::__init__: Unable to parse geometry: %s' % 
+                    err('Window::__init__: Unable to parse geometry: %s' %
                             options.geometry)
 
         self.apply_icon(icon_to_apply)
@@ -287,7 +287,7 @@ class Window(Container, Gtk.Window):
     def confirm_close(self, window, type):
         """Display a confirmation dialog when the user is closing multiple
         terminals in one window"""
-        
+
         return (not (self.construct_confirm_close(window, type) == Gtk.ResponseType.ACCEPT))
 
     def on_destroy_event(self, widget, data=None):
@@ -325,7 +325,7 @@ class Window(Container, Gtk.Window):
     # pylint: disable-msg=W0613
     def on_window_state_changed(self, window, event):
         """Handle the state of the window changing"""
-        self.isfullscreen = bool(event.new_window_state & 
+        self.isfullscreen = bool(event.new_window_state &
                                  Gdk.WindowState.FULLSCREEN)
         self.ismaximised = bool(event.new_window_state &
                                  Gdk.WindowState.MAXIMIZED)
@@ -384,7 +384,7 @@ class Window(Container, Gtk.Window):
             visual = screen.get_rgba_visual()
             if visual:
                 self.set_visual(visual)
-    
+
     def show(self, startup=False):
         """Undo the startup show request if started in hidden mode"""
         #Present is necessary to grab focus when window is hidden from taskbar.
@@ -466,7 +466,7 @@ class Window(Container, Gtk.Window):
             container = maker.make('VPaned')
         else:
             container = maker.make('HPaned')
-        
+
         self.set_pos_by_ratio = True
 
         if not sibling:
@@ -490,7 +490,7 @@ class Window(Container, Gtk.Window):
         for term in order:
             container.add(term)
         container.show_all()
-        
+
         while Gtk.events_pending():
             Gtk.main_iteration_do(False)
         sibling.grab_focus()
@@ -517,7 +517,7 @@ class Window(Container, Gtk.Window):
         self.set_property('term_zoomed', True)
 
         if font_scale:
-            widget.cnxids.new(widget, 'size-allocate', 
+            widget.cnxids.new(widget, 'size-allocate',
                     widget.zoom_scale, self.zoom_data)
 
         widget.grab_focus()
@@ -655,7 +655,7 @@ class Window(Container, Gtk.Window):
         extra_height = win_height - total_font_height
 
         dbg('setting geometry hints: (ewidth:%s)(eheight:%s),\
-(fwidth:%s)(fheight:%s)' % (extra_width, extra_height, 
+(fwidth:%s)(fheight:%s)' % (extra_width, extra_height,
                             font_width, font_height))
         geometry = Gdk.Geometry()
         geometry.base_width = extra_width
@@ -754,7 +754,7 @@ class Window(Container, Gtk.Window):
         if not maker.isinstance(notebook, 'Notebook'):
             dbg('note in a notebook, refusing to ungroup tab')
             return
-        
+
         self.set_groups(None, self.get_visible_terminals())
 
     def move_tab(self, widget, direction):
@@ -784,7 +784,7 @@ class Window(Container, Gtk.Window):
         else:
             err('unknown direction: %s' % direction)
             return
-        
+
         notebook.reorder_child(child, page)
 
     def navigate_terminal(self, terminal, direction):

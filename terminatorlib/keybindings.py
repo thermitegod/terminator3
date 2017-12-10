@@ -17,7 +17,7 @@
 
 """Terminator by Chris Jones <cmsj@tenshu.net>
 
-Validator and functions for dealing with Terminator's customisable 
+Validator and functions for dealing with Terminator's customisable
 keyboard shortcuts.
 
 """
@@ -117,9 +117,9 @@ class Keybindings:
         """Translate a keyboard event into a mapped key"""
         try:
             _found, keyval, _egp, _lvl, consumed = self.keymap.translate_keyboard_state(
-                                              event.hardware_keycode, 
-                                              Gdk.ModifierType(event.get_state() & ~Gdk.ModifierType.LOCK_MASK),
-                                              event.group)
+                event.hardware_keycode,
+                Gdk.ModifierType(event.get_state() & ~Gdk.ModifierType.LOCK_MASK),
+                event.group)
         except TypeError:
             err("keybindings.lookup failed to translate keyboard event: %s" % dir(event))
             return None

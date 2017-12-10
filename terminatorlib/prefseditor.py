@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-"""Preferences Editor for Terminator. 
+"""Preferences Editor for Terminator.
 
 Load a UIBuilder config file, display it,
 populate it with our current config, then optionally read that back out and
@@ -165,7 +165,7 @@ class PrefsEditor:
                         'edit_tab_title'   : _('Edit tab title'),
                         'layout_launcher'  : _('Open layout launcher window'),
                         'next_profile'     : _('Switch to next profile'),
-                        'previous_profile' : _('Switch to previous profile'), 
+                        'previous_profile' : _('Switch to previous profile'),
                         'help'             : _('Open the manual')
             }
 
@@ -976,10 +976,10 @@ class PrefsEditor:
 
         customwidget = guiget('cursor_color_custom_radiobutton')
         colorwidget = guiget('cursor_color')
-        
+
         colorwidget.set_sensitive(customwidget.get_active())
         self.config['cursor_color_fg'] = not customwidget.get_active()
-        
+
         try:
             colorwidget.set_color(Gdk.color_parse(self.config['cursor_color']))
         except (ValueError, TypeError):
@@ -1264,7 +1264,7 @@ class PrefsEditor:
         widget.set_sensitive(not value)
         self.config['use_system_font'] = value
         self.config.save()
-        
+
         if self.config['use_system_font'] == True:
             fontname = self.config.get_system_mono_font()
             if fontname is not None:

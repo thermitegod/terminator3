@@ -10,7 +10,7 @@ AVAILABLE = ['LaunchpadBugURLHandler', 'LaunchpadCodeURLHandler', 'APTURLHandler
 
 class LaunchpadBugURLHandler(plugin.URLHandler):
     """Launchpad Bug URL handler. If the URL looks like a Launchpad changelog
-    closure entry... 'LP: #12345' then it should be transformed into a 
+    closure entry... 'LP: #12345' then it should be transformed into a
     Launchpad Bug URL"""
     capabilities = ['url_handler']
     handler_name = 'launchpad_bug'

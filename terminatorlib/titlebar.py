@@ -70,7 +70,7 @@ class Titlebar(Gtk.EventBox):
             icon_name = 'group'
         elif self.terminator.groupsend == groupsend_type['off']:
             icon_name = 'off'
-        self.set_from_icon_name('_active_broadcast_%s' % icon_name, 
+        self.set_from_icon_name('_active_broadcast_%s' % icon_name,
                 Gtk.IconSize.MENU)
 
         grouphbox.pack_start(self.groupicon, False, True, 2)
@@ -168,7 +168,7 @@ class Titlebar(Gtk.EventBox):
                     Gdk.color_parse(title_fg))
             self.grouplabel.modify_fg(Gtk.StateType.NORMAL,
                     Gdk.color_parse(group_fg))
-            self.modify_bg(Gtk.StateType.NORMAL, 
+            self.modify_bg(Gtk.StateType.NORMAL,
                     Gdk.color_parse(title_bg))
             if not self.get_desired_visibility():
                 if default_bg == True:
@@ -206,7 +206,7 @@ class Titlebar(Gtk.EventBox):
         if not name:
             self.groupicon.hide()
             return
-        
+
         self.groupicon.set_from_icon_name(APP_NAME + name, size)
         self.groupicon.show()
 

@@ -28,9 +28,9 @@ class Paned(Container):
         self.terminator = Terminator()
         self.maker = Factory()
         Container.__init__(self)
-        self.signals.append({'name': 'resize-term', 
+        self.signals.append({'name': 'resize-term',
                              'flags': GObject.SignalFlags.RUN_LAST,
-                             'return_type': None, 
+                             'return_type': None,
                              'param_types': (GObject.TYPE_STRING,)})
 
 
@@ -45,7 +45,7 @@ class Paned(Container):
             container = VPaned()
         else:
             container = HPaned()
-        
+
         self.get_toplevel().set_pos_by_ratio = True
 
         if not sibling:
@@ -71,7 +71,7 @@ class Paned(Container):
 
         self.show_all()
         sibling.grab_focus()
-        
+
         while Gtk.events_pending():
             Gtk.main_iteration_do(False)
         self.get_toplevel().set_pos_by_ratio = False
@@ -141,7 +141,7 @@ class Paned(Container):
                 recurse_up=True
             else:
                 recurse_up=False
-            
+
             if event.get_state() & Gdk.ModifierType.SHIFT_MASK == Gdk.ModifierType.SHIFT_MASK:
                 recurse_down=True
             else:
@@ -184,7 +184,7 @@ class Paned(Container):
             highest_ancestor = highest_ancestor.get_parent()
 
         highest_ancestor.set_autoresize(False)
-        
+
         # (1b) If Super modifier, redistribute higher sections too
         if recurse_up:
             grandfather=highest_ancestor.get_parent()
@@ -195,7 +195,7 @@ class Paned(Container):
         highest_ancestor._do_redistribute(recurse_up, recurse_down)
 
         GLib.idle_add(highest_ancestor.set_autoresize, True)
-    
+
     def _do_redistribute(self, recurse_up=False, recurse_down=False):
         maker = Factory()
         #2 Make a list of self + all children of same type
@@ -221,7 +221,7 @@ class Paned(Container):
                       (maker.isinstance(child, 'VPaned') or \
                        maker.isinstance(child, 'HPaned')):
                         child.do_redistribute(False, True)
-                    
+
         #3 Get ancestor x/y => a, and handle size => hs
         avail_pixels=self.get_length()
         handle_size = self.get_handlesize()
@@ -472,7 +472,7 @@ class Paned(Container):
             self.set_position_by_ratio()
         else:
             self.set_position(self.get_position())
-    
+
     def position_by_ratio(self, total_size, handle_size, ratio):
         non_separator_size = max(total_size - handle_size, 0)
         ratio = min(max(ratio, 0.0), 1.0)

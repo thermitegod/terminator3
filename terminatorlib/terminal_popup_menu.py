@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 # Terminator by Chris Jones <cmsj@tenshu.net>
 # GPL v2 only
-"""terminal_popup_menu.py - classes necessary to provide a terminal context 
+"""terminal_popup_menu.py - classes necessary to provide a terminal context
 menu"""
 
 from gi.repository import Gtk
@@ -93,7 +93,7 @@ class TerminalPopupMenu(object):
             menu.append(item)
 
             item = Gtk.MenuItem.new_with_mnemonic(namecopy)
-            item.connect('activate', 
+            item.connect('activate',
                          lambda x: terminal.clipboard.set_text(terminal.prepare_url(url), len(terminal.prepare_url(url))))
             menu.append(item)
 
@@ -218,7 +218,7 @@ class TerminalPopupMenu(object):
             plugins = registry.get_plugins_by_capability('terminal_menu')
             for menuplugin in plugins:
                 menuplugin.callback(menuitems, menu, terminal)
-            
+
             if len(menuitems) > 0:
                 menu.append(Gtk.SeparatorMenuItem())
 
@@ -258,27 +258,27 @@ class TerminalPopupMenu(object):
                 extratext = " (%s)" % _("User defined")
             else:
                 extratext = ""
-    
+
             radioitem = Gtk.RadioMenuItem(label=_(encoding) + extratext)
-    
+
             if encoding == current_encoding:
                 radioitem.set_active(True)
-    
+
             if group is None:
                 group = radioitem
-    
-            radioitem.connect('activate', terminal.on_encoding_change, 
+
+            radioitem.connect('activate', terminal.on_encoding_change,
                               encoding)
             submenu.append(radioitem)
-    
+
         item = Gtk.MenuItem.new_with_mnemonic(_("Other Encodings"))
         submenu.append(item)
         #second level
-    
+
         submenu = Gtk.Menu()
         item.set_submenu(submenu)
         group = None
-    
+
         for encoding in encodings:
             if encoding[1] in active_encodings:
                 continue
@@ -287,15 +287,15 @@ class TerminalPopupMenu(object):
                 label = "%s %s" % (encoding[2], terminal.vte.get_encoding())
             else:
                 label = "%s %s" % (encoding[2], encoding[1])
-    
+
             radioitem = Gtk.RadioMenuItem(label=label)
             if group is None:
                 group = radioitem
-    
+
             if encoding[1] == current_encoding:
                 radioitem.set_active(True)
 
-            radioitem.connect('activate', terminal.on_encoding_change, 
-                               encoding[1])
+            radioitem.connect('activate', terminal.on_encoding_change,
+                              encoding[1])
             submenu.append(radioitem)
 

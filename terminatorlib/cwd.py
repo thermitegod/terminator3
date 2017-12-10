@@ -32,7 +32,7 @@ def get_default_cwd():
             cwd = pwd.getpwuid(os.getuid())[5]
         except KeyError:
             cwd = '/'
-    
+
     return cwd
 
 def get_pid_cwd():

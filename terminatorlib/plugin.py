@@ -63,7 +63,7 @@ class PluginRegistry(borg.Borg):
             (head, _tail) = os.path.split(borg.__file__)
             self.path.append(os.path.join(head, 'plugins'))
             self.path.append(os.path.join(get_config_dir(), 'plugins'))
-            dbg('PluginRegistry::prepare_attributes: Plugin path: %s' % 
+            dbg('PluginRegistry::prepare_attributes: Plugin path: %s' %
                 self.path)
         if not self.done:
             self.done = False
@@ -90,7 +90,7 @@ class PluginRegistry(borg.Borg):
                     continue
                 pluginpath = os.path.join(plugindir, plugin)
                 if os.path.isfile(pluginpath) and plugin[-3:] == '.py':
-                    dbg('PluginRegistry::load_plugins: Importing plugin %s' % 
+                    dbg('PluginRegistry::load_plugins: Importing plugin %s' %
                         plugin)
                     try:
                         module = __import__(plugin[:-3], None, None, [''])

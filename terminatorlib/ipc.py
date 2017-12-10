@@ -45,14 +45,14 @@ class DBusService(Borg, dbus.service.Object):
         if not self.bus_name:
             dbg('Checking for bus name availability: %s' % BUS_NAME)
             bus = dbus.SessionBus()
-            proxy = bus.get_object('org.freedesktop.DBus', 
+            proxy = bus.get_object('org.freedesktop.DBus',
                                    '/org/freedesktop/DBus')
             flags = 1 | 4 # allow replacement | do not queue
             if not proxy.RequestName(BUS_NAME, dbus.UInt32(flags)) in (1, 4):
                 dbg('bus name unavailable: %s' % BUS_NAME)
                 raise dbus.exceptions.DBusException(
                     "Couldn't get DBus name %s: Name exists" % BUS_NAME)
-            self.bus_name = dbus.service.BusName(BUS_NAME, 
+            self.bus_name = dbus.service.BusName(BUS_NAME,
                                                  bus=dbus.SessionBus())
         if not self.bus_path:
             self.bus_path = BUS_PATH
@@ -68,7 +68,7 @@ class DBusService(Borg, dbus.service.Object):
         self.terminator.config.options_set(oldopts)
         self.terminator.create_layout(oldopts.layout)
         self.terminator.layout_done()
-            
+
     @dbus.service.method(BUS_NAME, in_signature='a{ss}')
     def new_tab_cmdline(self, options=dbus.Dictionary()):
         """Create a new tab"""

@@ -41,7 +41,7 @@ class TestBorg(Borg):
     def __init__(self):
         Borg.__init__(self, self.__class__.__name__)
         self.prepare_attributes()
-    
+
     def prepare_attributes(self):
         if not self.attribute:
             self.attribute = 0

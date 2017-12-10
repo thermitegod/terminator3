@@ -102,7 +102,7 @@ class CustomCommandsMenu(plugin.MenuItem):
           terminals = terminal.terminator.get_target_terms(terminal)
           menuitem.connect("activate", self._execute, {'terminals' : terminals, 'command' : command['command'] })
           target_submenu.append(menuitem)
-        
+
     def _save_config(self):
       config = Config()
       config.plugin_del_config(self.__class__.__name__)
@@ -111,7 +111,7 @@ class CustomCommandsMenu(plugin.MenuItem):
         enabled = command['enabled']
         name = command['name']
         command = command['command']
-       
+
         item = {}
         item['enabled'] = enabled
         item['name'] = name
@@ -154,7 +154,7 @@ class CustomCommandsMenu(plugin.MenuItem):
 
       for command in [ self.cmd_list[key] for key in sorted(self.cmd_list.keys()) ]:
         store.append([command['enabled'], command['name'], command['command']])
- 
+
       treeview = Gtk.TreeView(store)
       #treeview.connect("cursor-changed", self.on_cursor_changed, ui)
       selection = treeview.get_selection()
@@ -188,7 +188,7 @@ class CustomCommandsMenu(plugin.MenuItem):
 
       button = Gtk.Button(label=_("Top"))
       button_box.pack_start(button, False, True, 0)
-      button.connect("clicked", self.on_goto_top, ui) 
+      button.connect("clicked", self.on_goto_top, ui)
       button.set_sensitive(False)
       ui['button_top'] = button
 
@@ -200,30 +200,30 @@ class CustomCommandsMenu(plugin.MenuItem):
 
       button = Gtk.Button(label=_("Down"))
       button_box.pack_start(button, False, True, 0)
-      button.connect("clicked", self.on_go_down, ui) 
+      button.connect("clicked", self.on_go_down, ui)
       button.set_sensitive(False)
       ui['button_down'] = button
 
       button = Gtk.Button(label=_("Last"))
       button_box.pack_start(button, False, True, 0)
-      button.connect("clicked", self.on_goto_last, ui) 
+      button.connect("clicked", self.on_goto_last, ui)
       button.set_sensitive(False)
       ui['button_last'] = button
 
       button = Gtk.Button(label=_("New"))
       button_box.pack_start(button, False, True, 0)
-      button.connect("clicked", self.on_new, ui) 
+      button.connect("clicked", self.on_new, ui)
       ui['button_new'] = button
 
       button = Gtk.Button(label=_("Edit"))
       button_box.pack_start(button, False, True, 0)
       button.set_sensitive(False)
-      button.connect("clicked", self.on_edit, ui) 
+      button.connect("clicked", self.on_edit, ui)
       ui['button_edit'] = button
 
       button = Gtk.Button(label=_("Delete"))
       button_box.pack_start(button, False, True, 0)
-      button.connect("clicked", self.on_delete, ui) 
+      button.connect("clicked", self.on_delete, ui)
       button.set_sensitive(False)
       ui['button_delete'] = button
 
@@ -255,7 +255,7 @@ class CustomCommandsMenu(plugin.MenuItem):
                             'command' : command}
           iter = store.iter_next(iter)
           i = i + 1
-      
+
 
     def on_toggled(self, widget, path, data):
       treeview = data['treeview']
@@ -280,15 +280,14 @@ class CustomCommandsMenu(plugin.MenuItem):
       data['button_delete'].set_sensitive(iter is not None)
 
     def _create_command_dialog(self, enabled_var = False, name_var = "", command_var = ""):
-      dialog = Gtk.Dialog(
-                        _("New Command"),
-                        None,
-                        Gtk.DialogFlags.MODAL,
-                        (
-                          _("_Cancel"), Gtk.ResponseType.REJECT,
-                          _("_OK"), Gtk.ResponseType.ACCEPT
-                        )
-                      )
+      dialog = Gtk.Dialog(_("New Command"),
+                          None,
+                          Gtk.DialogFlags.MODAL,
+                          (
+                            _("_Cancel"), Gtk.ResponseType.REJECT,
+                            _("_OK"), Gtk.ResponseType.ACCEPT
+                          )
+      )
       dialog.set_transient_for(self.dbox)
       table = Gtk.Table(3, 2)
 
@@ -303,7 +302,7 @@ class CustomCommandsMenu(plugin.MenuItem):
       name = Gtk.Entry()
       name.set_text(name_var)
       table.attach(name, 1, 2, 1, 2)
-      
+
       label = Gtk.Label(label=_("Command:"))
       table.attach(label, 0, 1, 2, 3)
       command = Gtk.Entry()
@@ -328,7 +327,7 @@ class CustomCommandsMenu(plugin.MenuItem):
                                   Gtk.MessageType.ERROR,
                                   Gtk.ButtonsType.CLOSE,
                                   _("You need to define a name and command")
-                                )
+          )
           err.run()
           err.destroy()
         else:
@@ -351,7 +350,7 @@ class CustomCommandsMenu(plugin.MenuItem):
       treeview = data['treeview']
       selection = treeview.get_selection()
       (store, iter) = selection.get_selected()
-      
+
       if not iter:
         return
       firstiter = store.get_iter_first()
@@ -361,7 +360,7 @@ class CustomCommandsMenu(plugin.MenuItem):
       treeview = data['treeview']
       selection = treeview.get_selection()
       (store, iter) = selection.get_selected()
-       
+
       if not iter:
         return
 
@@ -381,7 +380,7 @@ class CustomCommandsMenu(plugin.MenuItem):
       treeview = data['treeview']
       selection = treeview.get_selection()
       (store, iter) = selection.get_selected()
-      
+
       if not iter:
         return
       next = store.iter_next(iter)
@@ -392,7 +391,7 @@ class CustomCommandsMenu(plugin.MenuItem):
       treeview = data['treeview']
       selection = treeview.get_selection()
       (store, iter) = selection.get_selected()
-      
+
       if not iter:
         return
       lastiter = iter
@@ -400,32 +399,31 @@ class CustomCommandsMenu(plugin.MenuItem):
       while tmpiter:
         lastiter = tmpiter
         tmpiter = store.iter_next(tmpiter)
-      
+
       store.move_after(iter, lastiter)
 
- 
     def on_delete(self, button, data):
       treeview = data['treeview']
       selection = treeview.get_selection()
       (store, iter) = selection.get_selected()
       if iter:
         store.remove(iter)
-      
+
       return
- 
+
     def on_edit(self, button, data):
       treeview = data['treeview']
       selection = treeview.get_selection()
       (store, iter) = selection.get_selected()
-      
+
       if not iter:
         return
-       
+
       (dialog,enabled,name,command) = self._create_command_dialog(
-                                                enabled_var = store.get_value(iter, CC_COL_ENABLED),
-                                                name_var = store.get_value(iter, CC_COL_NAME),
-                                                command_var = store.get_value(iter, CC_COL_COMMAND)
-                                                                  )
+        enabled_var = store.get_value(iter, CC_COL_ENABLED),
+        name_var = store.get_value(iter, CC_COL_NAME),
+        command_var = store.get_value(iter, CC_COL_COMMAND)
+      )
       res = dialog.run()
       item = {}
       if res == Gtk.ResponseType.ACCEPT:
@@ -459,8 +457,7 @@ class CustomCommandsMenu(plugin.MenuItem):
             gerr(_("Name *%s* already exist") % item['name'])
 
       dialog.destroy()
- 
-      
+
 if __name__ == '__main__':
   c = CustomCommandsMenu()
   c.configure(None, None)

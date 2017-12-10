@@ -116,7 +116,7 @@ DEFAULTS = {
             'edit_terminal_title': '<Control><Alt>x',
             'layout_launcher'  : '<Alt>l',
             'next_profile'     : '',
-            'previous_profile' : '', 
+            'previous_profile' : '',
             'help'             : 'F1'
         },
         'profiles': {

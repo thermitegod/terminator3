@@ -41,7 +41,7 @@ class EditableLabel(Gtk.EventBox):
 
     def __init__(self, text = ""):
         """ Class initialiser"""
-        GObject.GObject.__init__(self) 
+        GObject.GObject.__init__(self)
 
         self._entry_handler_id = []
         self._label = Gtk.Label(label=text, ellipsize='end')
@@ -62,7 +62,7 @@ class EditableLabel(Gtk.EventBox):
         """set the text of the label"""
         self._autotext = text
         if not self._custom or force:
-            self._label.set_text(text) 
+            self._label.set_text(text)
 
     def get_text(self):
         """get the text from the label"""

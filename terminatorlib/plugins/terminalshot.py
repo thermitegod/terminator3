@@ -42,9 +42,9 @@ class TerminalShot(plugin.MenuItem):
         savedialog.set_do_overwrite_confirmation(True)
         savedialog.set_local_only(True)
 
-        pixbuf = orig_pixbuf.scale_simple(orig_pixbuf.get_width() / 2, 
-                                     orig_pixbuf.get_height() / 2,
-                                     GdkPixbuf.InterpType.BILINEAR)
+        pixbuf = orig_pixbuf.scale_simple(orig_pixbuf.get_width() / 2,
+                                          orig_pixbuf.get_height() / 2,
+                                          GdkPixbuf.InterpType.BILINEAR)
         image = Gtk.Image.new_from_pixbuf(pixbuf)
         savedialog.set_preview_widget(image)
 

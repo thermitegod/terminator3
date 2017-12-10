@@ -39,7 +39,7 @@ class Logger(plugin.MenuItem):
             item.set_has_tooltip(True)
             item.set_tooltip_text("Saving at '" + self.loggers[vte_terminal]["filepath"] + "'")
         menuitems.append(item)
-        
+
     def write_content(self, terminal, row_start, col_start, row_end, col_end):
         """ Final function to write a file """
         content = terminal.get_text_range(row_start, col_start, row_end, col_end,
@@ -61,7 +61,7 @@ class Logger(plugin.MenuItem):
         if row - last_saved_row < terminal.get_row_count():
             return
         self.write_content(terminal, last_saved_row, last_saved_col, row, col)
-        
+
     def start_logger(self, _widget, Terminal):
         """ Handle menu item callback by saving text to a file"""
         savedialog = Gtk.FileChooserDialog(title=_("Save Log File As"),
@@ -77,7 +77,7 @@ class Logger(plugin.MenuItem):
                 logfile = os.path.join(savedialog.get_current_folder(),
                                        savedialog.get_filename())
                 fd = open(logfile, 'w+')
-                # Save log file path, 
+                # Save log file path,
                 # associated file descriptor, signal handler id
                 # and last saved col,row positions respectively.
                 vte_terminal = Terminal.get_vte()

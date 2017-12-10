@@ -16,7 +16,7 @@ from terminatorlib.util import dbg
 class Borg:
     """Definition of a class that can never be duplicated. Correct usage is
     thus:
-        
+
     >>> from borg import Borg
     >>> class foo(Borg):
     ...     # All attributes on a borg class *must* = None
@@ -29,13 +29,13 @@ class Borg:
     ...
     >>> bar = foo()
     >>> bar.prepare_attributes()
-    
+
     The important thing to note is that all attributes of borg classes *must* be
     declared as being None. If you attempt to use static class attributes you
     will get unpredicted behaviour. Instead, prepare_attributes() must be called
     which will then see the attributes in the shared state, and initialise them
     if necessary."""
-    __shared_state = {} 
+    __shared_state = {}
 
     def __init__(self, borgtype=None):
         """Class initialiser. Overwrite our class dictionary with the shared

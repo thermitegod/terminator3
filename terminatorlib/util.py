@@ -119,7 +119,7 @@ def path_lookup(command):
 
     try:
         paths = os.environ['PATH'].split(':')
-        if len(paths[0]) == 0: 
+        if len(paths[0]) == 0:
             raise ValueError
     except (ValueError, NameError):
         dbg('path_lookup: PATH not set in environment, using fallbacks')
@@ -180,7 +180,7 @@ def widget_pixbuf(widget, maxsize=None):
     cairo_context.paint()
 
     scaledpixbuf = Gdk.pixbuf_get_from_surface(preview_surface, 0, 0, preview_width, preview_height);
-    
+
     return scaledpixbuf
 
 def get_config_dir():
@@ -198,7 +198,7 @@ def dict_diff(reference, working):
     """Examine the values in the supplied working set and return a new dict
     that only contains those values which are different from those in the
     reference dictionary
-    
+
     >>> a = {'foo': 'bar', 'baz': 'bjonk'}
     >>> b = {'foo': 'far', 'baz': 'bjonk'}
     >>> dict_diff(a, b)
@@ -293,7 +293,7 @@ def enumerate_descendants(parent):
                     terminals.append(descendant)
             containers.append(child)
 
-    dbg('%d containers and %d terminals fall beneath %s' % (len(containers), 
+    dbg('%d containers and %d terminals fall beneath %s' % (len(containers),
         len(terminals), parent))
     return (containers, terminals)
 
@@ -323,7 +323,7 @@ def spawn_new_terminator(cwd, args):
             # we weren't started as ./terminator in a path. Give up
             err('Unable to locate Terminator')
             return False
-      
+
     dbg("Spawning: %s" % cmd)
     subprocess.run([cmd]+args)
 

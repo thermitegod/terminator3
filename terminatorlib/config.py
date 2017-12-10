@@ -67,7 +67,7 @@ KeyError: 'ConfigBase::get_item: unknown key algo'
 >>> config.options_set({})
 >>> config.options_get()
 {}
->>> 
+>>>
 
 """
 
@@ -192,7 +192,7 @@ DEFAULTS = {
             'edit_terminal_title': '<Control><Alt>x',
             'layout_launcher'  : '<Alt>l',
             'next_profile'     : '',
-            'previous_profile' : '', 
+            'previous_profile' : '',
             'help'             : 'F1'
         },
         'profiles': {
@@ -271,7 +271,7 @@ class Config(object):
     system_prop_font = None
     system_focus = None
     inhibited = None
-    
+
     def __init__(self, profile='default'):
         self.base = ConfigBase()
         self.set_profile(profile)
@@ -534,7 +534,7 @@ class ConfigBase(Borg):
         """Force a reload of the base config"""
         self.loaded = False
         self.load()
-        
+
     def save(self):
         """Save the config to a file"""
         dbg('ConfigBase::save: saving config')
