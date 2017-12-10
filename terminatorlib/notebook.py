@@ -28,7 +28,7 @@ class Notebook(Container, Gtk.Notebook):
         """Class initialiser"""
         if isinstance(window.get_child(), Gtk.Notebook):
             err('There is already a Notebook at the top of this window')
-            raise(ValueError)
+            raise ValueError
 
         Container.__init__(self)
         GObject.GObject.__init__(self)

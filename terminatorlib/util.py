@@ -120,7 +120,7 @@ def path_lookup(command):
     try:
         paths = os.environ['PATH'].split(':')
         if len(paths[0]) == 0: 
-            raise(ValueError)
+            raise ValueError
     except (ValueError, NameError):
         dbg('path_lookup: PATH not set in environment, using fallbacks')
         paths = ['/usr/local/bin', '/usr/bin', '/bin']

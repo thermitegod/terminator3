@@ -367,12 +367,12 @@ class CustomCommandsMenu(plugin.MenuItem):
 
       tmpiter = store.get_iter_first()
 
-      if(store.get_path(tmpiter) == store.get_path(iter)):
+      if store.get_path(tmpiter) == store.get_path(iter):
         return
 
       while tmpiter:
         next = store.iter_next(tmpiter)
-        if(store.get_path(next) == store.get_path(iter)):
+        if store.get_path(next) == store.get_path(iter):
           store.swap(iter, tmpiter)
           break
         tmpiter = next

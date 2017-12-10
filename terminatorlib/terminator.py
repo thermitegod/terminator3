@@ -306,7 +306,7 @@ class Terminator(Borg):
         for windef in layout:
             if layout[windef]['type'] != 'Window':
                 err('invalid layout format. %s' % layout)
-                raise(ValueError)
+                raise ValueError
             dbg('Creating a window')
             window, terminal = self.new_window()
             if 'position' in layout[windef]:

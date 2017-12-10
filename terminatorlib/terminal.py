@@ -1023,8 +1023,7 @@ class Terminal(Gtk.VBox):
             # copy text from another widget
             return
         srcwidget = Gtk.drag_get_source_widget(drag_context)
-        if(isinstance(srcwidget, Gtk.EventBox) and 
-           srcwidget == self.titlebar) or widget == srcwidget:
+        if (isinstance(srcwidget, Gtk.EventBox) and srcwidget == self.titlebar) or widget == srcwidget:
             # on self
             return
 
