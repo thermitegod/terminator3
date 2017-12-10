@@ -1554,9 +1554,8 @@ class LayoutEditor:
         listitems = {}
         store.clear()
 
-        children = layout.keys()
-        i = 0
-        while children != []:
+        children = list(layout.keys())
+        while children:
             child = children.pop()
             child_type = layout[child]['type']
             parent = layout[child]['parent']

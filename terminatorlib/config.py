@@ -71,13 +71,12 @@ KeyError: 'ConfigBase::get_item: unknown key algo'
 
 """
 
+import json
 import platform
 import os
 from copy import copy
 from terminatorlib import optionparse
 from terminatorlib.borg import Borg
-from terminatorlib.configobj.configobj import ConfigObj, flatten_errors
-from terminatorlib.configobj.validate import Validator
 from terminatorlib.util import dbg, err, DEBUG, get_config_dir, dict_diff
 
 from gi.repository import Gio
@@ -434,6 +433,7 @@ class ConfigBase(Borg):
     plugins = None
     layouts = None
     command_line_options = None
+    config_filename = None
 
     def __init__(self):
         """Class initialiser"""
@@ -467,79 +467,30 @@ class ConfigBase(Borg):
             for layout in DEFAULTS['layouts']:
                 self.layouts[layout] = copy(DEFAULTS['layouts'][layout])
 
-    def defaults_to_configspec(self):
+    def get_default_config(self,defaultconfig={}):
         """Convert our tree of default values into a ConfigObj validation
         specification"""
-        configspecdata = {}
 
-        keymap = {
-                'int': 'integer',
-                'str': 'string',
-                'bool': 'boolean',
-                }
+        defaultconfig['global_config']={}
+        defaultconfig['global_config'].update(DEFAULTS['global_config'])
 
-        section = {}
-        for key in DEFAULTS['global_config']:
-            keytype = DEFAULTS['global_config'][key].__class__.__name__
-            value = DEFAULTS['global_config'][key]
-            if keytype in keymap:
-                keytype = keymap[keytype]
-            elif keytype == 'list':
-                value = 'list(%s)' % ','.join(value)
+        defaultconfig['keybindings']={}
+        defaultconfig['keybindings'].update(DEFAULTS['keybindings'].items())
 
-            keytype = '%s(default=%s)' % (keytype, value)
+        defaultconfig['profiles']={}
+        defaultconfig['profiles'].update(DEFAULTS['profiles'])
 
-            if key == 'custom_url_handler':
-                keytype = 'string(default="")'
+        defaultconfig['layouts']={}
+        defaultconfig['layouts'].update(DEFAULTS['layouts'])
 
-            section[key] = keytype
-        configspecdata['global_config'] = section
+        defaultconfig['plugins']={}
 
-        section = {}
-        for key in DEFAULTS['keybindings']:
-            value = DEFAULTS['keybindings'][key]
-            if value is None or value == '':
-                continue
-            section[key] = 'string(default=%s)' % value
-        configspecdata['keybindings'] = section
-
-        section = {}
-        for key in DEFAULTS['profiles']['default']:
-            keytype = DEFAULTS['profiles']['default'][key].__class__.__name__
-            value = DEFAULTS['profiles']['default'][key]
-            if keytype in keymap:
-                keytype = keymap[keytype]
-            elif keytype == 'list':
-                value = 'list(%s)' % ','.join(value)
-            if keytype == 'string':
-                value = '"%s"' % value
-
-            keytype = '%s(default=%s)' % (keytype, value)
-
-            section[key] = keytype
-        configspecdata['profiles'] = {}
-        configspecdata['profiles']['__many__'] = section
-
-        section = {}
-        section['type'] = 'string'
-        section['parent'] = 'string'
-        section['profile'] = 'string(default=default)'
-        section['command'] = 'string(default="")'
-        section['position'] = 'string(default="")'
-        section['size'] = 'list(default=list(-1,-1))'
-        configspecdata['layouts'] = {}
-        configspecdata['layouts']['__many__'] = {}
-        configspecdata['layouts']['__many__']['__many__'] = section
-
-        configspecdata['plugins'] = {}
-
-        configspec = ConfigObj(configspecdata)
         if DEBUG == True:
             with open(os.path.join(os.environ.get('TMPDIR','/tmp'),
                                    'terminator_configspec_debug.txt'),
                       mode='wt') as f:
-                configspec.write(f)
-        return(configspec)
+                json.dump(defaultconfig,f,
+                          indent=4,separators=(',', ':'),sort_keys=True)
 
     def load(self):
         """Load configuration data from our various sources"""
@@ -547,84 +498,35 @@ class ConfigBase(Borg):
             dbg('ConfigBase::load: config already loaded')
             return
 
-        if self.command_line_options:
-            if not self.command_line_options.config:
-                self.command_line_options.config = os.path.join(get_config_dir(), 'config')
-            filename = self.command_line_options.config
-        else:
-            filename = os.path.join(get_config_dir(), 'config')
+        self.config_filename=self.command_line_options.config or os.path.join(get_config_dir(), 'config.json')
 
-        dbg('looking for config file: %s' % filename)
+        dbg('load config file: %s' % self.config_filename)
+
+        configdata={}
+        self.get_default_config(configdata)
         try:
-            configfile = open(filename, 'r')
-        except Exception as ex:
-            if not self.whined:
-                err('ConfigBase::load: Unable to open %s (%s)' % (filename, ex))
-                self.whined = True
-            return
-        # If we have successfully loaded a config, allow future whining
-        self.whined = False
-
-        try:
-            configspec = self.defaults_to_configspec()
-            parser = ConfigObj(configfile, configspec=configspec)
-            validator = Validator()
-            result = parser.validate(validator, preserve_errors=True)
-        except Exception as ex:
-            err('Unable to load configuration: %s' % ex)
-            return
-
-        if result != True:
-            err('ConfigBase::load: config format is not valid')
-            for (section_list, key, _other) in flatten_errors(parser, result):
-                if key is not None:
-                    err('[%s]: %s is invalid' % (','.join(section_list), key))
-                else:
-                    err('[%s] missing' % ','.join(section_list))
-        else:
-            dbg('config validated successfully')
+            with open(self.config_filename,mode='rt') as f:
+                configdata.update(json.load(f))
+        except FileNotFoundError as ex:
+            err('ConfigBase::load: Unable to load %s (%s)' % (self.config_filename, ex))
 
         for section_name in self.sections:
-            dbg('ConfigBase::load: Processing section: %s' % section_name)
-            section = getattr(self, section_name)
-            if section_name == 'profiles':
-                for profile in parser[section_name]:
-                    dbg('ConfigBase::load: Processing profile: %s' % profile)
-                    if section_name not in section:
-                        # FIXME: Should this be outside the loop?
-                        section[profile] = copy(DEFAULTS['profiles']['default'])
-                    section[profile].update(parser[section_name][profile])
-            elif section_name == 'plugins':
-                if section_name not in parser:
-                    continue
-                for part in parser[section_name]:
-                    dbg('ConfigBase::load: Processing %s: %s' % (section_name,
-                                                                 part))
-                    section[part] = parser[section_name][part]
-            elif section_name == 'layouts':
-                for layout in parser[section_name]:
-                    dbg('ConfigBase::load: Processing %s: %s' % (section_name,
-                                                                 layout))
-                    if layout == 'default' and \
-                       parser[section_name][layout] == {}:
-                           continue
-                    section[layout] = parser[section_name][layout]
-            elif section_name == 'keybindings':
-                if section_name not in parser:
-                    continue
-                for part in parser[section_name]:
-                    dbg('ConfigBase::load: Processing %s: %s' % (section_name,
-                                                                 part))
-                    if parser[section_name][part] == 'None':
-                        section[part] = None
-                    else:
-                        section[part] = parser[section_name][part]
-            else:
-                try:
-                    section.update(parser[section_name])
-                except KeyError as ex:
-                    dbg('ConfigBase::load: skipping missing section %s' %
-                            section_name)
+            section=getattr(self,section_name)
+            section.update(configdata.get(section_name,()))
+
+            #set default profile options
+            if section_name=='profiles':
+                for profile in section.values():
+                    for k,v in DEFAULTS['profiles']['default'].items():
+                        if k not in profile:
+                            profile[k]=v
+
+            #set default layout options
+            if section_name=='layouts':
+                for layouts in section.values():
+                    for k,v in DEFAULTS['layouts']['default'].items():
+                        if k not in layouts:
+                            profile[k]=v
 
         self.loaded = True
 
@@ -636,36 +538,17 @@ class ConfigBase(Borg):
     def save(self):
         """Save the config to a file"""
         dbg('ConfigBase::save: saving config')
-        parser = ConfigObj()
-        parser.indent_type = '  '
 
-        for section_name in ['global_config', 'keybindings']:
-            dbg('ConfigBase::save: Processing section: %s' % section_name)
-            section = getattr(self, section_name)
-            parser[section_name] = dict_diff(DEFAULTS[section_name], section)
+        configdata={}
+        for section_name in self.sections:
+            configdata[section_name]=getattr(self,section_name)
 
-        parser['profiles'] = {}
-        for profile in self.profiles:
-            dbg('ConfigBase::save: Processing profile: %s' % profile)
-            parser['profiles'][profile] = dict_diff(
-                    DEFAULTS['profiles']['default'], self.profiles[profile])
-
-        parser['layouts'] = {}
-        for layout in self.layouts:
-            dbg('ConfigBase::save: Processing layout: %s' % layout)
-            parser['layouts'][layout] = self.layouts[layout]
-
-        parser['plugins'] = {}
-        for plugin in self.plugins:
-            dbg('ConfigBase::save: Processing plugin: %s' % plugin)
-            parser['plugins'][plugin] = self.plugins[plugin]
-
-        config_dir = get_config_dir()
-        if not os.path.isdir(config_dir):
-            os.makedirs(config_dir)
+        config_dir=os.path.dirname(self.config_filename)
+        os.makedirs(config_dir,exist_ok=True)
         try:
-            with open(self.command_line_options.config, mode='wt') as f:
-                parser.write(f)
+            with open(self.config_filename,mode='wt') as f:
+                json.dump(configdata,f,
+                          indent=4,separators=(',', ':'),sort_keys=True)
         except Exception as ex:
             err('ConfigBase::save: Unable to save config: %s' % ex)
 

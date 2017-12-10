@@ -267,7 +267,7 @@ class Terminator(Borg):
             count = count + 1
             if count == 1000:
                 err('hit maximum loop boundary. THIS IS VERY LIKELY A BUG')
-            for obj in layout.keys():
+            for obj in tuple(layout.keys()):
                 if layout[obj]['type'].lower() == 'window':
                     hierarchy[obj] = {}
                     hierarchy[obj]['type'] = 'Window'
