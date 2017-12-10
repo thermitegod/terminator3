@@ -1153,10 +1153,9 @@ class Terminal(Gtk.VBox):
 
     def get_location(self, term, x, y):
         """Get our location within the terminal"""
-        pos = ''
         #get the diagonales function for the receiving widget
         term_alloc = term.get_allocation()
-        coef1 = float(term_alloc.height)/float(term_alloc.width)
+        coef1 =  float(term_alloc.height)/float(term_alloc.width)
         coef2 = -float(term_alloc.height)/float(term_alloc.width)
         b1 = 0
         b2 = term_alloc.height
@@ -1169,15 +1168,12 @@ class Terminal(Gtk.VBox):
         #| /  \ |
         #|/    \|
         #--------
-        if (x*coef1 + b1 > y ) and (x*coef2 + b2 < y ):
-            pos =  "right"
-        if (x*coef1 + b1 > y ) and (x*coef2 + b2 > y ):
-            pos = "top"
-        if (x*coef1 + b1 < y ) and (x*coef2 + b2 > y ):
-            pos = "left"
-        if (x*coef1 + b1 < y ) and (x*coef2 + b2 < y ):
-            pos = "bottom"
-        return pos
+        x1 = x*coef1 + b1
+        x2 = x*coef2 + b2
+        if x1 == y or x2 == y:
+            return ''
+        poslist = ('bottom','right','left','top')
+        return poslist[int(x1>y)+int(x2>y)*2]
 
     def grab_focus(self):
         """Steal focus for this terminal"""
