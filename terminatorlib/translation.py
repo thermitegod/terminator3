@@ -30,9 +30,9 @@ try:
 except:
     dbg("Using fallback _()")
 
-    def dummytrans (text):
+    def dummytrans(text):
         """A _ function for systems without gettext. Effectively a NOOP"""
-        return(text)
+        return text
 
     _ = dummytrans
 

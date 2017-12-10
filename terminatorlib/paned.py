@@ -245,14 +245,14 @@ class Paned(Container):
         Gtk.Paned.remove(self, widget)
         self.disconnect_child(widget)
         self.children.remove(widget)
-        return(True)
+        return True
 
     def get_children(self):
         """Return an ordered list of our children"""
         children = []
         children.append(self.get_child1())
         children.append(self.get_child2())
-        return(children)
+        return children
 
     def get_child_metadata(self, widget):
         """Return metadata about a child"""
@@ -264,7 +264,7 @@ class Paned(Container):
         try:
             value = GObject.Value(int)
             self.style_get_property('handle-size',  value)
-            return(value.get_int())
+            return value.get_int()
         except:
             return 0
 
@@ -510,7 +510,7 @@ class HPaned(Paned, Gtk.HPaned):
         self.cnxids.new(self, 'button-release-event', self.on_button_release)
 
     def get_length(self):
-        return(self.get_allocated_width())
+        return self.get_allocated_width()
 
     def set_pos(self, pos):
         Gtk.HPaned.set_position(self, pos)
@@ -527,7 +527,7 @@ class VPaned(Paned, Gtk.VPaned):
         self.cnxids.new(self, 'button-release-event', self.on_button_release)
 
     def get_length(self):
-        return(self.get_allocated_height())
+        return self.get_allocated_height()
 
     def set_pos(self, pos):
         Gtk.VPaned.set_position(self, pos)

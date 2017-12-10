@@ -230,7 +230,7 @@ class TerminalPopupMenu(object):
         menu.show_all()
         menu.popup(None, None, None, None, button, time)
 
-        return(True)
+        return True
 
 
     def add_encoding_items(self, menu):
@@ -248,7 +248,7 @@ class TerminalPopupMenu(object):
         group = None
 
         if current_encoding not in active_encodings:
-            active_encodings.insert (0, _(current_encoding))
+            active_encodings.insert(0, _(current_encoding))
 
         for encoding in active_encodings:
             if encoding == terminal.default_encoding:
@@ -262,21 +262,21 @@ class TerminalPopupMenu(object):
             radioitem = Gtk.RadioMenuItem(label=_(encoding) + extratext)
     
             if encoding == current_encoding:
-                radioitem.set_active (True)
+                radioitem.set_active(True)
     
             if group is None:
                 group = radioitem
     
-            radioitem.connect ('activate', terminal.on_encoding_change, 
-                               encoding)
-            submenu.append (radioitem)
+            radioitem.connect('activate', terminal.on_encoding_change, 
+                              encoding)
+            submenu.append(radioitem)
     
         item = Gtk.MenuItem.new_with_mnemonic(_("Other Encodings"))
-        submenu.append (item)
+        submenu.append(item)
         #second level
     
-        submenu = Gtk.Menu ()
-        item.set_submenu (submenu)
+        submenu = Gtk.Menu()
+        item.set_submenu(submenu)
         group = None
     
         for encoding in encodings:
@@ -284,7 +284,7 @@ class TerminalPopupMenu(object):
                 continue
 
             if encoding[1] is None:
-                label = "%s %s" % (encoding[2], terminal.vte.get_encoding ())
+                label = "%s %s" % (encoding[2], terminal.vte.get_encoding())
             else:
                 label = "%s %s" % (encoding[2], encoding[1])
     
@@ -293,9 +293,9 @@ class TerminalPopupMenu(object):
                 group = radioitem
     
             if encoding[1] == current_encoding:
-                radioitem.set_active (True)
+                radioitem.set_active(True)
 
-            radioitem.connect ('activate', terminal.on_encoding_change, 
+            radioitem.connect('activate', terminal.on_encoding_change, 
                                encoding[1])
-            submenu.append (radioitem)
+            submenu.append(radioitem)
 

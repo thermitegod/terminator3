@@ -20,7 +20,7 @@ from terminatorlib.util import dbg, err
 try:
     import psutil
     psutil_avail = True
-except (ImportError):
+except ImportError:
     dbg('psutil not found')
     psutil_avail = False
 
@@ -33,7 +33,7 @@ def get_default_cwd():
         except KeyError:
             cwd = '/'
     
-    return(cwd)
+    return cwd
 
 def get_pid_cwd():
     """Determine an appropriate cwd function for the OS we are running on"""
@@ -59,7 +59,7 @@ def get_pid_cwd():
     else:
         dbg('Unable to determine a get_pid_cwd for OS: %s' % system)
 
-    return(func)
+    return func
 
 def proc_get_pid_cwd(pid, path):
     """Extract the cwd of a PID from proc, given the PID and the /proc path to
@@ -70,15 +70,15 @@ def proc_get_pid_cwd(pid, path):
         err('Unable to get cwd for PID %s: %s' % (pid, ex))
         cwd = '/'
 
-    return(cwd)
+    return cwd
 
 def linux_get_pid_cwd(pid):
     """Determine the cwd for a given PID on Linux kernels"""
-    return(proc_get_pid_cwd(pid, '/proc/%s/cwd'))
+    return proc_get_pid_cwd(pid, '/proc/%s/cwd')
 
 def sunos_get_pid_cwd(pid):
     """Determine the cwd for a given PID on SunOS kernels"""
-    return(proc_get_pid_cwd(pid, '/proc/%s/path/cwd'))
+    return proc_get_pid_cwd(pid, '/proc/%s/path/cwd')
 
 def psutil_cwd(pid):
     """Determine the cwd using psutil which also supports Darwin"""

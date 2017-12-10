@@ -205,10 +205,10 @@ class Notebook(Container, Gtk.Notebook):
         if page_num == -1:
             err('%s not found in Notebook. Actual parent is: %s' % 
                     (widget, widget.get_parent()))
-            return(False)
+            return False
         self.remove_page(page_num)
         self.disconnect_child(widget)
-        return(True)
+        return True
 
     def replace(self, oldwidget, newwidget):
         """Replace a tab's contents with a new widget"""
@@ -236,7 +236,7 @@ class Notebook(Container, Gtk.Notebook):
         children = []
         for page in range(0,self.get_n_pages()):
             children.append(self.get_nth_page(page))
-        return(children)
+        return children
 
     def newtab(self, debugtab=False, widget=None, cwd=None, metadata=None, profile=None):
         """Add a new tab, optionally supplying a child widget"""
@@ -400,9 +400,9 @@ class Notebook(Container, Gtk.Notebook):
             parent = parent.get_parent()
 
         if previous == self:
-            return(widget)
+            return widget
         else:
-            return(previous)
+            return previous
 
     def update_tab_label_text(self, widget, text):
         """Update the text of a tab label"""
@@ -590,9 +590,9 @@ class TabLabel(Gtk.HBox):
     def get_custom_label(self):
         """Return a custom label if we have one, otherwise None"""
         if self.label.is_custom():
-            return(self.label.get_text())
+            return self.label.get_text()
         else:
-            return(None)
+            return None
 
     def edit(self):
         self.label.edit()

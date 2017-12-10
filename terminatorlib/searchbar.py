@@ -163,6 +163,6 @@ class Searchbar(Gtk.HBox):
 
     def get_search_term(self):
         """Return the currently set search term"""
-        return(self.entry.get_text())
+        return self.entry.get_text()
 
 GObject.type_register(Searchbar)

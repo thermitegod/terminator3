@@ -67,10 +67,10 @@ class Factory(Borg):
                     self.instance_types[type_key] = __import__(type_key, None, None, [''])
                     self.instance_types_keys.append(type_key)
                 module = self.instance_types[type_key]
-            return(isinstance(product, getattr(module, classtype)))
+            return isinstance(product, getattr(module, classtype))
         else:
             err('Factory::isinstance: unknown class type: %s' % classtype)
-            return(False)
+            return False
 
     def type(self, product):
         """Determine the type of an object we've previously created"""
@@ -79,8 +79,8 @@ class Factory(Borg):
             if atype in ['Container', 'Paned']:
                 continue
             if self.isinstance(product, atype):
-                return(atype)
-        return(None)
+                return atype
+        return None
 
     def make(self, product, **kwargs):
         """Make the requested product"""
@@ -88,35 +88,35 @@ class Factory(Borg):
             func = getattr(self, 'make_%s' % product.lower())
         except AttributeError:
             err('Factory::make: requested object does not exist: %s' % product)
-            return(None)
+            return None
 
         dbg('Factory::make: created a %s' % product)
         output = func(**kwargs)
         inject_uuid(output)
-        return(output)
+        return output
 
     def make_window(self, **kwargs):
         """Make a Window"""
         from terminatorlib import window
-        return(window.Window(**kwargs))
+        return window.Window(**kwargs)
 
     def make_terminal(self, **kwargs):
         """Make a Terminal"""
         from terminatorlib import terminal
-        return(terminal.Terminal())
+        return terminal.Terminal()
 
     def make_hpaned(self, **kwargs):
         """Make an HPaned"""
         from terminatorlib import paned
-        return(paned.HPaned())
+        return paned.HPaned()
 
     def make_vpaned(self, **kwargs):
         """Make a VPaned"""
         from terminatorlib import paned
-        return(paned.VPaned())
+        return paned.VPaned()
 
     def make_notebook(self, **kwargs):
         """Make a Notebook"""
         from terminatorlib import notebook
-        return(notebook.Notebook(kwargs['window']))
+        return notebook.Notebook(kwargs['window'])
 

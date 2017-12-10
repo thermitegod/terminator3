@@ -47,7 +47,7 @@ Classes relating to configuration
 >>> config.plugin_get('testplugin', 'foo', 'new')
 'bar'
 >>> config.plugin_get('testplugin', 'algo')
-Traceback (most recent call last):
+Traceback(most recent call last):
 ...
 KeyError: 'ConfigBase::get_item: unknown key algo'
 >>> config.plugin_get('testplugin', 'algo', 1)
@@ -279,15 +279,15 @@ class Config(object):
 
     def __getitem__(self, key, default=None):
         """Look up a configuration item"""
-        return(self.base.get_item(key, self.profile, default=default))
+        return self.base.get_item(key, self.profile, default=default)
 
     def __setitem__(self, key, value):
         """Set a particular configuration item"""
-        return(self.base.set_item(key, value, self.profile))
+        return self.base.set_item(key, value, self.profile)
 
     def get_profile(self):
         """Get our profile"""
-        return(self.profile)
+        return self.profile
 
     def set_profile(self, profile, force=False):
         """Set our profile (which usually means change it)"""
@@ -303,7 +303,7 @@ class Config(object):
 
     def add_profile(self, profile):
         """Add a new profile"""
-        return(self.base.add_profile(profile))
+        return self.base.add_profile(profile)
 
     def del_profile(self, profile):
         """Delete a profile"""
@@ -329,15 +329,15 @@ class Config(object):
 
     def list_profiles(self):
         """List all configured profiles"""
-        return(self.base.profiles.keys())
+        return self.base.profiles.keys()
 
     def add_layout(self, name, layout):
         """Add a new layout"""
-        return(self.base.add_layout(name, layout))
+        return self.base.add_layout(name, layout)
 
     def replace_layout(self, name, layout):
         """Replace an existing layout"""
-        return(self.base.replace_layout(name, layout)) 
+        return self.base.replace_layout(name, layout)
 
     def del_layout(self, layout):
         """Delete a layout"""
@@ -352,29 +352,29 @@ class Config(object):
 
     def list_layouts(self):
         """List all configured layouts"""
-        return(self.base.layouts.keys())
+        return self.base.layouts.keys()
 
     def get_system_prop_font(self):
         """Look up the system font"""
         if self.system_prop_font is not None:
-            return(self.system_prop_font)
+            return self.system_prop_font
 
     def get_system_mono_font(self):
         """Look up the system font"""
         if self.system_mono_font is not None:
-            return(self.system_mono_font)
+            return self.system_mono_font
 
     def get_system_focus(self):
         """Look up the system focus setting"""
         if self.system_focus is not None:
-            return(self.system_focus)
+            return self.system_focus
 
     def save(self):
         """Cause ConfigBase to save our config to file"""
         if self.inhibited is True:
-            return(True)
+            return True
         else:
-            return(self.base.save())
+            return self.base.save()
 
     def inhibit_save(self):
         """Prevent calls to save() being honoured"""
@@ -390,37 +390,37 @@ class Config(object):
 
     def options_get(self):
         """Get the command line options"""
-        return(self.base.command_line_options)
+        return self.base.command_line_options
 
     def plugin_get(self, pluginname, key, default=None):
         """Get a plugin config value, if doesn't exist
             return default if specified
         """
-        return(self.base.get_item(key, plugin=pluginname, default=default))
+        return self.base.get_item(key, plugin=pluginname, default=default)
 
     def plugin_set(self, pluginname, key, value):
         """Set a plugin config value"""
-        return(self.base.set_item(key, value, plugin=pluginname))
+        return self.base.set_item(key, value, plugin=pluginname)
 
     def plugin_get_config(self, plugin):
         """Return a whole config tree for a given plugin"""
-        return(self.base.get_plugin(plugin))
+        return self.base.get_plugin(plugin)
 
     def plugin_set_config(self, plugin, tree):
         """Set a whole config tree for a given plugin"""
-        return(self.base.set_plugin(plugin, tree))
+        return self.base.set_plugin(plugin, tree)
 
     def plugin_del_config(self, plugin):
         """Delete a whole config tree for a given plugin"""
-        return(self.base.del_plugin(plugin))
+        return self.base.del_plugin(plugin)
 
     def layout_get_config(self, layout):
         """Return a layout"""
-        return(self.base.get_layout(layout))
+        return self.base.get_layout(layout)
 
     def layout_set_config(self, layout, tree):
         """Set a layout"""
-        return(self.base.set_layout(layout, tree))
+        return self.base.set_layout(layout, tree)
 
 class ConfigBase(Borg):
     """Class to provide access to our user configuration"""
@@ -561,17 +561,17 @@ class ConfigBase(Borg):
         if key in self.global_config:
             dbg('ConfigBase::get_item: %s found in globals: %s' %
                     (key, self.global_config[key]))
-            return(self.global_config[key])
+            return self.global_config[key]
         elif key in self.profiles[profile]:
             dbg('ConfigBase::get_item: %s found in profile %s: %s' % (
                     key, profile, self.profiles[profile][key]))
-            return(self.profiles[profile][key])
+            return self.profiles[profile][key]
         elif key == 'keybindings':
-            return(self.keybindings)
+            return self.keybindings
         elif plugin and plugin in self.plugins and key in self.plugins[plugin]:
             dbg('ConfigBase::get_item: %s found in plugin %s: %s' % (
                     key, plugin, self.plugins[plugin][key]))
-            return(self.plugins[plugin][key])
+            return self.plugins[plugin][key]
         elif default:
             return default
         else:
@@ -595,12 +595,12 @@ class ConfigBase(Borg):
         else:
             raise KeyError('ConfigBase::set_item: unknown key %s' % key)
 
-        return(True)
+        return True
 
     def get_plugin(self, plugin):
         """Return a whole tree for a plugin"""
         if plugin in self.plugins:
-            return(self.plugins[plugin])
+            return self.plugins[plugin]
 
     def set_plugin(self, plugin, tree):
         """Set a whole tree for a plugin"""
@@ -614,28 +614,28 @@ class ConfigBase(Borg):
     def add_profile(self, profile):
         """Add a new profile"""
         if profile in self.profiles:
-            return(False)
+            return False
         self.profiles[profile] = copy(DEFAULTS['profiles']['default'])
-        return(True)
+        return True
 
     def add_layout(self, name, layout):
         """Add a new layout"""
         if name in self.layouts:
-            return(False)
+            return False
         self.layouts[name] = layout
-        return(True)
+        return True
 
     def replace_layout(self, name, layout):
         """Replaces a layout with the given name"""
         if not name in self.layouts:
-            return(False)
+            return False
         self.layouts[name] = layout
-        return(True)
+        return True
 
     def get_layout(self, layout):
         """Return a layout"""
         if layout in self.layouts:
-            return(self.layouts[layout])
+            return self.layouts[layout]
         else:
             err('layout does not exist: %s' % layout)
 

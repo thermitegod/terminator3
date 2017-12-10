@@ -240,7 +240,7 @@ class Terminator(Borg):
         window.show(True)
         terminal.spawn_child()
 
-        return(window, terminal)
+        return (window, terminal)
 
     def create_layout(self, layoutname):
         """Create all the parts necessary to satisfy the specified layout"""
@@ -645,23 +645,23 @@ class Terminator(Borg):
         for term in self.terminals:
             if term.group == widget.group:
                 termset.append(term)
-        return(termset)
+        return termset
 
     def get_target_terms(self, widget):
         """Get the terminals we should currently be broadcasting to"""
         if self.groupsend == self.groupsend_type['all']:
-            return(self.terminals)
+            return self.terminals
         elif self.groupsend == self.groupsend_type['group']:
             if widget.group != None:
-                return(self.get_sibling_terms(widget))
-        return([widget])
+                return self.get_sibling_terms(widget)
+        return [widget]
 
     def get_focussed_terminal(self):
         """iterate over all the terminals to find which, if any, has focus"""
         for terminal in self.terminals:
             if terminal.has_focus():
-                return(terminal)
-        return(None)
+                return terminal
+        return None
 
     def focus_changed(self, widget):
         """We just moved focus to a new terminal"""
@@ -680,6 +680,6 @@ class Terminator(Borg):
             parent = ''
             count = window.describe_layout(count, parent, layout, 0)
 
-        return(layout)
+        return layout
 
 # vim: set expandtab ts=4 sw=4:

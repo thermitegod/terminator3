@@ -89,8 +89,8 @@ def has_ancestor(widget, wtype):
     while widget:
         widget = widget.get_parent()
         if isinstance(widget, wtype):
-            return(True)
-    return(False)
+            return True
+    return False
 
 def manual_lookup():
     '''Choose the manual to open based on LANGUAGE'''
@@ -110,12 +110,12 @@ def path_lookup(command):
     '''Find a command in our path'''
     if os.path.isabs(command):
         if os.path.isfile(command):
-            return(command)
+            return command
         else:
-            return(None)
+            return None
     elif command[:2] == './' and os.path.isfile(command):
         dbg('path_lookup: Relative filename %s found in cwd' % command)
-        return(command)
+        return command
 
     try:
         paths = os.environ['PATH'].split(':')
@@ -131,7 +131,7 @@ def path_lookup(command):
         target = os.path.join(path, command)
         if os.path.isfile(target):
             dbg('path_lookup: found %s' % target)
-            return(target)
+            return target
 
     dbg('path_lookup: Unable to locate %s' % command)
 
@@ -147,12 +147,12 @@ def shell_lookup():
         if shell is None:
             continue
         elif os.path.isfile(shell):
-            return(shell)
+            return shell
         else:
             rshell = path_lookup(shell)
             if rshell is not None:
                 dbg('shell_lookup: Found %s at %s' % (shell, rshell))
-                return(rshell)
+                return rshell
     dbg('shell_lookup: Unable to locate a shell')
 
 def widget_pixbuf(widget, maxsize=None):
@@ -181,7 +181,7 @@ def widget_pixbuf(widget, maxsize=None):
 
     scaledpixbuf = Gdk.pixbuf_get_from_surface(preview_surface, 0, 0, preview_width, preview_height);
     
-    return(scaledpixbuf)
+    return scaledpixbuf
 
 def get_config_dir():
     """Expand all the messy nonsense for finding where ~/.config/terminator
@@ -192,7 +192,7 @@ def get_config_dir():
         configdir = os.path.join(os.path.expanduser('~'), '.config')
 
     dbg('Found config dir: %s' % configdir)
-    return(os.path.join(configdir, 'terminator'))
+    return os.path.join(configdir, 'terminator')
 
 def dict_diff(reference, working):
     """Examine the values in the supplied working set and return a new dict
@@ -211,7 +211,7 @@ def dict_diff(reference, working):
         if reference[key] != working[key]:
             result[key] = working[key]
 
-    return(result)
+    return result
 
 # Helper functions for directional navigation
 def get_edge(allocation, direction):
@@ -232,7 +232,7 @@ def get_edge(allocation, direction):
     else:
         raise ValueError('unknown direction %s' % direction)
     
-    return(edge, p1, p2)
+    return (edge, p1, p2)
 
 def get_nav_possible(edge, allocation, direction, p1, p2):
     """Check if the supplied allocation is in the right direction of the
@@ -240,13 +240,13 @@ def get_nav_possible(edge, allocation, direction, p1, p2):
     x1, x2 = allocation.x, allocation.x + allocation.width
     y1, y2 = allocation.y, allocation.y + allocation.height
     if direction == 'left':
-        return(x2 <= edge and y1 <= p2 and y2 >= p1)
+        return (x2 <= edge and y1 <= p2 and y2 >= p1)
     elif direction == 'right':
-        return(x1 >= edge and y1 <= p2 and y2 >= p1)
+        return (x1 >= edge and y1 <= p2 and y2 >= p1)
     elif direction == 'up':
-        return(y2 <= edge and x1 <= p2 and x2 >= p1)
+        return (y2 <= edge and x1 <= p2 and x2 >= p1)
     elif direction == 'down':
-        return(y1 >= edge and x1 <= p2 and x2 >= p1)
+        return (y1 >= edge and x1 <= p2 and x2 >= p1)
     else:
         raise ValueError('Unknown direction: %s' % direction)
 
@@ -254,13 +254,13 @@ def get_nav_offset(edge, allocation, direction):
     """Work out how far edge is from a particular point on the allocation
     rectangle, in the given direction"""
     if direction == 'left':
-        return(edge - (allocation.x + allocation.width))
+        return (edge - (allocation.x + allocation.width))
     elif direction == 'right':
-        return(allocation.x - edge)
+        return (allocation.x - edge)
     elif direction == 'up':
-        return(edge - (allocation.y + allocation.height))
+        return (edge - (allocation.y + allocation.height))
     elif direction == 'down':
-        return(allocation.y - edge)
+        return (allocation.y - edge)
     else:
         raise ValueError('Unknown direction: %s' % direction)
 
@@ -268,9 +268,9 @@ def get_nav_tiebreak(direction, cursor_x, cursor_y, rect):
     """We have multiple candidate terminals. Pick the closest by cursor
     position"""
     if direction in ['left', 'right']:
-        return(cursor_y >= rect.y and cursor_y <= (rect.y + rect.height))
+        return (cursor_y >= rect.y and cursor_y <= (rect.y + rect.height))
     elif direction in ['up', 'down']:
-        return(cursor_x >= rect.x and cursor_x <= (rect.x + rect.width))
+        return (cursor_x >= rect.x and cursor_x <= (rect.x + rect.width))
     else:
         raise ValueError('Unknown direction: %s' % direction)
 
@@ -307,7 +307,7 @@ def enumerate_descendants(parent):
 
     dbg('%d containers and %d terminals fall beneath %s' % (len(containers), 
         len(terminals), parent))
-    return(containers, terminals)
+    return (containers, terminals)
 
 def make_uuid(str_uuid=None):
     """Generate a UUID for an object"""
@@ -330,7 +330,7 @@ def spawn_new_terminator(cwd, args):
 
     if not os.path.isabs(cmd):
         # Command is not an absolute path. Figure out where we are
-        cmd = os.path.join (cwd, sys.argv[0])
+        cmd = os.path.join(cwd, sys.argv[0])
         if not os.path.isfile(cmd):
             # we weren't started as ./terminator in a path. Give up
             err('Unable to locate Terminator')

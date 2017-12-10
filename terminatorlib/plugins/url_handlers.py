@@ -22,7 +22,7 @@ class LaunchpadBugURLHandler(plugin.URLHandler):
         """Look for the number in the supplied string and return it as a URL"""
         for item in re.findall(r'[0-9]+', url):
             url = 'https://bugs.launchpad.net/bugs/%s' % item
-            return(url)
+            return url
 
 class LaunchpadCodeURLHandler(plugin.URLHandler):
     """Launchpad Code URL handler. If the URL looks like a Launchpad project or
@@ -43,7 +43,7 @@ class LaunchpadCodeURLHandler(plugin.URLHandler):
         """Look for the number in the supplied string and return it as a URL"""
         if url.startswith('lp:'):
             url = url[3:]
-        return('https://code.launchpad.net/+branch/%s' % url)
+        return 'https://code.launchpad.net/+branch/%s' % url
 
 class APTURLHandler(plugin.URLHandler):
     """APT URL handler. If there is a URL that looks like an apturl, handle
@@ -56,5 +56,5 @@ class APTURLHandler(plugin.URLHandler):
 
     def callback(self, url):
         """Actually we don't need to do anything for this to work"""
-        return(url)
+        return url
 

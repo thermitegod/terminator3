@@ -100,7 +100,7 @@ class Window(Container, Gtk.Window):
     def do_get_property(self, prop):
         """Handle gobject getting a property"""
         if prop.name in ['term_zoomed', 'term-zoomed']:
-            return(self.term_zoomed)
+            return self.term_zoomed
         else:
             raise AttributeError('unknown property %s' % prop.name)
 
@@ -214,14 +214,14 @@ class Window(Container, Gtk.Window):
                     self.on_destroy_event(window,
                             Gdk.Event.new(Gdk.EventType.DESTROY))
             else:
-                return(False)
-            return(True)
+                return False
+            return True
 
     def on_button_press(self, window, event):
         """Handle a mouse button event. Mainly this is just a clean way to
         cancel any urgency hints that are set."""
         self.set_urgency_hint(False)
-        return(False)
+        return False
 
     def on_focus_out(self, window, event):
         """Focus has left the window"""
@@ -247,7 +247,7 @@ class Window(Container, Gtk.Window):
     def is_child_notebook(self):
         """Returns True if this Window's child is a Notebook"""
         maker = Factory()
-        return(maker.isinstance(self.get_child(), 'Notebook'))
+        return maker.isinstance(self.get_child(), 'Notebook')
 
     def tab_new(self, widget=None, debugtab=False, _param1=None, _param2=None):
         """Make a new tab"""
@@ -275,12 +275,12 @@ class Window(Container, Gtk.Window):
         maker = Factory()
         if maker.isinstance(self.get_child(), 'Terminal'):
             if self.get_property('term_zoomed') == True:
-                return(self.confirm_close(window, _('window')))
+                return self.confirm_close(window, _('window'))
             else:
                 dbg('Window::on_delete_event: Only one child, closing is fine')
-                return(False)
+                return False
         elif maker.isinstance(self.get_child(), 'Container'):
-            return(self.confirm_close(window, _('window')))
+            return self.confirm_close(window, _('window'))
         else:
             dbg('unknown child: %s' % self.get_child())
 
@@ -288,7 +288,7 @@ class Window(Container, Gtk.Window):
         """Display a confirmation dialog when the user is closing multiple
         terminals in one window"""
         
-        return(not (self.construct_confirm_close(window, type) == Gtk.ResponseType.ACCEPT))
+        return (not (self.construct_confirm_close(window, type) == Gtk.ResponseType.ACCEPT))
 
     def on_destroy_event(self, widget, data=None):
         """Handle window destruction"""
@@ -332,7 +332,7 @@ class Window(Container, Gtk.Window):
         dbg('Window::on_window_state_changed: fullscreen=%s, maximised=%s' \
                 % (self.isfullscreen, self.ismaximised))
 
-        return(False)
+        return False
 
     def set_maximised(self, value):
         """Set the maximised state of the window from the supplied value"""
@@ -350,7 +350,7 @@ class Window(Container, Gtk.Window):
 
     def set_borderless(self, value):
         """Set the state of the window border from the supplied value"""
-        self.set_decorated (not value)
+        self.set_decorated(not value)
 
     def set_hidden(self, value):
         """Set the visibility of the window from the supplied value"""
@@ -434,13 +434,13 @@ class Window(Container, Gtk.Window):
         """Remove our child widget by way of Gtk.Window.remove()"""
         Gtk.Window.remove(self, widget)
         self.disconnect_child(widget)
-        return(True)
+        return True
 
     def get_children(self):
         """Return a single list of our child"""
         children = []
         children.append(self.get_child())
-        return(children)
+        return children
 
     def hoover(self):
         """Ensure we still have a reason to exist"""
@@ -576,7 +576,7 @@ class Window(Container, Gtk.Window):
         child = self.get_child()
 
         if not child:
-            return([])
+            return []
 
         # If our child is a Notebook, reset to work from its visible child
         if maker.isinstance(child, 'Notebook'):
@@ -590,15 +590,15 @@ class Window(Container, Gtk.Window):
         else:
             err('Unknown child type %s' % type(child))
 
-        return(terminals)
+        return terminals
 
     def get_focussed_terminal(self):
         """Find which terminal we want to have focus"""
         terminals = self.get_visible_terminals()
         for terminal in terminals:
             if terminal.vte.is_focus():
-                return(terminal)
-        return(None)
+                return terminal
+        return None
 
     def deferred_set_rough_geometry_hints(self):
         # no parameters are used in set_rough_geometry_hints, so we can

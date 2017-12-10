@@ -25,7 +25,7 @@ class LayoutLauncher:
     layouttreeview = None
     layouttreestore = None
 
-    def __init__ (self):
+    def __init__(self):
         self.terminator = Terminator()
         self.terminator.register_launcher_window(self)
 

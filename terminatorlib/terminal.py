@@ -177,7 +177,7 @@ class Terminal(Gtk.VBox):
 
     def get_vte(self):
         """This simply returns the vte widget we are using"""
-        return(self.vte)
+        return self.vte
 
     def force_set_profile(self, widget, profile):
         """Forcibly set our profile"""
@@ -191,7 +191,7 @@ class Terminal(Gtk.VBox):
 
     def get_profile(self):
         """Return our profile name"""
-        return(self.config.profile)
+        return self.config.profile
 
     def switch_to_next_profile(self):
         profilelist = self.config.list_profiles()
@@ -218,10 +218,10 @@ class Terminal(Gtk.VBox):
         vte_cwd = self.vte.get_current_directory_uri()
         if vte_cwd:
             # OSC7 pwd gives an answer
-            return(GLib.filename_from_uri(vte_cwd)[0])
+            return GLib.filename_from_uri(vte_cwd)[0]
         else:
             # Fall back to old gtk2 method
-            return(self.terminator.pid_cwd(self.pid))
+            return self.terminator.pid_cwd(self.pid)
 
     def close(self):
         """Close ourselves"""
@@ -252,7 +252,7 @@ class Terminal(Gtk.VBox):
         terminalbox.pack_start(self.scrollbar, False, True, 0)
         terminalbox.show_all()
 
-        return(terminalbox)
+        return terminalbox
 
     def update_url_matches(self):
         """Update the regexps used to match URLs"""
@@ -274,7 +274,7 @@ class Terminal(Gtk.VBox):
         self.matches['full_uri'] = self.vte.match_add_gregex(reg, 0)
 
         if self.matches['full_uri'] == -1:
-            err ('Terminal::update_url_matches: Failed adding URL matches')
+            err('Terminal::update_url_matches: Failed adding URL matches')
         else:
             re = (lboundry +
                     '(callto:|h323:|sip:)' + "[" + userchars + "+][" + 
@@ -428,7 +428,7 @@ class Terminal(Gtk.VBox):
         menu = self.populate_group_menu()
         menu.show_all()
         menu.popup(None, None, self.position_popup_group_menu, widget, button, time)
-        return(True)
+        return True
 
     def populate_group_menu(self):
         """Fill out a group menu"""
@@ -532,7 +532,7 @@ class Terminal(Gtk.VBox):
         item.connect('activate', lambda x: self.emit('enumerate', True))
         menu.append(item)
 
-        return(menu)
+        return menu
 
     def position_popup_group_menu(self, menu, *args):
         """Calculate the position of the group popup menu"""
@@ -554,7 +554,7 @@ class Terminal(Gtk.VBox):
         else:
             menu_y = widget_y + widget_h
 
-        return(widget_x, menu_y, 1)
+        return (widget_x, menu_y, 1)
 
     def set_group(self, _item, name):
         """Set a particular group"""
@@ -804,7 +804,7 @@ class Terminal(Gtk.VBox):
 
     def get_window_title(self):
         """Return the window title"""
-        return(self.vte.get_window_title() or str(self.command))
+        return (self.vte.get_window_title() or str(self.command))
 
     def on_group_button_press(self, widget, event):
         """Handler for the group button"""
@@ -845,13 +845,13 @@ class Terminal(Gtk.VBox):
                 return True
             else:
                 dbg('on_group_button_press: unknown group button interaction')
-        return(False)
+        return False
 
     def on_keypress(self, widget, event):
         """Handler for keyboard events"""
         if not event:
             dbg('Terminal::on_keypress: Called on %s with no event' % widget)
-            return(False)
+            return False
 
         # Workaround for IBus interfering with broadcast when using dead keys
         # Environment also needs IBUS_DISABLE_SNOOPER=1, or double chars appear
@@ -859,13 +859,13 @@ class Terminal(Gtk.VBox):
         if self.terminator.ibus_running:
             if (event.state | Gdk.ModifierType.MODIFIER_MASK ) ^ Gdk.ModifierType.MODIFIER_MASK != 0:
                 dbg('Terminal::on_keypress: Ingore processed event with event.state %d' % event.state)
-                return(False)
+                return False
 
         # FIXME: Does keybindings really want to live in Terminator()?
         mapping = self.terminator.keybindings.lookup(event)
 
         if mapping == "hide_window":
-            return(False)
+            return False
 
         if mapping and mapping not in ['close_window', 
                                        'full_screen']:
@@ -874,14 +874,14 @@ class Terminal(Gtk.VBox):
             # we only copy if there is a selection otherwise let it fall through
             # to ^<key>
             if (mapping == "copy" and event.get_state() & Gdk.ModifierType.CONTROL_MASK):
-                if self.vte.get_has_selection ():
+                if self.vte.get_has_selection():
                     getattr(self, "key_" + mapping)()
-                    return(True)
+                    return True
                 elif not self.config['smart_copy']:
-                    return(True)
+                    return True
             else:
                 getattr(self, "key_" + mapping)()
-                return(True)
+                return True
 
         # FIXME: This is all clearly wrong. We should be doing this better
         #         maybe we can emit the key event and let Terminator() care?
@@ -895,7 +895,7 @@ class Terminal(Gtk.VBox):
             if groupsend == groupsend_type['all']:
                 self.terminator.all_emit(self, 'key-press-event', event)
 
-        return(False)
+        return False
 
     def on_buttonpress(self, widget, event):
         """Handler for mouse events"""
@@ -933,9 +933,9 @@ class Terminal(Gtk.VBox):
                     gtk_settings.set_property('gtk-enable-primary-paste', primary_state)
                 else:
                     middle_click[0](*middle_click[1])
-                return(True)
+                return True
             return Vte.Terminal.do_button_press_event(self.vte, event)
-            #return(True)
+            #return True
         elif event.button == self.MOUSEBUTTON_RIGHT:
             # rightclick should display a context menu if Ctrl is not pressed,
             # plus either the app is not interested in mouse events or Shift is pressed
@@ -945,9 +945,9 @@ class Terminal(Gtk.VBox):
                         right_click[0](*right_click[1])
                 else:
                     right_click[0](*right_click[1])
-                return(True)
+                return True
 
-        return(False)
+        return False
     
     def on_mousewheel(self, widget, event):
         """Handler for modifier + mouse wheel scroll events"""
@@ -964,20 +964,20 @@ class Terminal(Gtk.VBox):
             if event.direction == Gdk.ScrollDirection.UP or SMOOTH_SCROLL_UP:
                 for target in targets:
                     target.zoom_in()
-                return (True)
+                return True
             elif event.direction == Gdk.ScrollDirection.DOWN or SMOOTH_SCROLL_DOWN:
                 for target in targets:
                     target.zoom_out()
-                return (True)
+                return True
         if event.state & Gdk.ModifierType.SHIFT_MASK == Gdk.ModifierType.SHIFT_MASK:
             # Shift + mouse wheel up/down
             if event.direction == Gdk.ScrollDirection.UP or SMOOTH_SCROLL_UP:
                 self.scroll_by_page(-1)
-                return (True)
+                return True
             elif event.direction == Gdk.ScrollDirection.DOWN or SMOOTH_SCROLL_DOWN:
                 self.scroll_by_page(1)
-                return (True)
-        return(False)
+                return True
+        return False
 
     def popup_menu(self, widget, event=None):
         """Display the context menu"""
@@ -1069,7 +1069,7 @@ class Terminal(Gtk.VBox):
     def on_draw(self, widget, context):
         """Handle an expose event while dragging"""
         if not widget._draw_data:
-            return(False)
+            return False
 
         color = widget._draw_data['color']
         coord = widget._draw_data['coord']
@@ -1081,7 +1081,7 @@ class Terminal(Gtk.VBox):
                 context.line_to(i[0], i[1])
 
         context.fill()
-        return(False)
+        return False
 
     def on_drag_data_received(self, widget, drag_context, x, y, selection_data,
             info, _time, data):
@@ -1274,7 +1274,7 @@ class Terminal(Gtk.VBox):
             sloppy = True
         if sloppy == True and self.titlebar.editing() == False:
             term.grab_focus()
-            return(False)
+            return False
 
     def get_zoom_data(self):
         """Return a dict of information for Window"""
@@ -1287,7 +1287,7 @@ class Terminal(Gtk.VBox):
         data['old_rows'] = self.vte.get_row_count()
         data['old_parent'] = self.get_parent()
 
-        return(data)
+        return data
 
     def zoom_scale(self, widget, allocation, old_data):
         """Scale our font correctly based on how big we are not vs before"""
@@ -1310,8 +1310,8 @@ class Terminal(Gtk.VBox):
             dbg('Terminal::zoom_scale: One axis unchanged, not scaling')
             return
 
-        scale_factor = min ( (new_columns / old_data['old_columns'] * 0.97),
-                             (new_rows / old_data['old_rows'] * 1.05) )
+        scale_factor = min((new_columns / old_data['old_columns'] * 0.97),
+                           (new_rows / old_data['old_rows'] * 1.05))
 
         new_size = int(old_data['old_font'].get_size() * scale_factor)
         if new_size == 0:
@@ -1331,7 +1331,7 @@ class Terminal(Gtk.VBox):
         except TypeError:
             prop = False
 
-        return(prop)
+        return prop
 
     def zoom(self, widget=None):
         """Zoom ourself to fill the window"""
@@ -1401,7 +1401,7 @@ class Terminal(Gtk.VBox):
 
         if shell is None:
             self.vte.feed(_('Unable to find a shell'))
-            return(-1)
+            return -1
 
         try:
             os.putenv('WINDOWID', '%s' % self.vte.get_parent_window().xid)
@@ -1434,7 +1434,7 @@ class Terminal(Gtk.VBox):
 
         if self.pid == -1:
             self.vte.feed(_('Unable to start shell:') + shell)
-            return(-1)
+            return -1
 
     def prepare_url(self, urlmatch):
         """Prepare a URL from a VTE match"""
@@ -1465,7 +1465,7 @@ class Terminal(Gtk.VBox):
             except Exception as ex:
                 err('Exception occurred preparing URL: %s' % ex)
 
-        return(url)
+        return url
 
     def open_url(self, url, prepare=False):
         """Open a given URL, conditionally unpacking it from a VTE match"""
@@ -1550,15 +1550,15 @@ class Terminal(Gtk.VBox):
         col, row = self.vte.get_cursor_position()
         width = self.vte.get_char_width()
         height = self.vte.get_char_height()
-        return((col * width, row * height))
+        return (col * width, row * height)
 
     def get_font_size(self):
         """Return the width/height of our font"""
-        return((self.vte.get_char_width(), self.vte.get_char_height()))
+        return (self.vte.get_char_width(), self.vte.get_char_height())
 
     def get_size(self):
         """Return the column/rows of the terminal"""
-        return((self.vte.get_column_count(), self.vte.get_row_count()))
+        return (self.vte.get_column_count(), self.vte.get_row_count())
 
     def on_bell(self, widget):
         """Set the urgency hint/icon/flash for our window"""
@@ -1618,7 +1618,7 @@ class Terminal(Gtk.VBox):
         name = 'terminal%d' % count
         count = count + 1
         global_layout[name] = layout
-        return(count)
+        return count
 
     def create_layout(self, layout):
         """Apply our layout"""
@@ -1687,7 +1687,7 @@ class Terminal(Gtk.VBox):
         self.do_scrollbar_toggle()
 
     def key_zoom_normal(self):
-        self.zoom_orig ()
+        self.zoom_orig()
 
     def key_search(self):
         self.searchbar.start_search()
@@ -1802,10 +1802,10 @@ class Terminal(Gtk.VBox):
         self.emit('tab-change', 9)
 
     def key_reset(self):
-        self.vte.reset (True, False)
+        self.vte.reset(True, False)
 
     def key_reset_clear(self):
-        self.vte.reset (True, True)
+        self.vte.reset(True, True)
 
     def key_group_all(self):
         self.emit('group-all')

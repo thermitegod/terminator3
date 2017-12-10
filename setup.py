@@ -27,20 +27,20 @@ class TerminatorDist(Distribution):
     ("without-gettext", None, "Don't build/install gettext .mo files"),
     ("without-icon-cache", None, "Don't attempt to run gtk-update-icon-cache")]
 
-  def __init__ (self, *args):
+  def __init__(self, *args):
     self.without_gettext = False
     self.without_icon_cache = False
     Distribution.__init__(self, *args)
 
 
 class BuildData(build):
-  def run (self):
-    build.run (self)
+  def run(self):
+    build.run(self)
 
     if not self.distribution.without_gettext:
       # Build the translations
-      for po in glob.glob (os.path.join (PO_DIR, '*.po')):
-        lang = os.path.basename(po[:-3])
+      for po in glob.glob(os.path.join(PO_DIR, '*.po')):
+        lang,e = os.path.splitext(po)
         mo = os.path.join(MO_DIR, lang, 'terminator.mo')
 
         directory = os.path.dirname(mo)
@@ -151,12 +151,12 @@ class Uninstall(Command):
 
 
 class InstallData(install_data):
-  def run (self):
-    self.data_files.extend (self._find_css_files ())
-    self.data_files.extend (self._find_mo_files ())
-    install_data.run (self)
+  def run(self):
+    self.data_files.extend(self._find_css_files())
+    self.data_files.extend(self._find_mo_files())
+    install_data.run(self)
     if not self.distribution.without_icon_cache:
-      self._update_icon_cache ()
+      self._update_icon_cache()
 
   # We should do this on uninstall too
   def _update_icon_cache(self):
@@ -166,22 +166,22 @@ class InstallData(install_data):
     except Exception as e:
       warn("updating the GTK icon cache failed: %s" % str(e))
 
-  def _find_mo_files (self):
+  def _find_mo_files(self):
     data_files = []
 
     if not self.distribution.without_gettext:
-      for mo in glob.glob (os.path.join (MO_DIR, '*', 'terminator.mo')):
+      for mo in glob.glob(os.path.join(MO_DIR, '*', 'terminator.mo')):
        lang = os.path.basename(os.path.dirname(mo))
        dest = os.path.join('share', 'locale', lang, 'LC_MESSAGES')
        data_files.append((dest, [mo]))
 
     return data_files
 
-  def _find_css_files (self):
+  def _find_css_files(self):
     data_files = []
 
-    for css_dir in glob.glob (os.path.join (CSS_DIR, '*')):
-       srce = glob.glob (os.path.join(css_dir, 'gtk-3.0', 'apps', '*.css'))
+    for css_dir in glob.glob(os.path.join(CSS_DIR, '*')):
+       srce = glob.glob(os.path.join(css_dir, 'gtk-3.0', 'apps', '*.css'))
        dest = os.path.join('share', 'terminator', css_dir, 'gtk-3.0', 'apps')
        data_files.append((dest, srce))
 

@@ -122,17 +122,17 @@ for %s' % (len(self.instances), capability))
 
     def get_all_plugins(self):
         """Return all plugins"""
-        return(self.instances)
+        return self.instances
 
     def get_available_plugins(self):
         """Return a list of all available plugins whether they are enabled or
         disabled"""
-        return(self.available_plugins.keys())
+        return self.available_plugins.keys()
 
     def is_enabled(self, plugin):
         """Return a boolean value indicating whether a plugin is enabled or
         not"""
-        return(plugin in self.instances)
+        return (plugin in self.instances)
 
     def enable(self, plugin):
         """Enable a plugin"""

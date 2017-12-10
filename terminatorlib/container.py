@@ -61,7 +61,7 @@ class Container(object):
 
     def get_offspring(self):
         """Return a list of direct child widgets, if any"""
-        return(self.children)
+        return self.children
 
     def get_child_metadata(self, widget):
         """Return metadata that would be useful to recreate ourselves after our
@@ -70,11 +70,11 @@ class Container(object):
 
     def split_horiz(self, widget, cwd=None):
         """Split this container horizontally"""
-        return(self.split_axis(widget, True, cwd))
+        return self.split_axis(widget, True, cwd)
 
     def split_vert(self, widget, cwd=None):
         """Split this container vertically"""
-        return(self.split_axis(widget, False, cwd))
+        return self.split_axis(widget, False, cwd)
 
     def split_axis(self, widget, vertical=True, cwd=None, sibling=None, siblinglast=None):
         """Default axis splitter. This should be implemented by subclasses"""
@@ -118,18 +118,18 @@ class Container(object):
                 dbg('Container::closeterm: terminal zoomed, unzooming')
                 self.unzoom(widget)
                 widget.close()
-                return(True)
+                return True
         except TypeError:
             pass
 
         if not self.remove(widget):
             dbg('Container::closeterm: self.remove() failed for %s' % widget)
-            return(False)
+            return False
 
         self.terminator.deregister_terminal(widget)
         widget.close()
         self.terminator.group_hoover()
-        return(True)
+        return True
 
     def resizeterm(self, widget, keyname):
         """Handle a keyboard event requesting a terminal resize"""
@@ -210,7 +210,7 @@ the tab will also close all terminals within it.')
 
         dialog.destroy()
                 
-        return(result)
+        return result
 
     def propagate_title_change(self, widget, title):
         """Pass a title change up the widget stack"""
@@ -244,7 +244,7 @@ the tab will also close all terminals within it.')
             else:
                 err('Unknown child type %s' % type(child))
 
-        return(terminals)
+        return terminals
 
     def describe_layout(self, count, parent, global_layout, child_order):
         """Describe our current layout"""
@@ -253,7 +253,7 @@ the tab will also close all terminals within it.')
         mytype = maker.type(self)
         if not mytype:
             err('unable to detemine own type. %s' % self)
-            return({})
+            return {}
 
         layout['type'] = mytype
         layout['parent'] = parent
@@ -312,7 +312,7 @@ the tab will also close all terminals within it.')
                 count = child.describe_layout(count, name, global_layout, child_order)
             child_order = child_order + 1
 
-        return(count)
+        return count
 
     def create_layout(self, layout):
         """Apply settings for our layout"""

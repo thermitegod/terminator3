@@ -23,7 +23,7 @@ def color2hex(widget):
     """Pull the colour values out of a Gtk ColorPicker widget and return them
     as 8bit hex values, sinces its default behaviour is to give 16bit values"""
     widcol = widget.get_color()
-    return('#%02x%02x%02x' % (widcol.red>>8, widcol.green>>8, widcol.blue>>8))
+    return ('#%02x%02x%02x' % (widcol.red>>8, widcol.green>>8, widcol.blue>>8))
 
 # FIXME: We need to check that we have represented all of Config() below
 class PrefsEditor:
@@ -169,7 +169,7 @@ class PrefsEditor:
                         'help'             : _('Open the manual')
             }
 
-    def __init__ (self, term):
+    def __init__(self, term):
         self.config = config.Config()
         self.config.base.reload()
         self.term = term

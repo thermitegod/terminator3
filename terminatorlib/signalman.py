@@ -30,7 +30,7 @@ class Signalman(object):
 
         self.cnxids[widget][signal] = widget.connect(signal, handler, *args)
         dbg('connected %s::%s to %s' % (type(widget), signal, handler))
-        return(self.cnxids[widget][signal])
+        return self.cnxids[widget][signal]
 
     def remove_signal(self, widget, signal):
         """Remove a signal handler"""

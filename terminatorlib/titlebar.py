@@ -196,10 +196,10 @@ class Titlebar(Gtk.EventBox):
         not"""
         if self.editing() == True or self.terminal.group:
             dbg('implicit desired visibility')
-            return(True)
+            return True
         else:
             dbg('configured visibility: %s' % self.config['show_titlebar'])
-            return(self.config['show_titlebar'])
+            return self.config['show_titlebar']
 
     def set_from_icon_name(self, name, size = Gtk.IconSize.MENU):
         """Set an icon for the group label"""
@@ -244,7 +244,7 @@ class Titlebar(Gtk.EventBox):
 
     def editing(self):
         """Determine if we're currently editing a group name or title"""
-        return(self.groupentry.get_property('visible') or self.label.editing())
+        return (self.groupentry.get_property('visible') or self.label.editing())
 
     def create_group(self):
         """Create a new group"""
@@ -304,14 +304,14 @@ class Titlebar(Gtk.EventBox):
     def icon_bell_hide(self):
         """Handle a timeout which means we now hide the bell icon"""
         self.bellicon.hide()
-        return(False)
+        return False
 
     def get_custom_string(self):
         """If we have a custom string set, return it, otherwise None"""
         if self.label.is_custom():
-            return(self.label.get_text())
+            return self.label.get_text()
         else:
-            return(None)
+            return None
 
     def set_custom_string(self, string):
         """Set a custom string"""
