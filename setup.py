@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 from distutils.core import setup
 from distutils.dist import Distribution
@@ -51,35 +51,46 @@ class BuildData(build):
         if newer(po, mo):
           info('compiling %s -> %s' % (po, mo))
           try:
-            rc = subprocess.call(['msgfmt', '-o', mo, po])
-            if rc != 0:
-              raise Warning, "msgfmt returned %d" % rc
-          except Exception, e:
+            rc = subprocess.run(['msgfmt', '-o', mo, po]).returncode
+            if rc:
+              raise Warning("msgfmt returned %d" % rc)
+          except Exception as e:
             error("Building gettext files failed. Ensure you have gettext installed. Alternatively, try setup.py --without-gettext [build|install]")
             error("Error: %s" % str(e))
             sys.exit(1)
 
-      TOP_BUILDDIR='.'
-      INTLTOOL_MERGE='intltool-merge'
-      desktop_in='data/terminator.desktop.in'
-      desktop_data='data/terminator.desktop'
-      rc = os.system ("C_ALL=C " + INTLTOOL_MERGE + " -d -u -c " + TOP_BUILDDIR +
-                 "/po/.intltool-merge-cache " + TOP_BUILDDIR + "/po " +
-                 desktop_in + " " + desktop_data)
-      if rc != 0:
-        # run the desktop_in through a command to strip the "_" characters
-        with open(desktop_in) as file_in, open(desktop_data, 'w') as file_data:
-          [file_data.write(line.lstrip('_')) for line in file_in]
+    TOP_BUILDDIR='.'
+    INTLTOOL_MERGE='intltool-merge'
+    desktop_in='data/terminator.desktop.in'
+    desktop_data='data/terminator.desktop'
 
-      appdata_in='data/terminator.appdata.xml.in'
-      appdata_data='data/terminator.appdata.xml'
-      rc = os.system ("C_ALL=C " + INTLTOOL_MERGE + " -x -u -c " + TOP_BUILDDIR +
-                 "/po/.intltool-merge-cache " + TOP_BUILDDIR + "/po " +
-                 appdata_in + " " + appdata_data)
-      if rc != 0:
-        # run the appdata_in through a command to strip the "_" characters
-        with open(appdata_in) as file_in, open(appdata_data, 'w') as file_data:
-          [file_data.write(line.replace('<_','<').replace('</_','</')) for line in file_in]
+    old_local=os.environ.get('C_ALL',None)
+    os.environ['C_ALL']='C'
+    try:
+      rc = subprocess.run((INTLTOOL_MERGE, '-d', '-u', '-c',
+                           os.path.join(TOP_BUILDDIR, '/po/.intltool-merge-cache'),
+                           os.path.join(TOP_BUILDDIR, '/po'),
+                           desktop_in, desktop_data)).returncode
+    except:
+      rc = 1
+    if rc != 0:
+      # run the desktop_in through a command to strip the '_' characters
+      with open(desktop_in, mode='rt') as file_in, open(desktop_data, mode='wt') as file_data:
+        [file_data.write(line.lstrip('_')) for line in file_in]
+
+    appdata_in='data/terminator.appdata.xml.in'
+    appdata_data='data/terminator.appdata.xml'
+    try:
+      rc = subprocess.run((INTLTOOL_MERGE, '-x', '-u', '-c',
+                           os.path.join(TOP_BUILDDIR, '/po/.intltool-merge-cache'),
+                           os.path.join(TOP_BUILDDIR, '/po'),
+                           appdata_in, appdata_data)).returncode
+    except:
+      rc = 1
+    if rc != 0:
+      # run the appdata_in through a command to strip the "_" characters
+      with open(appdata_in) as file_in, open(appdata_data, 'w') as file_data:
+        [file_data.write(line.replace('<_','<').replace('</_','</')) for line in file_in]
 
 class Uninstall(Command):
   description = "Attempt an uninstall from an install --record file"
@@ -104,7 +115,7 @@ class Uninstall(Command):
             raise DistutilsFileError("Pass manifest with --manifest=file")
         f = open(self.manifest)
         files = [file.strip() for file in f]
-      except IOError, e:
+      except IOError as e:
         raise DistutilsFileError("unable to open install manifest: %s", str(e))
     finally:
       if f:
@@ -116,7 +127,7 @@ class Uninstall(Command):
         if not self.dry_run:
           try:
             os.unlink(file)
-          except OSError, e:
+          except OSError as e:
             warn("could not delete: %s" % repr(file))
       elif not os.path.isdir(file):
         info("skipping %s" % repr(file))
@@ -133,7 +144,7 @@ class Uninstall(Command):
           if not self.dry_run:
             try:
               os.rmdir(dir)
-            except OSError, e:
+            except OSError as e:
               warn("could not remove directory: %s" % str(e))
         else:
           info("skipping empty directory %s" % repr(dir))
@@ -151,8 +162,8 @@ class InstallData(install_data):
   def _update_icon_cache(self):
     info("running gtk-update-icon-cache")
     try:
-      subprocess.call(["gtk-update-icon-cache", "-q", "-f", "-t", os.path.join(self.install_dir, "share/icons/hicolor")])
-    except Exception, e:
+      subprocess.run(["gtk-update-icon-cache", "-q", "-f", "-t", os.path.join(self.install_dir, "share/icons/hicolor")])
+    except Exception as e:
       warn("updating the GTK icon cache failed: %s" % str(e))
 
   def _find_mo_files (self):
@@ -188,7 +199,7 @@ class Test(Command):
   def run(self):
     import subprocess
     import sys
-    errno = subprocess.call(['bash', 'run_tests'])
+    errno = subprocess.run(['bash', 'run_tests'])
     raise SystemExit(errno)
 
 
@@ -197,42 +208,42 @@ if platform.system() in ['FreeBSD', 'OpenBSD']:
 else:
   man_dir = 'share/man'
 
-setup(name=APP_NAME,
-      version=APP_VERSION,
-      description='Terminator, the robot future of terminals',
-      author='Chris Jones',
-      author_email='cmsj@tenshu.net',
-      url='https://gnometerminator.blogspot.com/p/introduction.html',
-      license='GNU GPL v2',
-      scripts=['terminator', 'remotinator'],
-      data_files=[
-                  ('bin', ['terminator.wrapper']),
-                  ('share/appdata', ['data/terminator.appdata.xml']),
-                  ('share/applications', ['data/terminator.desktop']),
-                  (os.path.join(man_dir, 'man1'), ['doc/terminator.1']),
-                  (os.path.join(man_dir, 'man5'), ['doc/terminator_config.5']),
-                  ('share/pixmaps', ['data/icons/hicolor/48x48/apps/terminator.png']),
-                  ('share/icons/hicolor/scalable/apps', glob.glob('data/icons/hicolor/scalable/apps/*.svg')),
-                  ('share/icons/hicolor/16x16/apps', glob.glob('data/icons/hicolor/16x16/apps/*.png')),
-                  ('share/icons/hicolor/22x22/apps', glob.glob('data/icons/hicolor/22x22/apps/*.png')),
-                  ('share/icons/hicolor/24x24/apps', glob.glob('data/icons/hicolor/24x24/apps/*.png')),
-                  ('share/icons/hicolor/32x32/apps', glob.glob('data/icons/hicolor/32x32/apps/*.png')),
-                  ('share/icons/hicolor/48x48/apps', glob.glob('data/icons/hicolor/48x48/apps/*.png')),
-                  ('share/icons/hicolor/16x16/actions', glob.glob('data/icons/hicolor/16x16/actions/*.png')),
-                  ('share/icons/hicolor/16x16/status', glob.glob('data/icons/hicolor/16x16/status/*.png')),
-                  ('share/icons/HighContrast/scalable/apps', glob.glob('data/icons/HighContrast/scalable/apps/*.svg')),
-                  ('share/icons/HighContrast/16x16/apps', glob.glob('data/icons/HighContrast/16x16/apps/*.png')),
-                  ('share/icons/HighContrast/22x22/apps', glob.glob('data/icons/HighContrast/22x22/apps/*.png')),
-                  ('share/icons/HighContrast/24x24/apps', glob.glob('data/icons/HighContrast/24x24/apps/*.png')),
-                  ('share/icons/HighContrast/32x32/apps', glob.glob('data/icons/HighContrast/32x32/apps/*.png')),
-                  ('share/icons/HighContrast/48x48/apps', glob.glob('data/icons/HighContrast/48x48/apps/*.png')),
-                  ('share/icons/HighContrast/16x16/actions', glob.glob('data/icons/HighContrast/16x16/actions/*.png')),
-                  ('share/icons/HighContrast/16x16/status', glob.glob('data/icons/HighContrast/16x16/status/*.png')),
-                 ],
-      packages=['terminatorlib', 'terminatorlib.configobj',
-      'terminatorlib.plugins'],
-      package_data={'terminatorlib': ['preferences.glade', 'layoutlauncher.glade']},
-      cmdclass={'build': BuildData, 'install_data': InstallData, 'uninstall': Uninstall, 'test':Test},
-      distclass=TerminatorDist
-     )
+if __name__=='__main__':
+  setup(name=APP_NAME,
+        version=APP_VERSION,
+        description='Terminator, the robot future of terminals',
+        author='Chris Jones',
+        author_email='cmsj@tenshu.net',
+        url='https://gnometerminator.blogspot.com/p/introduction.html',
+        license='GNU GPL v2',
+        scripts=['terminator', 'remotinator'],
+        data_files=[
+          ('bin', ['terminator.wrapper']),
+          ('share/appdata', ['data/terminator.appdata.xml']),
+          ('share/applications', ['data/terminator.desktop']),
+          (os.path.join(man_dir, 'man1'), ['doc/terminator.1']),
+          (os.path.join(man_dir, 'man5'), ['doc/terminator_config.5']),
+          ('share/pixmaps', ['data/icons/hicolor/48x48/apps/terminator.png']),
+          ('share/icons/hicolor/scalable/apps', glob.glob('data/icons/hicolor/scalable/apps/*.svg')),
+          ('share/icons/hicolor/16x16/apps', glob.glob('data/icons/hicolor/16x16/apps/*.png')),
+          ('share/icons/hicolor/22x22/apps', glob.glob('data/icons/hicolor/22x22/apps/*.png')),
+          ('share/icons/hicolor/24x24/apps', glob.glob('data/icons/hicolor/24x24/apps/*.png')),
+          ('share/icons/hicolor/32x32/apps', glob.glob('data/icons/hicolor/32x32/apps/*.png')),
+          ('share/icons/hicolor/48x48/apps', glob.glob('data/icons/hicolor/48x48/apps/*.png')),
+          ('share/icons/hicolor/16x16/actions', glob.glob('data/icons/hicolor/16x16/actions/*.png')),
+          ('share/icons/hicolor/16x16/status', glob.glob('data/icons/hicolor/16x16/status/*.png')),
+          ('share/icons/HighContrast/scalable/apps', glob.glob('data/icons/HighContrast/scalable/apps/*.svg')),
+          ('share/icons/HighContrast/16x16/apps', glob.glob('data/icons/HighContrast/16x16/apps/*.png')),
+          ('share/icons/HighContrast/22x22/apps', glob.glob('data/icons/HighContrast/22x22/apps/*.png')),
+          ('share/icons/HighContrast/24x24/apps', glob.glob('data/icons/HighContrast/24x24/apps/*.png')),
+          ('share/icons/HighContrast/32x32/apps', glob.glob('data/icons/HighContrast/32x32/apps/*.png')),
+          ('share/icons/HighContrast/48x48/apps', glob.glob('data/icons/HighContrast/48x48/apps/*.png')),
+          ('share/icons/HighContrast/16x16/actions', glob.glob('data/icons/HighContrast/16x16/actions/*.png')),
+          ('share/icons/HighContrast/16x16/status', glob.glob('data/icons/HighContrast/16x16/status/*.png')),
+        ],
+        packages=['terminatorlib', 'terminatorlib.plugins'],
+        package_data={'terminatorlib': ['preferences.glade', 'layoutlauncher.glade']},
+        cmdclass={'build': BuildData, 'install_data': InstallData, 'uninstall': Uninstall, 'test':Test},
+        distclass=TerminatorDist
+  )
 
