@@ -131,15 +131,9 @@ class CustomCommandsMenu(plugin.MenuItem):
 
     def configure(self, widget, data = None):
       ui = {}
-      dbox = Gtk.Dialog(
-                      _("Custom Commands Configuration"),
-                      None,
-                      Gtk.DialogFlags.MODAL,
-                      (
-                        _("_Cancel"), Gtk.ResponseType.REJECT,
-                        _("_OK"), Gtk.ResponseType.ACCEPT
-                      )
-                    )
+      dbox = Gtk.Dialog(_("Custom Commands Configuration"),destroy_with_parent=False,modal=Gtk.DialogFlags.MODAL)
+      dbox.add_buttons(_("_Cancel"), Gtk.ResponseType.REJECT,
+                       _("_OK"), Gtk.ResponseType.ACCEPT)
       dbox.set_transient_for(widget.get_toplevel())
 
       icon_theme = Gtk.IconTheme.get_default()
@@ -155,7 +149,7 @@ class CustomCommandsMenu(plugin.MenuItem):
       for command in [ self.cmd_list[key] for key in sorted(self.cmd_list.keys()) ]:
         store.append([command['enabled'], command['name'], command['command']])
 
-      treeview = Gtk.TreeView(store)
+      treeview = Gtk.TreeView(model=store)
       #treeview.connect("cursor-changed", self.on_cursor_changed, ui)
       selection = treeview.get_selection()
       selection.set_mode(Gtk.SelectionMode.SINGLE)
@@ -280,16 +274,11 @@ class CustomCommandsMenu(plugin.MenuItem):
       data['button_delete'].set_sensitive(iter is not None)
 
     def _create_command_dialog(self, enabled_var = False, name_var = "", command_var = ""):
-      dialog = Gtk.Dialog(_("New Command"),
-                          None,
-                          Gtk.DialogFlags.MODAL,
-                          (
-                            _("_Cancel"), Gtk.ResponseType.REJECT,
-                            _("_OK"), Gtk.ResponseType.ACCEPT
-                          )
-      )
+      dialog = Gtk.Dialog(_("New Command"),destroy_with_parent=False,modal=Gtk.DialogFlags.MODAL)
+      dialog.add_buttons(_("_Cancel"), Gtk.ResponseType.REJECT,
+                         _("_OK"), Gtk.ResponseType.ACCEPT)
       dialog.set_transient_for(self.dbox)
-      table = Gtk.Table(3, 2)
+      table = Gtk.Table(n_rows=3, n_columns=2)
 
       label = Gtk.Label(label=_("Enabled:"))
       table.attach(label, 0, 1, 0, 1)
