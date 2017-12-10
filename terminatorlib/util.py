@@ -95,7 +95,7 @@ def has_ancestor(widget, wtype):
 def manual_lookup():
     '''Choose the manual to open based on LANGUAGE'''
     available_languages = ['en']
-    base_url = 'http://terminator-gtk3.readthedocs.io/%s/latest/'
+    base_url = 'https://terminator-gtk3.readthedocs.io/%s/latest/'
     target = 'en'   # default to English
     if 'LANGUAGE' in os.environ:
         languages = os.environ['LANGUAGE'].split(':')
