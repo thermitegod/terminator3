@@ -536,14 +536,12 @@ class Terminator(Borg):
                     break
 
         # Size the GtkPaned splitter handle size.
-        css = ""
         if self.config['handle_size'] in range(0, 21):
-            css += """
-                .terminator-terminal-window GtkPaned,
-                .terminator-terminal-window paned {
-                    -GtkPaned-handle-size: %s; }
-                """ % self.config['handle_size']
-        if css:
+            css = '''.terminator-terminal-window GtkPaned,
+            .terminator-terminal-window paned {{
+            min-width: {0}px;
+            min-height: {0}px; }}
+            '''.format(self.config['handle_size'])
             style_provider = Gtk.CssProvider()
             style_provider.load_from_data(css.encode())
             self.style_providers.append(style_provider)
