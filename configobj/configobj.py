@@ -2143,7 +2143,7 @@ class ConfigObj(Section):
             if preserve_errors:
                 # We do this once to remove a top level dependency on the validate module
                 # Which makes importing configobj faster
-                from terminatorlib.configobj.validate import VdtMissingValue
+                from .validate import VdtMissingValue
                 self._vdtMissingValue = VdtMissingValue
                 
             section = self
