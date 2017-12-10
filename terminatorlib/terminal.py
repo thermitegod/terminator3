@@ -239,7 +239,7 @@ class Terminal(Gtk.VBox):
 
         if self.vte:
             self.terminalbox.remove(self.vte)
-            del(self.vte)
+            del self.vte
 
     def create_terminalbox(self):
         """Create a GtkHBox containing the terminal and a scrollbar"""
@@ -333,7 +333,7 @@ class Terminal(Gtk.VBox):
             err('Terminal::match_remove: Unable to remove non-existent match %s' % name)
             return
         self.vte.match_remove(self.matches[name])
-        del(self.matches[name])
+        del self.matches[name]
 
     def maybe_copy_clipboard(self):
         if self.config['copy_on_selection'] and self.vte.get_has_selection():

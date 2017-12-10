@@ -313,7 +313,7 @@ class Config(object):
             err('Config::del_profile: Deleting in-use profile %s.' % profile)
             self.set_profile('default')
         if profile in self.base.profiles:
-            del(self.base.profiles[profile])
+            del self.base.profiles[profile]
         options = self.options_get()
         if options and options.profile == profile:
             options.profile = None
@@ -323,7 +323,7 @@ class Config(object):
         """Rename a profile"""
         if profile in self.base.profiles:
             self.base.profiles[newname] = self.base.profiles[profile]
-            del(self.base.profiles[profile])
+            del self.base.profiles[profile]
             if profile == self.profile:
                 self.profile = newname
 
@@ -342,13 +342,13 @@ class Config(object):
     def del_layout(self, layout):
         """Delete a layout"""
         if layout in self.base.layouts:
-            del(self.base.layouts[layout])
+            del self.base.layouts[layout]
 
     def rename_layout(self, layout, newname):
         """Rename a layout"""
         if layout in self.base.layouts:
             self.base.layouts[newname] = self.base.layouts[layout]
-            del(self.base.layouts[layout])
+            del self.base.layouts[layout]
 
     def list_layouts(self):
         """List all configured layouts"""

@@ -72,7 +72,7 @@ class ActivityWatch(plugin.MenuItem):
         """Stop watching a terminal"""
         vte = terminal.get_vte()
         vte.disconnect(self.watches[terminal])
-        del(self.watches[terminal])
+        del self.watches[terminal]
 
     def notify(self, _vte, terminal):
         """Notify that a terminal did something"""
@@ -141,9 +141,9 @@ class InactivityWatch(plugin.MenuItem):
         """Unwatch a terminal"""
         vte = terminal.get_vte()
         vte.disconnect(self.watches[terminal])
-        del(self.watches[terminal])
+        del self.watches[terminal]
         GObject.source_remove(self.timers[terminal])
-        del(self.timers[terminal])
+        del self.timers[terminal]
 
     def reset_timer(self, _vte, terminal):
         """Reset the last-changed time for a terminal"""
@@ -160,7 +160,7 @@ class InactivityWatch(plugin.MenuItem):
 
         dbg('seconds since last activity: %f (%s)' % (time_now - self.last_activities[terminal], terminal))
         if time_now - self.last_activities[terminal] >= inactive_period:
-            del(self.last_activities[terminal])
+            del self.last_activities[terminal]
             note = Notify.Notification.new(_('Terminator'), _('Silence in: %s') % 
                                          terminal.get_window_title(), 'terminator')
             note.show()

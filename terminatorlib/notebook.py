@@ -353,7 +353,7 @@ class Notebook(Container, Gtk.Notebook):
             child.close()
             # FIXME: We only do this del and return here to avoid removing the
             # page below, which child.close() implicitly does
-            del(label)
+            del label
             return
         elif maker.isinstance(child, 'Container'):
             dbg('Notebook::closetab: child is a Container')
@@ -432,7 +432,7 @@ class Notebook(Container, Gtk.Notebook):
             parent.remove(self)
             self.cnxids.remove_all()
             parent.add(child)
-            del(self)
+            del self
             # Find the last terminal in the new parent and give it focus
             terms = parent.get_visible_terminals()
             tuple(terms.keys())[-1].grab_focus()
@@ -603,8 +603,8 @@ class TabLabel(Gtk.HBox):
             if self.button:
                 self.button.remove(self.icon)
                 self.remove(self.button)
-                del(self.button)
-                del(self.icon)
+                del self.button
+                del self.icon
                 self.button = None
                 self.icon = None
             return

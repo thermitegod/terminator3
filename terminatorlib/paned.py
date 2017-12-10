@@ -321,7 +321,7 @@ class Paned(Container):
             child = self.children[0]
             self.remove(child)
             parent.replace(self, child)
-            del(self)
+            del self
 
     def resizeterm(self, widget, keyname):
         """Handle a keyboard event requesting a terminal resize"""

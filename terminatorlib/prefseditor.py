@@ -217,7 +217,7 @@ class PrefsEditor:
         terminator.reconfigure()
         self.window.destroy()
         self.calling_window.preventHide = False
-        del(self)
+        del self
 
     def set_values(self):
         """Update the preferences window with all the configuration from

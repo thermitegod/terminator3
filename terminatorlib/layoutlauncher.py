@@ -66,7 +66,7 @@ class LayoutLauncher:
         dbg('destroying self')
         self.terminator.deregister_launcher_window(self)
         self.window.destroy()
-        del(self.window)
+        del self.window
 
     def update_layouts(self):
         """Update the contents of the layout"""

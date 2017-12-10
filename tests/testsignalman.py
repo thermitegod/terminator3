@@ -50,7 +50,7 @@ class TestWidget():
         return(self.count)
 
     def disconnect(self, signalid):
-        del(self.signals[signalid])
+        del self.signals[signalid]
 
 def handler():
     print("I am a test handler")

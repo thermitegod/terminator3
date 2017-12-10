@@ -279,12 +279,12 @@ class Terminator(Borg):
                             hierarchy[obj][objkey] = layout[obj][objkey]
 
                     objects[obj] = hierarchy[obj]
-                    del(layout[obj])
+                    del layout[obj]
                 else:
                     # Now examine children to see if their parents exist yet
                     if 'parent' not in layout[obj]:
                         err('Invalid object: %s' % obj)
-                        del(layout[obj])
+                        del layout[obj]
                         continue
                     if layout[obj]['parent'] in objects:
                         # Our parent has been created, add ourselves
@@ -299,7 +299,7 @@ class Terminator(Borg):
 
                         objects[layout[obj]['parent']]['children'][obj] = childobj
                         objects[obj] = childobj
-                        del(layout[obj])
+                        del layout[obj]
 
         layout = hierarchy
 
@@ -487,8 +487,8 @@ class Terminator(Borg):
                                                           int(bgcolor.green * 255),
                                                           int(bgcolor.blue * 255))
                 tmp_win.remove(tmp_vte)
-                del(tmp_vte)
-                del(tmp_win)
+                del tmp_vte
+                del tmp_win
             else:
                 bgcolor = Gdk.RGBA()
                 bgcolor = profiles[profile]['background_color']

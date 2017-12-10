@@ -108,4 +108,4 @@ class Logger(plugin.MenuItem):
         fd = self.loggers[vte_terminal]["fd"]
         fd.close()
         vte_terminal.disconnect(self.loggers[vte_terminal]["handler_id"])
-        del(self.loggers[vte_terminal])
+        del self.loggers[vte_terminal]

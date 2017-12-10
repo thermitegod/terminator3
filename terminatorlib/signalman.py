@@ -42,10 +42,10 @@ class Signalman(object):
             return
         dbg('removing %s::%s' % (type(widget), signal))
         widget.disconnect(self.cnxids[widget][signal])
-        del(self.cnxids[widget][signal])
+        del self.cnxids[widget][signal]
         if len(self.cnxids[widget].keys()) == 0:
             dbg('no more signals for widget')
-            del(self.cnxids[widget])
+            del self.cnxids[widget]
 
     def remove_widget(self, widget):
         """Remove all signal handlers for a widget"""

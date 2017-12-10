@@ -145,7 +145,7 @@ for %s' % (len(self.instances), capability))
         """Disable a plugin"""
         dbg("Disabling %s" % plugin)
         self.instances[plugin].unload()
-        del(self.instances[plugin])
+        del self.instances[plugin]
 
 # This is where we should define a base class for each type of plugin we
 # support

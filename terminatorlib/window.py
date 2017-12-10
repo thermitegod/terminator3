@@ -298,7 +298,7 @@ class Window(Container, Gtk.Window):
         self.cnxids.remove_all()
         self.terminator.deregister_window(self)
         self.destroy()
-        del(self)
+        del self
 
     def on_hide_window(self, data=None):
         """Handle a request to hide/show the window"""

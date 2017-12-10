@@ -236,7 +236,7 @@ class CustomCommandsMenu(plugin.MenuItem):
       if res == Gtk.ResponseType.ACCEPT:
         self.update_cmd_list(store)
         self._save_config()
-      del(self.dbox)
+      del self.dbox
       dbox.destroy()
       return
 
