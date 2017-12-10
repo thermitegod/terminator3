@@ -217,51 +217,39 @@ def dict_diff(reference, working):
 def get_edge(allocation, direction):
     """Return the edge of the supplied allocation that we will care about for
     directional navigation"""
-    if direction == 'left':
-        edge = allocation.x
-        p1, p2 = allocation.y, allocation.y + allocation.height
-    elif direction == 'up':
-        edge = allocation.y
-        p1, p2 = allocation.x, allocation.x + allocation.width
-    elif direction == 'right':
-        edge = allocation.x + allocation.width
-        p1, p2 = allocation.y, allocation.y + allocation.height
-    elif direction == 'down':
-        edge = allocation.y + allocation.height
-        p1, p2 = allocation.x, allocation.x + allocation.width
-    else:
-        raise ValueError('unknown direction %s' % direction)
-    
-    return (edge, p1, p2)
+    dd={'left':  (allocation.x, allocation.y, allocation.y + allocation.height),
+        'right': (allocation.x + allocation.width, allocation.y, allocation.y + allocation.height),
+        'up':    (allocation.y, allocation.x, allocation.x + allocation.width),
+        'down':  (allocation.y + allocation.height, allocation.x, allocation.x + allocation.width)}
+    try:
+        return dd[direction]
+    except KeyError:
+        raise ValueError('Unknown direction %s' % direction)
 
 def get_nav_possible(edge, allocation, direction, p1, p2):
     """Check if the supplied allocation is in the right direction of the
     supplied edge"""
     x1, x2 = allocation.x, allocation.x + allocation.width
     y1, y2 = allocation.y, allocation.y + allocation.height
-    if direction == 'left':
-        return (x2 <= edge and y1 <= p2 and y2 >= p1)
-    elif direction == 'right':
-        return (x1 >= edge and y1 <= p2 and y2 >= p1)
-    elif direction == 'up':
-        return (y2 <= edge and x1 <= p2 and x2 >= p1)
-    elif direction == 'down':
-        return (y1 >= edge and x1 <= p2 and x2 >= p1)
-    else:
+    dd={'left':  (x2 <= edge and y1 <= p2 and y2 >= p1),
+        'right': (x1 >= edge and y1 <= p2 and y2 >= p1),
+        'up':    (y2 <= edge and x1 <= p2 and x2 >= p1),
+        'down':  (y1 >= edge and x1 <= p2 and x2 >= p1)}
+    try:
+        return dd[direction]
+    except KeyError:
         raise ValueError('Unknown direction: %s' % direction)
 
 def get_nav_offset(edge, allocation, direction):
     """Work out how far edge is from a particular point on the allocation
     rectangle, in the given direction"""
-    if direction == 'left':
-        return (edge - (allocation.x + allocation.width))
-    elif direction == 'right':
-        return (allocation.x - edge)
-    elif direction == 'up':
-        return (edge - (allocation.y + allocation.height))
-    elif direction == 'down':
-        return (allocation.y - edge)
-    else:
+    dd={'left':  (edge - (allocation.x + allocation.width)),
+        'right': (allocation.x - edge),
+        'up':    (edge - (allocation.y + allocation.height)),
+        'down':  (allocation.y - edge)}
+    try:
+        return dd[direction]
+    except KeyError:
         raise ValueError('Unknown direction: %s' % direction)
 
 def get_nav_tiebreak(direction, cursor_x, cursor_y, rect):
