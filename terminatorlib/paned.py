@@ -374,7 +374,7 @@ class Paned(Container):
                 key = children[child]['order']
                 child_order_map[key] = child
             map_keys = child_order_map.keys()
-            map_keys.sort()
+            # map_keys.sort() # breaks loading layouts
             for map_key in map_keys:
                 keys.append(child_order_map[map_key])
         except KeyError:
