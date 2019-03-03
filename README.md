@@ -1,8 +1,8 @@
-##Terminator
+## Terminator
 
 Terminator in Gtk+3 and Python3
 
-###Install
+### Install
 
 __Gentoo__
 
@@ -20,7 +20,7 @@ __Other__
 ./setup.py install --user
 ```
 
-###Convert config
+### Convert config
 
 Original config file will remain untouched
 
@@ -28,11 +28,11 @@ Original config file will remain untouched
 python3 ./configconvert.py -i ${HOME}/.config/terminator/config -o ${HOME}/.config/terminator/config.json
 ```
 
-###Forked from
+### Forked from
 
 https://github.com/multiSnow/terminator3
 
-###README
+### README
 
 by Chris Jones <cmsj@tenshu.net> and others.
 
