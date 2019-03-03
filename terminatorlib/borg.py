@@ -11,6 +11,7 @@ specific licencing terms.
 
 from terminatorlib.util import dbg
 
+
 # pylint: disable-msg=R0903
 # pylint: disable-msg=R0921
 class Borg:
@@ -51,4 +52,3 @@ class Borg:
     def prepare_attributes(self):
         """This should be used to prepare any attributes of the borg class."""
         raise NotImplementedError('prepare_attributes')
-

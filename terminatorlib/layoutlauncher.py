@@ -4,14 +4,13 @@
 """layoutlauncher.py - class for the Layout Launcher window"""
 
 import os
+
 from gi.repository import Gtk
-from gi.repository import GObject
 
 from terminatorlib import config
-from terminatorlib.util import dbg, err, spawn_new_terminator
-from terminatorlib.translation import _
 from terminatorlib.terminator import Terminator
-from terminatorlib.plugin import PluginRegistry
+from terminatorlib.util import dbg, spawn_new_terminator
+
 
 class LayoutLauncher:
     """Class implementing the various parts of the preferences editor"""
@@ -72,7 +71,7 @@ class LayoutLauncher:
         """Update the contents of the layout"""
         self.layouttreestore.clear()
         layouts = self.config.list_layouts()
-        for layout in sorted(layouts, cmp=lambda x,y: cmp(x.lower(), y.lower())):
+        for layout in sorted(layouts, cmp=lambda x, y: cmp(x.lower(), y.lower())):
             if layout != "default":
                 self.layouttreestore.append([layout])
             else:
@@ -82,14 +81,14 @@ class LayoutLauncher:
         """Handle button click"""
         self.launch_layout()
 
-    def on_row_activated(self, widget,  path,  view_column):
+    def on_row_activated(self, widget, path, view_column):
         """Handle item double-click and return"""
         self.launch_layout()
 
     def launch_layout(self):
         """Launch the selected layout as new instance"""
         dbg('We have takeoff!')
-        selection=self.layouttreeview.get_selection()
+        selection = self.layouttreeview.get_selection()
         (listmodel, rowiter) = selection.get_selected()
         if not rowiter:
             # Something is wrong, just jump to the first item in the list
@@ -99,10 +98,12 @@ class LayoutLauncher:
         dbg('Clicked for %s' % layout)
         spawn_new_terminator(self.terminator.origcwd, ['-u', '-l', layout])
 
+
 if __name__ == '__main__':
     import util
+
     util.DEBUG = True
-    import terminal
+
     LAYOUTLAUNCHER = LayoutLauncher()
 
     Gtk.main()

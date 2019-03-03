@@ -3,14 +3,14 @@
 # GPL v2 only
 """container.py - classes necessary to contain Terminal widgets"""
 
-from gi.repository import GObject
-from gi.repository import Gtk
+from gi.repository import GObject, Gtk
 
-from terminatorlib.factory import Factory
 from terminatorlib.config import Config
-from terminatorlib.util import dbg, err
-from terminatorlib.translation import _
+from terminatorlib.factory import Factory
 from terminatorlib.signalman import Signalman
+from terminatorlib.translation import _
+from terminatorlib.util import dbg, err
+
 
 # pylint: disable-msg=R0921
 class Container(object):
@@ -36,19 +36,19 @@ class Container(object):
         for signal in self.signals:
             if signal['name'] in existing:
                 dbg('Container:: skipping signal %s for %s, already exists' % (
-                        signal['name'], widget))
+                    signal['name'], widget))
             else:
                 dbg('Container:: registering signal for %s on %s' %
-                        (signal['name'], widget))
+                    (signal['name'], widget))
                 try:
                     GObject.signal_new(signal['name'],
                                        widget,
                                        signal['flags'],
                                        signal['return_type'],
-                                        signal['param_types'])
+                                       signal['param_types'])
                 except RuntimeError:
                     err('Container:: registering signal for %s on %s failed' %
-                            (signal['name'], widget))
+                        (signal['name'], widget))
 
     def connect_child(self, widget, signal, handler, *args):
         """Register the requested signal and record its connection ID"""
@@ -135,7 +135,7 @@ class Container(object):
         """Handle a keyboard event requesting a terminal resize"""
         raise NotImplementedError('resizeterm')
 
-    def toggle_zoom(self, widget, fontscale = False):
+    def toggle_zoom(self, widget, fontscale=False):
         """Toggle the existing zoom state"""
         try:
             if self.get_property('term_zoomed'):
@@ -146,7 +146,7 @@ class Container(object):
             err('Container::toggle_zoom: %s is unable to handle zooming, for \
             %s' % (self, widget))
 
-    def zoom(self, widget, fontscale = False):
+    def zoom(self, widget, fontscale=False):
         """Zoom a terminal"""
         raise NotImplementedError('zoom')
 
@@ -317,6 +317,5 @@ the tab will also close all terminals within it.')
     def create_layout(self, layout):
         """Apply settings for our layout"""
         raise NotImplementedError('create_layout')
-
 
 # vim: set expandtab ts=4 sw=4:

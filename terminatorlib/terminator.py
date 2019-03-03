@@ -5,7 +5,9 @@
 
 import copy
 import os
+
 import gi
+
 gi.require_version('Vte', '2.91')
 from gi.repository import Gtk, Gdk, Vte, GdkX11
 from gi.repository.GLib import GError
@@ -18,6 +20,7 @@ from terminatorlib.util import dbg, err, enumerate_descendants
 from terminatorlib.factory import Factory
 from terminatorlib.cwd import get_pid_cwd
 from terminatorlib.version import APP_NAME, APP_VERSION
+
 
 def eventkey2gdkevent(eventkey):  # FIXME FOR GTK3: is there a simpler way of casting from specific EventKey to generic (union) GdkEvent?
     gdkevent = Gdk.Event.new(eventkey.type)
@@ -32,6 +35,7 @@ def eventkey2gdkevent(eventkey):  # FIXME FOR GTK3: is there a simpler way of ca
     gdkevent.key.group = eventkey.group
     gdkevent.key.is_modifier = eventkey.is_modifier
     return gdkevent
+
 
 class Terminator(Borg):
     """master object for the application"""
@@ -60,7 +64,7 @@ class Terminator(Borg):
     prelayout_windows = None
 
     groupsend = None
-    groupsend_type = {'all':0, 'group':1, 'off':2}
+    groupsend_type = {'all': 0, 'group': 1, 'off': 2}
 
     cur_gtk_theme_name = None
     gtk_settings = None
@@ -101,7 +105,7 @@ class Terminator(Borg):
 
     def connect_signals(self):
         """Connect all the gtk signals"""
-        self.gtk_settings=Gtk.Settings().get_default()
+        self.gtk_settings = Gtk.Settings().get_default()
         self.gtk_settings.connect('notify::gtk-theme-name', self.on_gtk_theme_name_notify)
         self.cur_gtk_theme_name = self.gtk_settings.get_property('gtk-theme-name')
 
@@ -150,13 +154,13 @@ class Terminator(Borg):
         """Register a new window widget"""
         if window not in self.windows:
             dbg('Terminator::register_window: registering %s:%s' % (id(window),
-                type(window)))
+                                                                    type(window)))
             self.windows.append(window)
 
     def deregister_window(self, window):
         """de-register a window widget"""
         dbg('Terminator::deregister_window: de-registering %s:%s' %
-                (id(window), type(window)))
+            (id(window), type(window)))
         if window in self.windows:
             self.windows.remove(window)
         else:
@@ -171,13 +175,13 @@ class Terminator(Borg):
         """Register a new launcher window widget"""
         if window not in self.launcher_windows:
             dbg('Terminator::register_launcher_window: registering %s:%s' % (id(window),
-                type(window)))
+                                                                             type(window)))
             self.launcher_windows.append(window)
 
     def deregister_launcher_window(self, window):
         """de-register a launcher window widget"""
         dbg('Terminator::deregister_launcher_window: de-registering %s:%s' %
-                (id(window), type(window)))
+            (id(window), type(window)))
         if window in self.launcher_windows:
             self.launcher_windows.remove(window)
         else:
@@ -192,13 +196,13 @@ class Terminator(Borg):
         """Register a new terminal widget"""
         if terminal not in self.terminals:
             dbg('Terminator::register_terminal: registering %s:%s' %
-                    (id(terminal), type(terminal)))
+                (id(terminal), type(terminal)))
             self.terminals.append(terminal)
 
     def deregister_terminal(self, terminal):
         """De-register a terminal widget"""
         dbg('Terminator::deregister_terminal: de-registering %s:%s' %
-                (id(terminal), type(terminal)))
+            (id(terminal), type(terminal)))
         self.terminals.remove(terminal)
 
         if len(self.terminals) == 0:
@@ -207,7 +211,7 @@ class Terminator(Borg):
                 window.destroy()
         else:
             dbg('Terminator::deregister_terminal: %d terminals remain' %
-                    len(self.terminals))
+                len(self.terminals))
 
     def find_terminal_by_uuid(self, uuid):
         """Search our terminals for one matching the supplied UUID"""
@@ -362,7 +366,7 @@ class Terminator(Borg):
                 for page in range(0, notebook.get_n_pages()):
                     # Try and get the entry in the previously saved mapping
                     mapping = window_last_active_term_mapping[window]
-                    page_last_active_term = mapping.get(notebook.get_nth_page(page),  None)
+                    page_last_active_term = mapping.get(notebook.get_nth_page(page), None)
                     if page_last_active_term is None:
                         # Couldn't find entry, so we find the first child of type Terminal
                         children = notebook.get_nth_page(page).get_children()
@@ -436,8 +440,8 @@ class Terminator(Borg):
         if self.style_providers != []:
             for style_provider in self.style_providers:
                 Gtk.StyleContext.remove_provider_for_screen(
-                    Gdk.Screen.get_default(),
-                    style_provider)
+                        Gdk.Screen.get_default(),
+                        style_provider)
         self.style_providers = []
 
         # Force the window background to be transparent for newer versions of
@@ -483,7 +487,7 @@ class Terminator(Borg):
                 tmp_win.add(tmp_vte)
                 tmp_win.realize()
                 bgcolor = tmp_vte.get_style_context().get_background_color(Gtk.StateType.NORMAL)
-                bgcolor = "#{0:02x}{1:02x}{2:02x}".format(int(bgcolor.red  * 255),
+                bgcolor = "#{0:02x}{1:02x}{2:02x}".format(int(bgcolor.red * 255),
                                                           int(bgcolor.green * 255),
                                                           int(bgcolor.blue * 255))
                 tmp_win.remove(tmp_vte)
@@ -512,7 +516,7 @@ class Terminator(Borg):
         theme_name = self.gtk_settings.get_property('gtk-theme-name')
 
         theme_part_list = ['terminator.css']
-        if self.config['extra_styling']:    # checkbox_style - needs adding to prefs
+        if self.config['extra_styling']:  # checkbox_style - needs adding to prefs
             theme_part_list.append('terminator_styling.css')
         for theme_part_file in theme_part_list:
             for theme_dir in [usr_theme_dir, app_theme_dir]:
@@ -550,9 +554,9 @@ class Terminator(Borg):
         # each other
         for idx in range(0, len(self.style_providers)):
             Gtk.StyleContext.add_provider_for_screen(
-                Gdk.Screen.get_default(),
-                self.style_providers[idx],
-                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION+idx)
+                    Gdk.Screen.get_default(),
+                    self.style_providers[idx],
+                    Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION + idx)
 
         # Cause all the terminals to reconfigure
         for terminal in self.terminals:
@@ -571,7 +575,7 @@ class Terminator(Borg):
     def on_css_parsing_error(self, provider, section, error, user_data=None):
         """Report CSS parsing issues"""
         file_path = section.get_file().get_path()
-        line_no = section.get_end_line() +1
+        line_no = section.get_end_line() + 1
         col_no = section.get_end_position() + 1
         err('%s, at line %d, column %d, of file %s' % (error.message,
                                                        line_no, col_no,
@@ -606,14 +610,14 @@ class Terminator(Borg):
                     todestroy.append(group)
 
             dbg('Terminator::group_hoover: %d groups, hoovering %d' %
-                    (len(self.groups), len(todestroy)))
+                (len(self.groups), len(todestroy)))
             for group in todestroy:
                 self.groups.remove(group)
 
     def group_emit(self, terminal, group, type, event):
         """Emit to each terminal in a group"""
         dbg('Terminator::group_emit: emitting a keystroke for group %s' %
-                group)
+            group)
         for term in self.terminals:
             if term != terminal and term.group == group:
                 term.vte.emit(type, eventkey2gdkevent(event))
@@ -627,7 +631,7 @@ class Terminator(Borg):
     def do_enumerate(self, widget, pad):
         """Insert the number of each terminal in a group, into that terminal"""
         if pad:
-            numstr = '%0'+str(len(str(len(self.terminals))))+'d'
+            numstr = '%0' + str(len(str(len(self.terminals)))) + 'd'
         else:
             numstr = '%d'
 
@@ -670,7 +674,7 @@ class Terminator(Borg):
         return
 
     def focus_left(self, widget):
-        self.last_focused_term=widget
+        self.last_focused_term = widget
 
     def describe_layout(self):
         """Describe our current layout"""

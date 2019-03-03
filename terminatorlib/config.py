@@ -72,196 +72,195 @@ KeyError: 'ConfigBase::get_item: unknown key algo'
 """
 
 import json
-import platform
 import os
 from copy import copy
+
 from terminatorlib import optionparse
 from terminatorlib.borg import Borg
-from terminatorlib.util import dbg, err, DEBUG, get_config_dir, dict_diff
-
-from gi.repository import Gio
+from terminatorlib.util import DEBUG, dbg, err, get_config_dir
 
 DEFAULTS = {
-        'global_config':   {
-            'dbus'                  : True,
-            'focus'                 : 'click',
-            'handle_size'           : -1,
-            'geometry_hinting'      : False,
-            'window_state'          : 'normal',
-            'borderless'            : False,
-            'extra_styling'         : True,
-            'tab_position'          : 'top',
-            'broadcast_default'     : 'group',
-            'close_button_on_tab'   : True,
-            'hide_tabbar'           : False,
-            'scroll_tabbar'         : False,
-            'homogeneous_tabbar'    : True,
-            'hide_from_taskbar'     : False,
-            'always_on_top'         : False,
-            'hide_on_lose_focus'    : False,
-            'sticky'                : False,
-            'use_custom_url_handler': False,
-            'custom_url_handler'    : '',
-            'disable_real_transparency' : False,
-            'title_hide_sizetext'   : False,
-            'title_transmit_fg_color' : '#ffffff',
-            'title_transmit_bg_color' : '#c80003',
-            'title_receive_fg_color' : '#ffffff',
-            'title_receive_bg_color' : '#0076c9',
-            'title_inactive_fg_color' : '#000000',
-            'title_inactive_bg_color' : '#c0bebf',
-            'inactive_color_offset': 0.8,
-            'enabled_plugins'       : ['LaunchpadBugURLHandler',
-                                       'LaunchpadCodeURLHandler',
-                                       'APTURLHandler'],
-            'suppress_multiple_term_dialog': False,
-            'always_split_with_profile': False,
-            'title_use_system_font' : True,
-            'title_font'            : 'Sans 9',
-            'putty_paste_style'     : False,
-            'smart_copy'            : True,
-        },
-        'keybindings': {
-            'zoom_in'          : '<Control>plus',
-            'zoom_out'         : '<Control>minus',
-            'zoom_normal'      : '<Control>0',
-            'new_tab'          : '<Shift><Control>t',
-            'cycle_next'       : '<Control>Tab',
-            'cycle_prev'       : '<Shift><Control>Tab',
-            'go_next'          : '<Shift><Control>n',
-            'go_prev'          : '<Shift><Control>p',
-            'go_up'            : '<Alt>Up',
-            'go_down'          : '<Alt>Down',
-            'go_left'          : '<Alt>Left',
-            'go_right'         : '<Alt>Right',
-            'rotate_cw'        : '<Super>r',
-            'rotate_ccw'       : '<Super><Shift>r',
-            'split_horiz'      : '<Shift><Control>o',
-            'split_vert'       : '<Shift><Control>e',
-            'close_term'       : '<Shift><Control>w',
-            'copy'             : '<Shift><Control>c',
-            'paste'            : '<Shift><Control>v',
-            'toggle_scrollbar' : '<Shift><Control>s',
-            'search'           : '<Shift><Control>f',
-            'page_up'          : '',
-            'page_down'        : '',
-            'page_up_half'     : '',
-            'page_down_half'   : '',
-            'line_up'          : '',
-            'line_down'        : '',
-            'close_window'     : '<Shift><Control>q',
-            'resize_up'        : '<Shift><Control>Up',
-            'resize_down'      : '<Shift><Control>Down',
-            'resize_left'      : '<Shift><Control>Left',
-            'resize_right'     : '<Shift><Control>Right',
-            'move_tab_right'   : '<Shift><Control>Page_Down',
-            'move_tab_left'    : '<Shift><Control>Page_Up',
-            'toggle_zoom'      : '<Shift><Control>x',
-            'scaled_zoom'      : '<Shift><Control>z',
-            'next_tab'         : '<Control>Page_Down',
-            'prev_tab'         : '<Control>Page_Up',
-            'switch_to_tab_1'  : '',
-            'switch_to_tab_2'  : '',
-            'switch_to_tab_3'  : '',
-            'switch_to_tab_4'  : '',
-            'switch_to_tab_5'  : '',
-            'switch_to_tab_6'  : '',
-            'switch_to_tab_7'  : '',
-            'switch_to_tab_8'  : '',
-            'switch_to_tab_9'  : '',
-            'switch_to_tab_10' : '',
-            'full_screen'      : 'F11',
-            'reset'            : '<Shift><Control>r',
-            'reset_clear'      : '<Shift><Control>g',
-            'hide_window'      : '<Shift><Control><Alt>a',
-            'group_all'        : '<Super>g',
-            'group_all_toggle' : '',
-            'ungroup_all'      : '<Shift><Super>g',
-            'group_tab'        : '<Super>t',
-            'group_tab_toggle' : '',
-            'ungroup_tab'      : '<Shift><Super>t',
-            'new_window'       : '<Shift><Control>i',
-            'new_terminator'   : '<Super>i',
-            'broadcast_off'    : '<Alt>o',
-            'broadcast_group'  : '<Alt>g',
-            'broadcast_all'    : '<Alt>a',
-            'insert_number'    : '<Super>1',
-            'insert_padded'    : '<Super>0',
-            'edit_window_title': '<Control><Alt>w',
-            'edit_tab_title'   : '<Control><Alt>a',
-            'edit_terminal_title': '<Control><Alt>x',
-            'layout_launcher'  : '<Alt>l',
-            'next_profile'     : '',
-            'previous_profile' : '',
-            'help'             : 'F1'
-        },
-        'profiles': {
-            'default':  {
-                'allow_bold'            : True,
-                'audible_bell'          : False,
-                'visible_bell'          : False,
-                'urgent_bell'           : False,
-                'icon_bell'             : True,
-                'background_color'      : '#000000',
-                'background_darkness'   : 0.5,
-                'background_type'       : 'solid',
-                'backspace_binding'     : 'ascii-del',
-                'delete_binding'        : 'escape-sequence',
-                'color_scheme'          : 'grey_on_black',
-                'cursor_blink'          : True,
-                'cursor_shape'          : 'block',
-                'cursor_color'          : '',
-                'cursor_color_fg'       : True,
-                'term'                  : 'xterm-256color',
-                'colorterm'             : 'truecolor',
-                'font'                  : 'Mono 10',
-                'foreground_color'      : '#aaaaaa',
-                'show_titlebar'         : True,
-                'scrollbar_position'    : "right",
-                'scroll_background'     : True,
-                'scroll_on_keystroke'   : True,
-                'scroll_on_output'      : False,
-                'scrollback_lines'      : 500,
-                'scrollback_infinite'   : False,
-                'exit_action'           : 'close',
-                'palette'               : '#2e3436:#cc0000:#4e9a06:#c4a000:\
+    'global_config': {
+        'dbus'                         : True,
+        'focus'                        : 'click',
+        'handle_size'                  : -1,
+        'geometry_hinting'             : False,
+        'window_state'                 : 'normal',
+        'borderless'                   : False,
+        'extra_styling'                : True,
+        'tab_position'                 : 'top',
+        'broadcast_default'            : 'group',
+        'close_button_on_tab'          : True,
+        'hide_tabbar'                  : False,
+        'scroll_tabbar'                : False,
+        'homogeneous_tabbar'           : True,
+        'hide_from_taskbar'            : False,
+        'always_on_top'                : False,
+        'hide_on_lose_focus'           : False,
+        'sticky'                       : False,
+        'use_custom_url_handler'       : False,
+        'custom_url_handler'           : '',
+        'disable_real_transparency'    : False,
+        'title_hide_sizetext'          : False,
+        'title_transmit_fg_color'      : '#ffffff',
+        'title_transmit_bg_color'      : '#c80003',
+        'title_receive_fg_color'       : '#ffffff',
+        'title_receive_bg_color'       : '#0076c9',
+        'title_inactive_fg_color'      : '#000000',
+        'title_inactive_bg_color'      : '#c0bebf',
+        'inactive_color_offset'        : 0.8,
+        'enabled_plugins'              : ['LaunchpadBugURLHandler',
+                                          'LaunchpadCodeURLHandler',
+                                          'APTURLHandler'],
+        'suppress_multiple_term_dialog': False,
+        'always_split_with_profile'    : False,
+        'title_use_system_font'        : True,
+        'title_font'                   : 'Sans 9',
+        'putty_paste_style'            : False,
+        'smart_copy'                   : True,
+    },
+    'keybindings'  : {
+        'zoom_in'            : '<Control>plus',
+        'zoom_out'           : '<Control>minus',
+        'zoom_normal'        : '<Control>0',
+        'new_tab'            : '<Shift><Control>t',
+        'cycle_next'         : '<Control>Tab',
+        'cycle_prev'         : '<Shift><Control>Tab',
+        'go_next'            : '<Shift><Control>n',
+        'go_prev'            : '<Shift><Control>p',
+        'go_up'              : '<Alt>Up',
+        'go_down'            : '<Alt>Down',
+        'go_left'            : '<Alt>Left',
+        'go_right'           : '<Alt>Right',
+        'rotate_cw'          : '<Super>r',
+        'rotate_ccw'         : '<Super><Shift>r',
+        'split_horiz'        : '<Shift><Control>o',
+        'split_vert'         : '<Shift><Control>e',
+        'close_term'         : '<Shift><Control>w',
+        'copy'               : '<Shift><Control>c',
+        'paste'              : '<Shift><Control>v',
+        'toggle_scrollbar'   : '<Shift><Control>s',
+        'search'             : '<Shift><Control>f',
+        'page_up'            : '',
+        'page_down'          : '',
+        'page_up_half'       : '',
+        'page_down_half'     : '',
+        'line_up'            : '',
+        'line_down'          : '',
+        'close_window'       : '<Shift><Control>q',
+        'resize_up'          : '<Shift><Control>Up',
+        'resize_down'        : '<Shift><Control>Down',
+        'resize_left'        : '<Shift><Control>Left',
+        'resize_right'       : '<Shift><Control>Right',
+        'move_tab_right'     : '<Shift><Control>Page_Down',
+        'move_tab_left'      : '<Shift><Control>Page_Up',
+        'toggle_zoom'        : '<Shift><Control>x',
+        'scaled_zoom'        : '<Shift><Control>z',
+        'next_tab'           : '<Control>Page_Down',
+        'prev_tab'           : '<Control>Page_Up',
+        'switch_to_tab_1'    : '',
+        'switch_to_tab_2'    : '',
+        'switch_to_tab_3'    : '',
+        'switch_to_tab_4'    : '',
+        'switch_to_tab_5'    : '',
+        'switch_to_tab_6'    : '',
+        'switch_to_tab_7'    : '',
+        'switch_to_tab_8'    : '',
+        'switch_to_tab_9'    : '',
+        'switch_to_tab_10'   : '',
+        'full_screen'        : 'F11',
+        'reset'              : '<Shift><Control>r',
+        'reset_clear'        : '<Shift><Control>g',
+        'hide_window'        : '<Shift><Control><Alt>a',
+        'group_all'          : '<Super>g',
+        'group_all_toggle'   : '',
+        'ungroup_all'        : '<Shift><Super>g',
+        'group_tab'          : '<Super>t',
+        'group_tab_toggle'   : '',
+        'ungroup_tab'        : '<Shift><Super>t',
+        'new_window'         : '<Shift><Control>i',
+        'new_terminator'     : '<Super>i',
+        'broadcast_off'      : '<Alt>o',
+        'broadcast_group'    : '<Alt>g',
+        'broadcast_all'      : '<Alt>a',
+        'insert_number'      : '<Super>1',
+        'insert_padded'      : '<Super>0',
+        'edit_window_title'  : '<Control><Alt>w',
+        'edit_tab_title'     : '<Control><Alt>a',
+        'edit_terminal_title': '<Control><Alt>x',
+        'layout_launcher'    : '<Alt>l',
+        'next_profile'       : '',
+        'previous_profile'   : '',
+        'help'               : 'F1'
+    },
+    'profiles'     : {
+        'default': {
+            'allow_bold'         : True,
+            'audible_bell'       : False,
+            'visible_bell'       : False,
+            'urgent_bell'        : False,
+            'icon_bell'          : True,
+            'background_color'   : '#000000',
+            'background_darkness': 0.5,
+            'background_type'    : 'solid',
+            'backspace_binding'  : 'ascii-del',
+            'delete_binding'     : 'escape-sequence',
+            'color_scheme'       : 'grey_on_black',
+            'cursor_blink'       : True,
+            'cursor_shape'       : 'block',
+            'cursor_color'       : '',
+            'cursor_color_fg'    : True,
+            'term'               : 'xterm-256color',
+            'colorterm'          : 'truecolor',
+            'font'               : 'Mono 10',
+            'foreground_color'   : '#aaaaaa',
+            'show_titlebar'      : True,
+            'scrollbar_position' : "right",
+            'scroll_background'  : True,
+            'scroll_on_keystroke': True,
+            'scroll_on_output'   : False,
+            'scrollback_lines'   : 500,
+            'scrollback_infinite': False,
+            'exit_action'        : 'close',
+            'palette'            : '#2e3436:#cc0000:#4e9a06:#c4a000:\
 #3465a4:#75507b:#06989a:#d3d7cf:#555753:#ef2929:#8ae234:#fce94f:\
 #729fcf:#ad7fa8:#34e2e2:#eeeeec',
-                'word_chars'            : '-,./?%&#:_',
-                'mouse_autohide'        : True,
-                'login_shell'           : False,
-                'use_custom_command'    : False,
-                'custom_command'        : '',
-                'use_system_font'       : True,
-                'use_theme_colors'      : False,
-                'encoding'              : 'UTF-8',
-                'active_encodings'      : ['UTF-8', 'ISO-8859-1'],
-                'focus_on_close'        : 'auto',
-                'force_no_bell'         : False,
-                'cycle_term_tab'        : True,
-                'copy_on_selection'     : False,
-                'rewrap_on_resize'      : True,
-                'split_to_group'        : False,
-                'autoclean_groups'      : True,
-                'http_proxy'            : '',
-                'ignore_hosts'          : ['localhost','127.0.0.0/8','*.local'],
+            'word_chars'         : '-,./?%&#:_',
+            'mouse_autohide'     : True,
+            'login_shell'        : False,
+            'use_custom_command' : False,
+            'custom_command'     : '',
+            'use_system_font'    : True,
+            'use_theme_colors'   : False,
+            'encoding'           : 'UTF-8',
+            'active_encodings'   : ['UTF-8', 'ISO-8859-1'],
+            'focus_on_close'     : 'auto',
+            'force_no_bell'      : False,
+            'cycle_term_tab'     : True,
+            'copy_on_selection'  : False,
+            'rewrap_on_resize'   : True,
+            'split_to_group'     : False,
+            'autoclean_groups'   : True,
+            'http_proxy'         : '',
+            'ignore_hosts'       : ['localhost', '127.0.0.0/8', '*.local'],
+        },
+    },
+    'layouts'      : {
+        'default': {
+            'window0': {
+                'type'  : 'Window',
+                'parent': ''
             },
-        },
-        'layouts': {
-                'default': {
-                    'window0': {
-                        'type': 'Window',
-                        'parent': ''
-                        },
-                    'child1': {
-                        'type': 'Terminal',
-                        'parent': 'window0'
-                        }
-                    }
-                },
-        'plugins': {
-        },
+            'child1' : {
+                'type'  : 'Terminal',
+                'parent': 'window0'
+            }
+        }
+    },
+    'plugins'      : {
+    },
 }
+
 
 class Config(object):
     """Class to provide a slightly richer config API above ConfigBase"""
@@ -422,6 +421,7 @@ class Config(object):
         """Set a layout"""
         return self.base.set_layout(layout, tree)
 
+
 class ConfigBase(Borg):
     """Class to provide access to our user configuration"""
     loaded = None
@@ -467,30 +467,30 @@ class ConfigBase(Borg):
             for layout in DEFAULTS['layouts']:
                 self.layouts[layout] = copy(DEFAULTS['layouts'][layout])
 
-    def get_default_config(self,defaultconfig={}):
+    def get_default_config(self, defaultconfig={}):
         """Convert our tree of default values into a ConfigObj validation
         specification"""
 
-        defaultconfig['global_config']={}
+        defaultconfig['global_config'] = {}
         defaultconfig['global_config'].update(DEFAULTS['global_config'])
 
-        defaultconfig['keybindings']={}
+        defaultconfig['keybindings'] = {}
         defaultconfig['keybindings'].update(DEFAULTS['keybindings'].items())
 
-        defaultconfig['profiles']={}
+        defaultconfig['profiles'] = {}
         defaultconfig['profiles'].update(DEFAULTS['profiles'])
 
-        defaultconfig['layouts']={}
+        defaultconfig['layouts'] = {}
         defaultconfig['layouts'].update(DEFAULTS['layouts'])
 
-        defaultconfig['plugins']={}
+        defaultconfig['plugins'] = {}
 
         if DEBUG == True:
-            with open(os.path.join(os.environ.get('TMPDIR','/tmp'),
+            with open(os.path.join(os.environ.get('TMPDIR', '/tmp'),
                                    'terminator_configspec_debug.txt'),
                       mode='wt') as f:
-                json.dump(defaultconfig,f,
-                          indent=4,separators=(',', ':'),sort_keys=True)
+                json.dump(defaultconfig, f,
+                          indent=4, separators=(',', ':'), sort_keys=True)
 
     def load(self):
         """Load configuration data from our various sources"""
@@ -498,35 +498,35 @@ class ConfigBase(Borg):
             dbg('ConfigBase::load: config already loaded')
             return
 
-        self.config_filename=self.command_line_options.config or os.path.join(get_config_dir(), 'config.json')
+        self.config_filename = self.command_line_options.config or os.path.join(get_config_dir(), 'config.json')
 
         dbg('load config file: %s' % self.config_filename)
 
-        configdata={}
+        configdata = {}
         self.get_default_config(configdata)
         try:
-            with open(self.config_filename,mode='rt') as f:
+            with open(self.config_filename, mode='rt') as f:
                 configdata.update(json.load(f))
         except FileNotFoundError as ex:
             err('ConfigBase::load: Unable to load %s (%s)' % (self.config_filename, ex))
 
         for section_name in self.sections:
-            section=getattr(self,section_name)
-            section.update(configdata.get(section_name,()))
+            section = getattr(self, section_name)
+            section.update(configdata.get(section_name, ()))
 
-            #set default profile options
-            if section_name=='profiles':
+            # set default profile options
+            if section_name == 'profiles':
                 for profile in section.values():
-                    for k,v in DEFAULTS['profiles']['default'].items():
+                    for k, v in DEFAULTS['profiles']['default'].items():
                         if k not in profile:
-                            profile[k]=v
+                            profile[k] = v
 
-            #set default layout options
-            if section_name=='layouts':
+            # set default layout options
+            if section_name == 'layouts':
                 for layouts in section.values():
-                    for k,v in DEFAULTS['layouts']['default'].items():
+                    for k, v in DEFAULTS['layouts']['default'].items():
                         if k not in layouts:
-                            profile[k]=v
+                            profile[k] = v
 
         self.loaded = True
 
@@ -539,16 +539,16 @@ class ConfigBase(Borg):
         """Save the config to a file"""
         dbg('ConfigBase::save: saving config')
 
-        configdata={}
+        configdata = {}
         for section_name in self.sections:
-            configdata[section_name]=getattr(self,section_name)
+            configdata[section_name] = getattr(self, section_name)
 
-        config_dir=os.path.dirname(self.config_filename)
-        os.makedirs(config_dir,exist_ok=True)
+        config_dir = os.path.dirname(self.config_filename)
+        os.makedirs(config_dir, exist_ok=True)
         try:
-            with open(self.config_filename,mode='wt') as f:
-                json.dump(configdata,f,
-                          indent=4,separators=(',', ':'),sort_keys=True)
+            with open(self.config_filename, mode='wt') as f:
+                json.dump(configdata, f,
+                          indent=4, separators=(',', ':'), sort_keys=True)
         except Exception as ex:
             err('ConfigBase::save: Unable to save config: %s' % ex)
 
@@ -560,17 +560,17 @@ class ConfigBase(Borg):
 
         if key in self.global_config:
             dbg('ConfigBase::get_item: %s found in globals: %s' %
-                    (key, self.global_config[key]))
+                (key, self.global_config[key]))
             return self.global_config[key]
         elif key in self.profiles[profile]:
             dbg('ConfigBase::get_item: %s found in profile %s: %s' % (
-                    key, profile, self.profiles[profile][key]))
+                key, profile, self.profiles[profile][key]))
             return self.profiles[profile][key]
         elif key == 'keybindings':
             return self.keybindings
         elif plugin and plugin in self.plugins and key in self.plugins[plugin]:
             dbg('ConfigBase::get_item: %s found in plugin %s: %s' % (
-                    key, plugin, self.plugins[plugin][key]))
+                key, plugin, self.plugins[plugin][key]))
             return self.plugins[plugin][key]
         elif default:
             return default
@@ -580,7 +580,7 @@ class ConfigBase(Borg):
     def set_item(self, key, value, profile='default', plugin=None):
         """Set a configuration item"""
         dbg('ConfigBase::set_item: Setting %s=%s (profile=%s, plugin=%s)' %
-                (key, value, profile, plugin))
+            (key, value, profile, plugin))
 
         if key in self.global_config:
             self.global_config[key] = value
@@ -642,4 +642,3 @@ class ConfigBase(Borg):
     def set_layout(self, layout, tree):
         """Set a layout"""
         self.layouts[layout] = tree
-

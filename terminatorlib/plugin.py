@@ -23,12 +23,14 @@
 
 """
 
-import sys
 import os
+import sys
+
 from terminatorlib import borg
 from terminatorlib.config import Config
 from terminatorlib.terminator import Terminator
 from terminatorlib.util import dbg, err, get_config_dir
+
 
 class Plugin(object):
     """Definition of our base plugin class"""
@@ -41,6 +43,7 @@ class Plugin(object):
     def unload(self):
         """Prepare to be unloaded"""
         pass
+
 
 class PluginRegistry(borg.Borg):
     """Definition of a class to store plugin instances"""
@@ -147,6 +150,7 @@ for %s' % (len(self.instances), capability))
         self.instances[plugin].unload()
         del self.instances[plugin]
 
+
 # This is where we should define a base class for each type of plugin we
 # support
 
@@ -180,6 +184,7 @@ class URLHandler(Plugin):
         for terminal in terminator.terminals:
             terminal.match_remove(self.handler_name)
 
+
 # MenuItem - This is able to execute code during the construction of the
 #             context menu of a Terminal.
 class MenuItem(Plugin):
@@ -189,4 +194,3 @@ class MenuItem(Plugin):
     def callback(self, menuitems, menu, terminal):
         """Callback to transform the enclosed URL"""
         raise NotImplementedError
-

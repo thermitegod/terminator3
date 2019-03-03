@@ -29,11 +29,13 @@
 
 """
 
-import os
-import sys, os.path
+import os.path
+import sys
+
 sys.path.insert(0, os.path.realpath(os.path.join(os.path.dirname(__file__), "..")))
 
 from terminatorlib.borg import Borg
+
 
 class TestBorg(Borg):
     attribute = None
@@ -46,6 +48,7 @@ class TestBorg(Borg):
         if not self.attribute:
             self.attribute = 0
 
+
 class TestBorg2(Borg):
     attribute = None
 
@@ -56,4 +59,3 @@ class TestBorg2(Borg):
     def prepare_attributes(self):
         if not self.attribute:
             self.attribute = 1
-

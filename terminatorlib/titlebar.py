@@ -3,17 +3,17 @@
 # GPL v2 only
 """titlebar.py - classes necessary to provide a terminal title bar"""
 
-from gi.repository import Gtk, Gdk
-from gi.repository import GObject
-from gi.repository import Pango
-import random
 import itertools
+import random
 
-from terminatorlib.version import APP_NAME
-from terminatorlib.util import dbg
-from terminatorlib.terminator import Terminator
+from gi.repository import GObject, Gdk, Gtk, Pango
+
 from terminatorlib.editablelabel import EditableLabel
+from terminatorlib.terminator import Terminator
 from terminatorlib.translation import _
+from terminatorlib.util import dbg
+from terminatorlib.version import APP_NAME
+
 
 # pylint: disable-msg=R0904
 # pylint: disable-msg=W0613
@@ -34,10 +34,10 @@ class Titlebar(Gtk.EventBox):
     bellicon = None
 
     __gsignals__ = {
-            'clicked': (GObject.SignalFlags.RUN_LAST, None, ()),
-            'edit-done': (GObject.SignalFlags.RUN_LAST, None, ()),
-            'create-group': (GObject.SignalFlags.RUN_LAST, None,
-                (GObject.TYPE_STRING,)),
+        'clicked'     : (GObject.SignalFlags.RUN_LAST, None, ()),
+        'edit-done'   : (GObject.SignalFlags.RUN_LAST, None, ()),
+        'create-group': (GObject.SignalFlags.RUN_LAST, None,
+                         (GObject.TYPE_STRING,)),
     }
 
     def __init__(self, terminal):
@@ -71,7 +71,7 @@ class Titlebar(Gtk.EventBox):
         elif self.terminator.groupsend == groupsend_type['off']:
             icon_name = 'off'
         self.set_from_icon_name('_active_broadcast_%s' % icon_name,
-                Gtk.IconSize.MENU)
+                                Gtk.IconSize.MENU)
 
         grouphbox.pack_start(self.groupicon, False, True, 2)
         grouphbox.pack_start(self.grouplabel, False, True, 2)
@@ -165,11 +165,11 @@ class Titlebar(Gtk.EventBox):
                 group_bg = self.config['title_transmit_bg_color']
 
             self.label.modify_fg(Gtk.StateType.NORMAL,
-                    Gdk.color_parse(title_fg))
+                                 Gdk.color_parse(title_fg))
             self.grouplabel.modify_fg(Gtk.StateType.NORMAL,
-                    Gdk.color_parse(group_fg))
+                                      Gdk.color_parse(group_fg))
             self.modify_bg(Gtk.StateType.NORMAL,
-                    Gdk.color_parse(title_bg))
+                           Gdk.color_parse(title_bg))
             if not self.get_desired_visibility():
                 if default_bg == True:
                     color = term.get_style_context().get_background_color(Gtk.StateType.NORMAL)  # VERIFY FOR GTK3
@@ -177,7 +177,7 @@ class Titlebar(Gtk.EventBox):
                     color = Gdk.color_parse(title_bg)
             self.update_visibility()
             self.ebox.modify_bg(Gtk.StateType.NORMAL,
-                    Gdk.color_parse(group_bg))
+                                Gdk.color_parse(group_bg))
             self.set_from_icon_name(icon, Gtk.IconSize.MENU)
 
     def update_visibility(self):
@@ -201,7 +201,7 @@ class Titlebar(Gtk.EventBox):
             dbg('configured visibility: %s' % self.config['show_titlebar'])
             return self.config['show_titlebar']
 
-    def set_from_icon_name(self, name, size = Gtk.IconSize.MENU):
+    def set_from_icon_name(self, name, size=Gtk.IconSize.MENU):
         """Set an icon for the group label"""
         if not name:
             self.groupicon.hide()
@@ -251,14 +251,14 @@ class Titlebar(Gtk.EventBox):
         if self.terminal.group:
             self.groupentry.set_text(self.terminal.group)
         else:
-            defaultmembers=[_('Alpha'),_('Beta'),_('Gamma'),_('Delta'),_('Epsilon'),_('Zeta'),_('Eta'),
-                            _('Theta'),_('Iota'),_('Kappa'),_('Lambda'),_('Mu'),_('Nu'),_('Xi'),
-                            _('Omicron'),_('Pi'),_('Rho'),_('Sigma'),_('Tau'),_('Upsilon'),_('Phi'),
-                            _('Chi'),_('Psi'),_('Omega')]
-            currentgroups=set(self.terminator.groups)
-            for i in range(1,4):
-                defaultgroups=set(map(''.join, list(itertools.product(defaultmembers,repeat=i))))
-                freegroups = list(defaultgroups-currentgroups)
+            defaultmembers = [_('Alpha'), _('Beta'), _('Gamma'), _('Delta'), _('Epsilon'), _('Zeta'), _('Eta'),
+                              _('Theta'), _('Iota'), _('Kappa'), _('Lambda'), _('Mu'), _('Nu'), _('Xi'),
+                              _('Omicron'), _('Pi'), _('Rho'), _('Sigma'), _('Tau'), _('Upsilon'), _('Phi'),
+                              _('Chi'), _('Psi'), _('Omega')]
+            currentgroups = set(self.terminator.groups)
+            for i in range(1, 4):
+                defaultgroups = set(map(''.join, list(itertools.product(defaultmembers, repeat=i))))
+                freegroups = list(defaultgroups - currentgroups)
                 if freegroups:
                     self.groupentry.set_text(random.choice(freegroups))
                     break
@@ -281,7 +281,7 @@ class Titlebar(Gtk.EventBox):
         groupname = self.groupentry.get_text() or None
         dbg('Titlebar::groupentry_activate: creating group: %s' % groupname)
         self.groupentry_cancel(None, None)
-        last_focused_term=self.terminator.last_focused_term
+        last_focused_term = self.terminator.last_focused_term
         if self.terminal.targets_for_new_group:
             [term.titlebar.emit('create-group', groupname) for term in self.terminal.targets_for_new_group]
             self.terminal.targets_for_new_group = None
@@ -317,5 +317,6 @@ class Titlebar(Gtk.EventBox):
         """Set a custom string"""
         self.label.set_text(string)
         self.label.set_custom()
+
 
 GObject.type_register(Titlebar)

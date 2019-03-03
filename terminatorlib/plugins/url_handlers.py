@@ -3,10 +3,12 @@
 # GPL v2 only
 """url_handlers.py - Default plugins for URL handling"""
 import re
+
 import terminatorlib.plugin as plugin
 
 # Every plugin you want Terminator to load *must* be listed in 'AVAILABLE'
 AVAILABLE = ['LaunchpadBugURLHandler', 'LaunchpadCodeURLHandler', 'APTURLHandler']
+
 
 class LaunchpadBugURLHandler(plugin.URLHandler):
     """Launchpad Bug URL handler. If the URL looks like a Launchpad changelog
@@ -23,6 +25,7 @@ class LaunchpadBugURLHandler(plugin.URLHandler):
         for item in re.findall(r'[0-9]+', url):
             url = 'https://bugs.launchpad.net/bugs/%s' % item
             return url
+
 
 class LaunchpadCodeURLHandler(plugin.URLHandler):
     """Launchpad Code URL handler. If the URL looks like a Launchpad project or
@@ -45,6 +48,7 @@ class LaunchpadCodeURLHandler(plugin.URLHandler):
             url = url[3:]
         return 'https://code.launchpad.net/+branch/%s' % url
 
+
 class APTURLHandler(plugin.URLHandler):
     """APT URL handler. If there is a URL that looks like an apturl, handle
     it appropriately"""
@@ -57,4 +61,3 @@ class APTURLHandler(plugin.URLHandler):
     def callback(self, url):
         """Actually we don't need to do anything for this to work"""
         return url
-

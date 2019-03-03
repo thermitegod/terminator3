@@ -18,7 +18,8 @@
 #    , Boston, MA  02110-1301  USA
 
 """ Editable Label class"""
-from gi.repository import GLib, GObject, Gtk, Gdk
+from gi.repository import GObject, Gdk, Gtk
+
 
 class EditableLabel(Gtk.EventBox):
     # pylint: disable-msg=W0212
@@ -36,10 +37,10 @@ class EditableLabel(Gtk.EventBox):
     _entry_handler_id = None
 
     __gsignals__ = {
-            'edit-done': (GObject.SignalFlags.RUN_LAST, None, ()),
+        'edit-done': (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
-    def __init__(self, text = ""):
+    def __init__(self, text=""):
         """ Class initialiser"""
         GObject.GObject.__init__(self)
 
@@ -50,9 +51,9 @@ class EditableLabel(Gtk.EventBox):
         self.add(self._label)
         self.connect("button-press-event", self._on_click_text)
 
-    def set_angle(self, angle ):
+    def set_angle(self, angle):
         """set angle of the label"""
-        self._label.set_angle( angle )
+        self._label.set_angle(angle)
 
     def editing(self):
         """Return if we are currently editing"""
@@ -101,7 +102,7 @@ class EditableLabel(Gtk.EventBox):
         # pylint: disable-msg=W0613
         """replace Gtk.Entry by the Gtk.Label"""
         if self._entry and self._entry in self.get_children():
-            #disconnect signals to avoid segfault :s
+            # disconnect signals to avoid segfault :s
             for sig in self._entry_handler_id:
                 if self._entry.handler_is_connected(sig):
                     self._entry.disconnect(sig)
@@ -159,5 +160,6 @@ class EditableLabel(Gtk.EventBox):
     def modify_font(self, fontdesc):
         """Set the label font using a pango.FontDescription"""
         self._label.modify_font(fontdesc)
+
 
 GObject.type_register(EditableLabel)

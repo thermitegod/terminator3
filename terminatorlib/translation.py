@@ -17,20 +17,23 @@
 
 """Terminator by Chris Jones <cmsj@tenshu.net>"""
 
-from terminatorlib.version import APP_NAME
 from terminatorlib.util import dbg
+from terminatorlib.version import APP_NAME
 
 # pylint: disable-msg=W0702
 try:
     import gettext
+
     gettext.textdomain(APP_NAME)
     _translate = gettext.gettext
 except:
     dbg("Using fallback _()")
 
+
     def _translate(text):
         """A _ function for systems without gettext. Effectively a NOOP"""
         return text
+
 
 def _(s):
     return _translate(s) or ''

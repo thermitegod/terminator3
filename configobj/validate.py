@@ -130,7 +130,6 @@
 
 __version__ = '1.0.1'
 
-
 __all__ = (
     '__version__',
     'dottedQuadToNum',
@@ -162,9 +161,7 @@ __all__ = (
     'is_option',
 )
 
-
 import re
-
 
 _list_arg = re.compile(r'''
     (?:
@@ -187,7 +184,7 @@ _list_arg = re.compile(r'''
             )
         \)
     )
-''', re.VERBOSE | re.DOTALL)    # two groups
+''', re.VERBOSE | re.DOTALL)  # two groups
 
 _list_members = re.compile(r'''
     (
@@ -198,7 +195,7 @@ _list_members = re.compile(r'''
     (?:
     (?:\s*,\s*)|(?:\s*$)            # comma
     )
-''', re.VERBOSE | re.DOTALL)    # one group
+''', re.VERBOSE | re.DOTALL)  # one group
 
 _paramstring = r'''
     (?:
@@ -281,7 +278,7 @@ def dottedQuadToNum(ip):
 
     try:
         return struct.unpack('!L',
-            socket.inet_aton(ip.strip()))[0]
+                             socket.inet_aton(ip.strip()))[0]
     except socket.error:
         # bug in inet_aton, corrected in Python 2.3
         if ip.strip() == '255.255.255.255':
@@ -321,7 +318,7 @@ def numToDottedQuad(num):
         raise ValueError('Not a good numeric IP: %s' % num)
     try:
         return socket.inet_ntoa(
-            struct.pack('!L', num))
+                struct.pack('!L', num))
     except (socket.error, struct.error, OverflowError):
         raise ValueError('Not a good numeric IP: %s' % num)
 
@@ -426,8 +423,8 @@ class VdtValueTooShortError(VdtValueError):
         VdtValueTooShortError: the value "jed" is too short.
         """
         ValidateError.__init__(
-            self,
-            'the value "%s" is too short.' % (value,))
+                self,
+                'the value "%s" is too short.' % (value,))
 
 
 class VdtValueTooLongError(VdtValueError):
@@ -518,8 +515,7 @@ class Validator(object):
     _func_re = re.compile(r'(.+?)\((.*)\)', re.DOTALL)
 
     # this regex takes apart keyword arguments
-    _key_arg = re.compile(r'^([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(.*)$',  re.DOTALL)
-
+    _key_arg = re.compile(r'^([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(.*)$', re.DOTALL)
 
     # this regex finds keyword=list(....) type values
     _list_arg = _list_arg
@@ -532,36 +528,34 @@ class Validator(object):
     _paramfinder = re.compile(_paramstring, re.VERBOSE | re.DOTALL)
     _matchfinder = re.compile(_matchstring, re.VERBOSE | re.DOTALL)
 
-
     def __init__(self, functions=None):
         """
         >>> vtri = Validator()
         """
         self.functions = {
-            '': self._pass,
-            'integer': is_integer,
-            'float': is_float,
-            'boolean': is_boolean,
-            'ip_addr': is_ip_addr,
-            'string': is_string,
-            'list': is_list,
-            'tuple': is_tuple,
-            'int_list': is_int_list,
-            'float_list': is_float_list,
-            'bool_list': is_bool_list,
+            ''            : self._pass,
+            'integer'     : is_integer,
+            'float'       : is_float,
+            'boolean'     : is_boolean,
+            'ip_addr'     : is_ip_addr,
+            'string'      : is_string,
+            'list'        : is_list,
+            'tuple'       : is_tuple,
+            'int_list'    : is_int_list,
+            'float_list'  : is_float_list,
+            'bool_list'   : is_bool_list,
             'ip_addr_list': is_ip_addr_list,
-            'string_list': is_string_list,
-            'mixed_list': is_mixed_list,
-            'pass': self._pass,
-            'option': is_option,
-            'force_list': force_list,
+            'string_list' : is_string_list,
+            'mixed_list'  : is_mixed_list,
+            'pass'        : self._pass,
+            'option'      : is_option,
+            'force_list'  : force_list,
         }
         if functions is not None:
             self.functions.update(functions)
         # tekNico: for use by ConfigObj
         self.baseErrorClass = ValidateError
         self._cache = {}
-
 
     def check(self, check, value, missing=False):
         """
@@ -598,7 +592,6 @@ class Validator(object):
 
         return self._check_value(value, fun_name, fun_args, fun_kwargs)
 
-
     def _handle_none(self, value):
         if value == 'None':
             value = None
@@ -606,7 +599,6 @@ class Validator(object):
             # Special case a quoted None
             value = self._unquote(value)
         return value
-
 
     def _parse_with_caching(self, check):
         if check in self._cache:
@@ -621,7 +613,6 @@ class Validator(object):
             self._cache[check] = fun_name, list(fun_args), dict(fun_kwargs), default
         return fun_name, fun_args, fun_kwargs, default
 
-
     def _check_value(self, value, fun_name, fun_args, fun_kwargs):
         try:
             fun = self.functions[fun_name]
@@ -629,7 +620,6 @@ class Validator(object):
             raise VdtUnknownCheckError(fun_name)
         else:
             return fun(value, *fun_args, **fun_kwargs)
-
 
     def _parse_check(self, check):
         fun_match = self._func_re.match(check)
@@ -680,13 +670,11 @@ class Validator(object):
 
         return fun_name, fun_args, fun_kwargs, default
 
-
     def _unquote(self, val):
         """Unquote a value if necessary."""
         if (len(val) >= 2) and (val[0] in ("'", '"')) and (val[0] == val[-1]):
             val = val[1:-1]
         return val
-
 
     def _list_handle(self, listmatch):
         """Take apart a ``keyword=list('val, 'val')`` type string."""
@@ -696,7 +684,6 @@ class Validator(object):
         for arg in self._list_members.findall(args):
             out.append(self._unquote(arg))
         return name, out
-
 
     def _pass(self, value):
         """
@@ -708,7 +695,6 @@ class Validator(object):
         '0'
         """
         return value
-
 
     def get_default_value(self, check):
         """
@@ -856,7 +842,7 @@ def is_float(value, min=None, max=None):
     VdtValueTooBigError: the value "35.0" is too big.
     """
     (min_val, max_val) = _is_num_param(
-        ('min', 'max'), (min, max), to_float=True)
+            ('min', 'max'), (min, max), to_float=True)
     if not isinstance(value, (int, float, str)):
         raise VdtTypeError(value)
     if not isinstance(value, float):
@@ -873,7 +859,7 @@ def is_float(value, min=None, max=None):
 
 
 bool_dict = {
-    True: True, 'on': True, '1': True, 'true': True, 'yes': True,
+    True : True, 'on': True, '1': True, 'true': True, 'yes': True,
     False: False, 'off': False, '0': False, 'false': False, 'no': False,
 }
 
@@ -1230,12 +1216,11 @@ def force_list(value, min=None, max=None):
     return is_list(value, min, max)
 
 
-
 fun_dict = {
     'integer': is_integer,
-    'float': is_float,
+    'float'  : is_float,
     'ip_addr': is_ip_addr,
-    'string': is_string,
+    'string' : is_string,
     'boolean': is_boolean,
 }
 
@@ -1422,6 +1407,7 @@ def _test2():
     3
     """
 
+
 def _test3():
     r"""
     >>> vtor.check('string(default="")', '', missing=True)
@@ -1454,6 +1440,7 @@ if __name__ == '__main__':
     # run the code tests in doctest format
     import sys
     import doctest
+
     m = sys.modules.get('__main__')
     globs = m.__dict__.copy()
     globs.update({

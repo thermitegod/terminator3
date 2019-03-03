@@ -15,9 +15,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor
 # , Boston, MA  02110-1301  USA
 import re
+
 import terminatorlib.plugin as plugin
 
-AVAILABLE = [ 'MavenPluginURLHandler' ]
+AVAILABLE = ['MavenPluginURLHandler']
+
 
 class MavenPluginURLHandler(plugin.URLHandler):
     """Maven plugin handler. If the name of a Maven plugin is
@@ -49,12 +51,12 @@ class MavenPluginURLHandler(plugin.URLHandler):
             if artifactid is not None:
                 if re.match(MavenPluginURLHandler.maven_filters['apache_maven_plugin_artifact_id'], artifactid):
                     if goal is not None:
-                        return 'http://maven.apache.org/plugins/%s/%s-mojo.html' % ( artifactid, goal)
+                        return 'http://maven.apache.org/plugins/%s/%s-mojo.html' % (artifactid, goal)
                     else:
                         return 'http://maven.apache.org/plugins/%s' % artifactid
                 elif re.match(MavenPluginURLHandler.maven_filters['codehaus_maven_plugin_artifact_id'], artifactid):
                     if goal is not None:
-                        return 'http://mojo.codehaus.org/%s/%s-mojo.html' % ( artifactid, goal)
+                        return 'http://mojo.codehaus.org/%s/%s-mojo.html' % (artifactid, goal)
                     else:
                         return 'http://mojo.codehaus.org/%s' % artifactid
 

@@ -16,17 +16,18 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 """Terminator.util - misc utility functions"""
 
-import sys
-import cairo
+import inspect
 import os
 import pwd
-import inspect
-import uuid
 import subprocess
+import sys
+import uuid
+
+import cairo
 import gi
 
 try:
-    gi.require_version('Gtk','3.0')
+    gi.require_version('Gtk', '3.0')
     from gi.repository import Gtk, Gdk
 except ImportError:
     print('You need Gtk 3.0+ to run Remotinator.')
@@ -41,7 +42,8 @@ DEBUGCLASSES = []
 # list of methods to show debugging for. empty list means show all methods
 DEBUGMETHODS = []
 
-def dbg(log = ""):
+
+def dbg(log=""):
     """Print a message if debugging is enabled"""
     if DEBUG:
         stackitem = inspect.stack()[1]
@@ -68,21 +70,24 @@ def dbg(log = ""):
         except IOError:
             pass
 
-def err(log = ""):
+
+def err(log=""):
     """Print an error message"""
     try:
         print(log, file=sys.stderr)
     except IOError:
         pass
 
-def gerr(message = None):
+
+def gerr(message=None):
     """Display a graphical error. This should only be used for serious
     errors as it will halt execution"""
 
     dialog = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL,
-            Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, message)
+                               Gtk.MessageType.ERROR, Gtk.ButtonsType.OK, message)
     dialog.run()
     dialog.destroy()
+
 
 def has_ancestor(widget, wtype):
     """Walk up the family tree of widget to see if any ancestors are of type"""
@@ -92,11 +97,12 @@ def has_ancestor(widget, wtype):
             return True
     return False
 
+
 def manual_lookup():
-    '''Choose the manual to open based on LANGUAGE'''
+    """Choose the manual to open based on LANGUAGE"""
     available_languages = ['en']
     base_url = 'https://terminator-gtk3.readthedocs.io/%s/latest/'
-    target = 'en'   # default to English
+    target = 'en'  # default to English
     if 'LANGUAGE' in os.environ:
         languages = os.environ['LANGUAGE'].split(':')
         for language in languages:
@@ -106,8 +112,9 @@ def manual_lookup():
 
     return base_url % target
 
+
 def path_lookup(command):
-    '''Find a command in our path'''
+    """Find a command in our path"""
     if os.path.isabs(command):
         if os.path.isfile(command):
             return command
@@ -135,6 +142,7 @@ def path_lookup(command):
 
     dbg('path_lookup: Unable to locate %s' % command)
 
+
 def shell_lookup():
     """Find an appropriate shell for the user"""
     try:
@@ -155,6 +163,7 @@ def shell_lookup():
                 return rshell
     dbg('shell_lookup: Unable to locate a shell')
 
+
 def widget_pixbuf(widget, maxsize=None):
     """Generate a pixbuf of a widget"""
     # FIXME: Can this be changed from using "import cairo" to "from gi.repository import cairo"?
@@ -172,7 +181,7 @@ def widget_pixbuf(widget, maxsize=None):
     preview_width, preview_height = int(width * factor), int(height * factor)
 
     preview_surface = Gdk.Window.create_similar_surface(window,
-        cairo.CONTENT_COLOR, preview_width, preview_height)
+                                                        cairo.CONTENT_COLOR, preview_width, preview_height)
 
     cairo_context = cairo.Context(preview_surface)
     cairo_context.scale(factor, factor)
@@ -182,6 +191,7 @@ def widget_pixbuf(widget, maxsize=None):
     scaledpixbuf = Gdk.pixbuf_get_from_surface(preview_surface, 0, 0, preview_width, preview_height);
 
     return scaledpixbuf
+
 
 def get_config_dir():
     """Expand all the messy nonsense for finding where ~/.config/terminator
@@ -193,6 +203,7 @@ def get_config_dir():
 
     dbg('Found config dir: %s' % configdir)
     return os.path.join(configdir, 'terminator')
+
 
 def dict_diff(reference, working):
     """Examine the values in the supplied working set and return a new dict
@@ -213,44 +224,48 @@ def dict_diff(reference, working):
 
     return result
 
+
 # Helper functions for directional navigation
 def get_edge(allocation, direction):
     """Return the edge of the supplied allocation that we will care about for
     directional navigation"""
-    dd={'left':  (allocation.x, allocation.y, allocation.y + allocation.height),
-        'right': (allocation.x + allocation.width, allocation.y, allocation.y + allocation.height),
-        'up':    (allocation.y, allocation.x, allocation.x + allocation.width),
-        'down':  (allocation.y + allocation.height, allocation.x, allocation.x + allocation.width)}
+    dd = {'left' : (allocation.x, allocation.y, allocation.y + allocation.height),
+          'right': (allocation.x + allocation.width, allocation.y, allocation.y + allocation.height),
+          'up'   : (allocation.y, allocation.x, allocation.x + allocation.width),
+          'down' : (allocation.y + allocation.height, allocation.x, allocation.x + allocation.width)}
     try:
         return dd[direction]
     except KeyError:
         raise ValueError('Unknown direction %s' % direction)
+
 
 def get_nav_possible(edge, allocation, direction, p1, p2):
     """Check if the supplied allocation is in the right direction of the
     supplied edge"""
     x1, x2 = allocation.x, allocation.x + allocation.width
     y1, y2 = allocation.y, allocation.y + allocation.height
-    dd={'left':  (x2 <= edge and y1 <= p2 and y2 >= p1),
-        'right': (x1 >= edge and y1 <= p2 and y2 >= p1),
-        'up':    (y2 <= edge and x1 <= p2 and x2 >= p1),
-        'down':  (y1 >= edge and x1 <= p2 and x2 >= p1)}
+    dd = {'left' : (x2 <= edge and y1 <= p2 and y2 >= p1),
+          'right': (x1 >= edge and y1 <= p2 and y2 >= p1),
+          'up'   : (y2 <= edge and x1 <= p2 and x2 >= p1),
+          'down' : (y1 >= edge and x1 <= p2 and x2 >= p1)}
     try:
         return dd[direction]
     except KeyError:
         raise ValueError('Unknown direction: %s' % direction)
 
+
 def get_nav_offset(edge, allocation, direction):
     """Work out how far edge is from a particular point on the allocation
     rectangle, in the given direction"""
-    dd={'left':  (edge - (allocation.x + allocation.width)),
-        'right': (allocation.x - edge),
-        'up':    (edge - (allocation.y + allocation.height)),
-        'down':  (allocation.y - edge)}
+    dd = {'left' : (edge - (allocation.x + allocation.width)),
+          'right': (allocation.x - edge),
+          'up'   : (edge - (allocation.y + allocation.height)),
+          'down' : (allocation.y - edge)}
     try:
         return dd[direction]
     except KeyError:
         raise ValueError('Unknown direction: %s' % direction)
+
 
 def get_nav_tiebreak(direction, cursor_x, cursor_y, rect):
     """We have multiple candidate terminals. Pick the closest by cursor
@@ -261,6 +276,7 @@ def get_nav_tiebreak(direction, cursor_x, cursor_y, rect):
         return (cursor_x >= rect.x and cursor_x <= (rect.x + rect.width))
     else:
         raise ValueError('Unknown direction: %s' % direction)
+
 
 def enumerate_descendants(parent):
     """Walk all our children and build up a list of containers and
@@ -294,14 +310,16 @@ def enumerate_descendants(parent):
             containers.append(child)
 
     dbg('%d containers and %d terminals fall beneath %s' % (len(containers),
-        len(terminals), parent))
+                                                            len(terminals), parent))
     return (containers, terminals)
+
 
 def make_uuid(str_uuid=None):
     """Generate a UUID for an object"""
     if str_uuid:
         return uuid.UUID(str_uuid)
     return uuid.uuid4()
+
 
 def inject_uuid(target):
     """Inject a UUID into an existing object"""
@@ -311,6 +329,7 @@ def inject_uuid(target):
         target.uuid = uuid
     else:
         dbg("Object already has a UUID: %s" % target)
+
 
 def spawn_new_terminator(cwd, args):
     """Start a new terminator instance with the given arguments"""
@@ -325,7 +344,8 @@ def spawn_new_terminator(cwd, args):
             return False
 
     dbg("Spawning: %s" % cmd)
-    subprocess.run([cmd]+args)
+    subprocess.run([cmd] + args)
+
 
 def display_manager():
     """Try to detect which display manager we run under"""

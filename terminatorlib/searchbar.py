@@ -3,12 +3,11 @@
 # GPL v2 only
 """searchbar.py - classes necessary to provide a terminal search bar"""
 
-from gi.repository import Gtk, Gdk
-from gi.repository import GObject
-from gi.repository import GLib
+from gi.repository import GLib, GObject, Gdk, Gtk
 
-from terminatorlib.translation import _
 from terminatorlib.config import Config
+from terminatorlib.translation import _
+
 
 # pylint: disable-msg=R0904
 class Searchbar(Gtk.HBox):
@@ -164,5 +163,6 @@ class Searchbar(Gtk.HBox):
     def get_search_term(self):
         """Return the currently set search term"""
         return self.entry.get_text()
+
 
 GObject.type_register(Searchbar)

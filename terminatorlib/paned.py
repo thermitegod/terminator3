@@ -5,12 +5,14 @@
 variants"""
 
 import time
-from gi.repository import GLib, GObject, Gtk, Gdk
 
-from terminatorlib.util import dbg, err,  enumerate_descendants
-from terminatorlib.terminator import Terminator
-from terminatorlib.factory import Factory
+from gi.repository import GLib, GObject, Gdk, Gtk
+
 from terminatorlib.container import Container
+from terminatorlib.factory import Factory
+from terminatorlib.terminator import Terminator
+from terminatorlib.util import dbg, enumerate_descendants, err
+
 
 # pylint: disable-msg=R0921
 # pylint: disable-msg=E1101
@@ -28,15 +30,14 @@ class Paned(Container):
         self.terminator = Terminator()
         self.maker = Factory()
         Container.__init__(self)
-        self.signals.append({'name': 'resize-term',
-                             'flags': GObject.SignalFlags.RUN_LAST,
+        self.signals.append({'name'       : 'resize-term',
+                             'flags'      : GObject.SignalFlags.RUN_LAST,
                              'return_type': None,
                              'param_types': (GObject.TYPE_STRING,)})
 
-
     # pylint: disable-msg=W0613
     def split_axis(self, widget, vertical=True, cwd=None, sibling=None,
-            widgetfirst=True):
+                   widgetfirst=True):
         """Default axis splitter. This should be implemented by subclasses"""
         order = None
 
@@ -76,7 +77,6 @@ class Paned(Container):
             Gtk.main_iteration_do(False)
         self.get_toplevel().set_pos_by_ratio = False
 
-
     def add(self, widget, metadata=None):
         """Add a widget to the container"""
         if len(self.children) == 0:
@@ -93,26 +93,26 @@ class Paned(Container):
 
         if self.maker.isinstance(widget, 'Terminal'):
             top_window = self.get_toplevel()
-            signals = {'close-term': self.wrapcloseterm,
-                    'split-horiz': self.split_horiz,
-                    'split-vert': self.split_vert,
-                    'title-change': self.propagate_title_change,
-                    'resize-term': self.resizeterm,
-                    'size-allocate': self.new_size,
-                    'zoom': top_window.zoom,
-                    'tab-change': top_window.tab_change,
-                    'group-all': top_window.group_all,
-                    'group-all-toggle': top_window.group_all_toggle,
-                    'ungroup-all': top_window.ungroup_all,
-                    'group-tab': top_window.group_tab,
-                    'group-tab-toggle': top_window.group_tab_toggle,
-                    'ungroup-tab': top_window.ungroup_tab,
-                    'move-tab': top_window.move_tab,
-                    'maximise': [top_window.zoom, False],
-                    'tab-new': [top_window.tab_new, widget],
-                    'navigate': top_window.navigate_terminal,
-                    'rotate-cw': [top_window.rotate, True],
-                    'rotate-ccw': [top_window.rotate, False]}
+            signals = {'close-term'      : self.wrapcloseterm,
+                       'split-horiz'     : self.split_horiz,
+                       'split-vert'      : self.split_vert,
+                       'title-change'    : self.propagate_title_change,
+                       'resize-term'     : self.resizeterm,
+                       'size-allocate'   : self.new_size,
+                       'zoom'            : top_window.zoom,
+                       'tab-change'      : top_window.tab_change,
+                       'group-all'       : top_window.group_all,
+                       'group-all-toggle': top_window.group_all_toggle,
+                       'ungroup-all'     : top_window.ungroup_all,
+                       'group-tab'       : top_window.group_tab,
+                       'group-tab-toggle': top_window.group_tab_toggle,
+                       'ungroup-tab'     : top_window.ungroup_tab,
+                       'move-tab'        : top_window.move_tab,
+                       'maximise'        : [top_window.zoom, False],
+                       'tab-new'         : [top_window.tab_new, widget],
+                       'navigate'        : top_window.navigate_terminal,
+                       'rotate-cw'       : [top_window.rotate, True],
+                       'rotate-ccw'      : [top_window.rotate, False]}
 
             for signal in signals:
                 args = []
@@ -123,9 +123,9 @@ class Paned(Container):
                 self.connect_child(widget, signal, handler, *args)
 
             if metadata and \
-               'had_focus' in metadata and \
-               metadata['had_focus'] == True:
-                    widget.grab_focus()
+                    'had_focus' in metadata and \
+                    metadata['had_focus'] == True:
+                widget.grab_focus()
 
         elif isinstance(widget, Gtk.Paned):
             try:
@@ -138,14 +138,14 @@ class Paned(Container):
         """Handle button presses on a Pane"""
         if event.button == 1 and event.type == Gdk.EventType._2BUTTON_PRESS:
             if event.get_state() & Gdk.ModifierType.MOD4_MASK == Gdk.ModifierType.MOD4_MASK:
-                recurse_up=True
+                recurse_up = True
             else:
-                recurse_up=False
+                recurse_up = False
 
             if event.get_state() & Gdk.ModifierType.SHIFT_MASK == Gdk.ModifierType.SHIFT_MASK:
-                recurse_down=True
+                recurse_down = True
             else:
-                recurse_down=False
+                recurse_down = False
 
             self.last_balance_time = time.time()
             self.last_balance_args = (recurse_up, recurse_down)
@@ -178,7 +178,7 @@ class Paned(Container):
     def do_redistribute(self, recurse_up=False, recurse_down=False):
         """Evenly divide available space between sibling panes"""
         maker = Factory()
-        #1 Find highest ancestor of the same type => ha
+        # 1 Find highest ancestor of the same type => ha
         highest_ancestor = self
         while type(highest_ancestor.get_parent()) == type(highest_ancestor):
             highest_ancestor = highest_ancestor.get_parent()
@@ -187,9 +187,9 @@ class Paned(Container):
 
         # (1b) If Super modifier, redistribute higher sections too
         if recurse_up:
-            grandfather=highest_ancestor.get_parent()
+            grandfather = highest_ancestor.get_parent()
             if maker.isinstance(grandfather, 'VPaned') or \
-               maker.isinstance(grandfather, 'HPaned') :
+                    maker.isinstance(grandfather, 'HPaned'):
                 grandfather.do_redistribute(recurse_up, recurse_down)
 
         highest_ancestor._do_redistribute(recurse_up, recurse_down)
@@ -198,7 +198,7 @@ class Paned(Container):
 
     def _do_redistribute(self, recurse_up=False, recurse_down=False):
         maker = Factory()
-        #2 Make a list of self + all children of same type
+        # 2 Make a list of self + all children of same type
         tree = [self, [], 0, None]
         toproc = [tree]
         number_splits = 1
@@ -209,28 +209,28 @@ class Paned(Container):
                     childset = [child, [], 0, curr]
                     curr[1].append(childset)
                     toproc.append(childset)
-                    number_splits = number_splits+1
+                    number_splits = number_splits + 1
                 else:
-                    curr[1].append([None,[], 1, None])
+                    curr[1].append([None, [], 1, None])
                     p = curr
                     while p:
                         p[2] = p[2] + 1
                         p = p[3]
                     # (1c) If Shift modifier, redistribute lower sections too
                     if recurse_down and \
-                      (maker.isinstance(child, 'VPaned') or \
-                       maker.isinstance(child, 'HPaned')):
+                            (maker.isinstance(child, 'VPaned') or \
+                             maker.isinstance(child, 'HPaned')):
                         child.do_redistribute(False, True)
 
-        #3 Get ancestor x/y => a, and handle size => hs
-        avail_pixels=self.get_length()
+        # 3 Get ancestor x/y => a, and handle size => hs
+        avail_pixels = self.get_length()
         handle_size = self.get_handlesize()
-        #4 Math! eek (a - (n * hs)) / (n + 1) = single size => s
+        # 4 Math! eek (a - (n * hs)) / (n + 1) = single size => s
         single_size = (avail_pixels - (number_splits * handle_size)) / (number_splits + 1)
-        arr_sizes = [single_size]*(number_splits+1)
+        arr_sizes = [single_size] * (number_splits + 1)
         for i in range(avail_pixels % (number_splits + 1)):
             arr_sizes[i] = arr_sizes[i] + 1
-        #5 Descend down setting the handle position to s
+        # 5 Descend down setting the handle position to s
         #  (Has to handle nesting properly)
         toproc = [tree]
         while toproc:
@@ -238,7 +238,7 @@ class Paned(Container):
             for child in curr[1]:
                 toproc.append(child)
                 if curr[1].index(child) == 0:
-                    curr[0].set_position((child[2]*single_size)+((child[2]-1)*handle_size))
+                    curr[0].set_position((child[2] * single_size) + ((child[2] - 1) * handle_size))
 
     def remove(self, widget):
         """Remove a widget from the container"""
@@ -263,7 +263,7 @@ class Paned(Container):
         """Why oh why, gtk3?"""
         try:
             value = GObject.Value(int)
-            self.style_get_property('handle-size',  value)
+            self.style_get_property('handle-size', value)
             return value.get_int()
         except:
             return 0
@@ -499,8 +499,10 @@ class Paned(Container):
             self.ratio = newratio
         self.set_pos(pos)
 
+
 class HPaned(Paned, Gtk.HPaned):
     """Merge Gtk.HPaned into our base Paned Container"""
+
     def __init__(self):
         """Class initialiser"""
         Paned.__init__(self)
@@ -514,10 +516,12 @@ class HPaned(Paned, Gtk.HPaned):
 
     def set_pos(self, pos):
         Gtk.HPaned.set_position(self, pos)
-        self.set_property('position-set',  True)
+        self.set_property('position-set', True)
+
 
 class VPaned(Paned, Gtk.VPaned):
     """Merge Gtk.VPaned into our base Paned Container"""
+
     def __init__(self):
         """Class initialiser"""
         Paned.__init__(self)
@@ -531,7 +535,8 @@ class VPaned(Paned, Gtk.VPaned):
 
     def set_pos(self, pos):
         Gtk.VPaned.set_position(self, pos)
-        self.set_property('position-set',  True)
+        self.set_property('position-set', True)
+
 
 GObject.type_register(HPaned)
 GObject.type_register(VPaned)

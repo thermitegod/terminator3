@@ -12,17 +12,20 @@
 
 """
 
-import platform
 import os
+import platform
 import pwd
+
 from terminatorlib.util import dbg, err
 
 try:
     import psutil
+
     psutil_avail = True
 except ImportError:
     dbg('psutil not found')
     psutil_avail = False
+
 
 def get_default_cwd():
     """Determine a reasonable default cwd"""
@@ -34,6 +37,7 @@ def get_default_cwd():
             cwd = '/'
 
     return cwd
+
 
 def get_pid_cwd():
     """Determine an appropriate cwd function for the OS we are running on"""
@@ -61,6 +65,7 @@ def get_pid_cwd():
 
     return func
 
+
 def proc_get_pid_cwd(pid, path):
     """Extract the cwd of a PID from proc, given the PID and the /proc path to
     insert it into, e.g. /proc/%s/cwd"""
@@ -72,13 +77,16 @@ def proc_get_pid_cwd(pid, path):
 
     return cwd
 
+
 def linux_get_pid_cwd(pid):
     """Determine the cwd for a given PID on Linux kernels"""
     return proc_get_pid_cwd(pid, '/proc/%s/cwd')
 
+
 def sunos_get_pid_cwd(pid):
     """Determine the cwd for a given PID on SunOS kernels"""
     return proc_get_pid_cwd(pid, '/proc/%s/path/cwd')
+
 
 def psutil_cwd(pid):
     """Determine the cwd using psutil which also supports Darwin"""

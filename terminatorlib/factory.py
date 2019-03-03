@@ -22,17 +22,18 @@ True
 from terminatorlib.borg import Borg
 from terminatorlib.util import dbg, err, inject_uuid
 
+
 # pylint: disable-msg=R0201
 # pylint: disable-msg=W0613
 class Factory(Borg):
     """Definition of a class that makes other classes"""
-    types = {'Terminal': 'terminal',
-             'VPaned': 'paned',
-             'HPaned': 'paned',
-             'Paned': 'paned',
-             'Notebook': 'notebook',
+    types = {'Terminal' : 'terminal',
+             'VPaned'   : 'paned',
+             'HPaned'   : 'paned',
+             'Paned'    : 'paned',
+             'Notebook' : 'notebook',
              'Container': 'container',
-             'Window': 'window'}
+             'Window'   : 'window'}
     types_keys = types.keys()
     instance_types = {}
     instance_types_keys = []
@@ -119,4 +120,3 @@ class Factory(Borg):
         """Make a Notebook"""
         from terminatorlib import notebook
         return notebook.Notebook(kwargs['window'])
-

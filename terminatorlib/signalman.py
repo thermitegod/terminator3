@@ -5,6 +5,7 @@
 
 from terminatorlib.util import dbg, err
 
+
 class Signalman(object):
     """Class providing glib signal tracking and management"""
 
@@ -61,4 +62,3 @@ class Signalman(object):
         widgets = tuple(self.cnxids.keys())
         for widget in widgets:
             self.remove_widget(widget)
-

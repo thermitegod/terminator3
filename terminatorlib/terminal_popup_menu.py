@@ -6,14 +6,15 @@ menu"""
 
 from gi.repository import Gtk
 
-from terminatorlib.version import APP_NAME
-from terminatorlib.translation import _
-from terminatorlib.encoding import TerminatorEncoding
-from terminatorlib.terminator import Terminator
-from terminatorlib.util import err, dbg
-from terminatorlib.config import Config
-from terminatorlib.prefseditor import PrefsEditor
 from terminatorlib import plugin
+from terminatorlib.config import Config
+from terminatorlib.encoding import TerminatorEncoding
+from terminatorlib.prefseditor import PrefsEditor
+from terminatorlib.terminator import Terminator
+from terminatorlib.translation import _
+from terminatorlib.util import dbg, err
+from terminatorlib.version import APP_NAME
+
 
 class TerminalPopupMenu(object):
     """Class implementing the Terminal context menu"""
@@ -68,14 +69,14 @@ class TerminalPopupMenu(object):
                         break
 
                 dbg("Found match ID (%d) in terminal.matches plugin %s" %
-                        (url[1], pluginname))
+                    (url[1], pluginname))
                 registry = plugin.PluginRegistry()
                 registry.load_plugins()
                 plugins = registry.get_plugins_by_capability('url_handler')
                 for urlplugin in plugins:
                     if urlplugin.handler_name == pluginname:
                         dbg("Identified matching plugin: %s" %
-                                urlplugin.handler_name)
+                            urlplugin.handler_name)
                         nameopen = _(urlplugin.nameopen)
                         namecopy = _(urlplugin.namecopy)
                         break
@@ -118,7 +119,7 @@ class TerminalPopupMenu(object):
             if hasattr(item, 'set_always_show_image'):
                 item.set_always_show_image(True)
             item.connect('activate', lambda x: terminal.emit('split-horiz',
-                self.terminal.get_cwd()))
+                                                             self.terminal.get_cwd()))
             menu.append(item)
 
             item = Gtk.ImageMenuItem.new_with_mnemonic(_('Split V_ertically'))
@@ -128,18 +129,18 @@ class TerminalPopupMenu(object):
             if hasattr(item, 'set_always_show_image'):
                 item.set_always_show_image(True)
             item.connect('activate', lambda x: terminal.emit('split-vert',
-                self.terminal.get_cwd()))
+                                                             self.terminal.get_cwd()))
             menu.append(item)
 
             item = Gtk.MenuItem.new_with_mnemonic(_('Open _Tab'))
             item.connect('activate', lambda x: terminal.emit('tab-new', False,
-                terminal))
+                                                             terminal))
             menu.append(item)
 
             if self.terminator.debug_address is not None:
                 item = Gtk.MenuItem.new_with_mnemonic(_('Open _Debug Tab'))
                 item.connect('activate', lambda x:
-                        terminal.emit('tab-new', True, terminal))
+                terminal.emit('tab-new', True, terminal))
                 menu.append(item)
 
             menu.append(Gtk.SeparatorMenuItem())
@@ -232,7 +233,6 @@ class TerminalPopupMenu(object):
 
         return True
 
-
     def add_encoding_items(self, menu):
         """Add the encoding list to the menu"""
         terminal = self.terminal
@@ -242,7 +242,7 @@ class TerminalPopupMenu(object):
         submenu = Gtk.Menu()
         item.set_submenu(submenu)
         encodings = TerminatorEncoding().get_list()
-        encodings.sort(key=lambda s:s[2].lower())
+        encodings.sort(key=lambda s: s[2].lower())
 
         current_encoding = terminal.vte.get_encoding()
         group = None
@@ -254,7 +254,7 @@ class TerminalPopupMenu(object):
             if encoding == terminal.default_encoding:
                 extratext = " (%s)" % _("Default")
             elif encoding == current_encoding and \
-                 terminal.custom_encoding == True:
+                    terminal.custom_encoding == True:
                 extratext = " (%s)" % _("User defined")
             else:
                 extratext = ""
@@ -273,7 +273,7 @@ class TerminalPopupMenu(object):
 
         item = Gtk.MenuItem.new_with_mnemonic(_("Other Encodings"))
         submenu.append(item)
-        #second level
+        # second level
 
         submenu = Gtk.Menu()
         item.set_submenu(submenu)
@@ -298,4 +298,3 @@ class TerminalPopupMenu(object):
             radioitem.connect('activate', terminal.on_encoding_change,
                               encoding[1])
             submenu.append(radioitem)
-

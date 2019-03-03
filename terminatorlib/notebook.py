@@ -3,19 +3,16 @@
 # GPL v2 only
 """notebook.py - classes for the notebook widget"""
 
-from gi.repository import GLib
-from gi.repository import GObject
-from gi.repository import Gtk
-from gi.repository import Gdk
-from gi.repository import Gio
+from gi.repository import GLib, GObject, Gdk, Gio, Gtk
 
-from terminatorlib.terminator import Terminator
 from terminatorlib.config import Config
-from terminatorlib.factory import Factory
 from terminatorlib.container import Container
 from terminatorlib.editablelabel import EditableLabel
+from terminatorlib.factory import Factory
+from terminatorlib.terminator import Terminator
 from terminatorlib.translation import _
-from terminatorlib.util import err, dbg, enumerate_descendants, make_uuid
+from terminatorlib.util import dbg, enumerate_descendants, err, make_uuid
+
 
 class Notebook(Container, Gtk.Notebook):
     """Class implementing a Gtk.Notebook container"""
@@ -56,7 +53,7 @@ class Notebook(Container, Gtk.Notebook):
         # FIXME: The old reordered handler updated Terminator.terminals with
         # the new order of terminals. We probably need to preserve this for
         # navigation to next/prev terminals.
-        #self.connect('page-reordered', self.on_page_reordered)
+        # self.connect('page-reordered', self.on_page_reordered)
         self.set_scrollable(self.config['scroll_tabbar'])
 
         if self.config['tab_position'] == 'hidden' or self.config['hide_tabbar']:
@@ -70,14 +67,15 @@ class Notebook(Container, Gtk.Notebook):
             label = self.get_tab_label(self.get_nth_page(tab))
             label.update_angle()
 
-#        style = Gtk.RcStyle()  # FIXME FOR GTK3 how to do it there? actually do we really want to override the theme?
-#        style.xthickness = 0
-#        style.ythickness = 0
-#        self.modify_style(style)
+        #        style = Gtk.RcStyle()  # FIXME FOR GTK3 how to do it there? actually do we really want to override the theme?
+        #        style.xthickness = 0
+        #        style.ythickness = 0
+        #        self.modify_style(style)
         self.last_active_term = {}
 
     def create_layout(self, layout):
         """Apply layout configuration"""
+
         def child_compare(a, b):
             order_a = children[a]['order']
             order_b = children[b]['order']
@@ -95,7 +93,7 @@ class Notebook(Container, Gtk.Notebook):
 
         children = layout['children']
         if len(children) <= 1:
-            #Notebooks should have two or more children
+            # Notebooks should have two or more children
             err('incorrect number of children for Notebook: %s' % layout)
             return
 
@@ -130,7 +128,7 @@ class Notebook(Container, Gtk.Notebook):
                     label.set_custom_label(labeltext)
             page.create_layout(children[child_key])
 
-            if  layout.get('last_active_term',  None):
+            if layout.get('last_active_term', None):
                 self.last_active_term[page] = make_uuid(layout['last_active_term'][num])
             num = num + 1
 
@@ -204,7 +202,7 @@ class Notebook(Container, Gtk.Notebook):
         page_num = self.page_num(widget)
         if page_num == -1:
             err('%s not found in Notebook. Actual parent is: %s' %
-                    (widget, widget.get_parent()))
+                (widget, widget.get_parent()))
             return False
         self.remove_page(page_num)
         self.disconnect_child(widget)
@@ -234,7 +232,7 @@ class Notebook(Container, Gtk.Notebook):
     def get_children(self):
         """Return an ordered list of our children"""
         children = []
-        for page in range(0,self.get_n_pages()):
+        for page in range(0, self.get_n_pages()):
             children.append(self.get_nth_page(page))
         return children
 
@@ -254,21 +252,21 @@ class Notebook(Container, Gtk.Notebook):
         elif profile and self.config['always_split_with_profile']:
             widget.force_set_profile(None, profile)
 
-        signals = {'close-term': self.wrapcloseterm,
-                   'split-horiz': self.split_horiz,
-                   'split-vert': self.split_vert,
-                   'title-change': self.propagate_title_change,
-                   'unzoom': self.unzoom,
-                   'tab-change': top_window.tab_change,
-                   'group-all': top_window.group_all,
+        signals = {'close-term'      : self.wrapcloseterm,
+                   'split-horiz'     : self.split_horiz,
+                   'split-vert'      : self.split_vert,
+                   'title-change'    : self.propagate_title_change,
+                   'unzoom'          : self.unzoom,
+                   'tab-change'      : top_window.tab_change,
+                   'group-all'       : top_window.group_all,
                    'group-all-toggle': top_window.group_all_toggle,
-                   'ungroup-all': top_window.ungroup_all,
-                   'group-tab': top_window.group_tab,
+                   'ungroup-all'     : top_window.ungroup_all,
+                   'group-tab'       : top_window.group_tab,
                    'group-tab-toggle': top_window.group_tab_toggle,
-                   'ungroup-tab': top_window.ungroup_tab,
-                   'move-tab': top_window.move_tab,
-                   'tab-new': [top_window.tab_new, widget],
-                   'navigate': top_window.navigate_terminal}
+                   'ungroup-tab'     : top_window.ungroup_tab,
+                   'move-tab'        : top_window.move_tab,
+                   'tab-new'         : [top_window.tab_new, widget],
+                   'navigate'        : top_window.navigate_terminal}
 
         if maker.isinstance(widget, 'Terminal'):
             for signal in signals:
@@ -381,7 +379,7 @@ class Notebook(Container, Gtk.Notebook):
         """Handle a keyboard event requesting a terminal resize"""
         raise NotImplementedError('resizeterm')
 
-    def zoom(self, widget, fontscale = False):
+    def zoom(self, widget, fontscale=False):
         """Zoom a terminal"""
         raise NotImplementedError('zoom')
 
@@ -471,12 +469,12 @@ class Notebook(Container, Gtk.Notebook):
                 last_active_term[nth_page] = self.last_active_term[nth_page]
         self.last_active_term = last_active_term
 
-    def deferred_on_tab_switch(self, notebook, page,  page_num,  data=None):
+    def deferred_on_tab_switch(self, notebook, page, page_num, data=None):
         """Prime a single idle tab switch signal, using the most recent set of params"""
-        tabs_last_active_term = self.last_active_term.get(self.get_nth_page(page_num),  None)
-        data = {'tabs_last_active_term':tabs_last_active_term}
+        tabs_last_active_term = self.last_active_term.get(self.get_nth_page(page_num), None)
+        data = {'tabs_last_active_term': tabs_last_active_term}
 
-        self.pending_on_tab_switch_args = (notebook, page,  page_num,  data)
+        self.pending_on_tab_switch_args = (notebook, page, page_num, data)
         if self.pending_on_tab_switch == True:
             return
         GLib.idle_add(self.do_deferred_on_tab_switch)
@@ -488,7 +486,7 @@ class Notebook(Container, Gtk.Notebook):
         self.pending_on_tab_switch = False
         self.pending_on_tab_switch_args = None
 
-    def on_tab_switch(self, notebook, page,  page_num,  data=None):
+    def on_tab_switch(self, notebook, page, page_num, data=None):
         """Do the real work for a tab switch"""
         tabs_last_active_term = data['tabs_last_active_term']
         if tabs_last_active_term:
@@ -497,9 +495,9 @@ class Notebook(Container, Gtk.Notebook):
         return True
 
     def on_scroll_event(self, notebook, event):
-        '''Handle scroll events for scrolling through tabs'''
-        #print("self: %s" % self)
-        #print("event: %s" % event)
+        """Handle scroll events for scrolling through tabs"""
+        # print("self: %s" % self)
+        # print("event: %s" % event)
         child = self.get_nth_page(self.get_current_page())
         if child == None:
             print("Child = None,  return false")
@@ -508,8 +506,8 @@ class Notebook(Container, Gtk.Notebook):
         event_widget = Gtk.get_event_widget(event)
 
         if event_widget == None or \
-           event_widget == child or \
-           event_widget.is_ancestor(child):
+                event_widget == child or \
+                event_widget.is_ancestor(child):
             print("event_widget is wrong one,  return false")
             return False
 
@@ -517,11 +515,11 @@ class Notebook(Container, Gtk.Notebook):
         # at this point.
         action_widget = self.get_action_widget(Gtk.PackType.START)
         if event_widget == action_widget or \
-           (action_widget != None and event_widget.is_ancestor(action_widget)):
+                (action_widget != None and event_widget.is_ancestor(action_widget)):
             return False
         action_widget = self.get_action_widget(Gtk.PackType.END)
         if event_widget == action_widget or \
-           (action_widget != None and event_widget.is_ancestor(action_widget)):
+                (action_widget != None and event_widget.is_ancestor(action_widget)):
             return False
 
         if event.direction in [Gdk.ScrollDirection.RIGHT,
@@ -545,6 +543,7 @@ class Notebook(Container, Gtk.Notebook):
                     self.prev_page()
         return True
 
+
 class TabLabel(Gtk.HBox):
     """Class implementing a label widget for Notebook tabs"""
     notebook = None
@@ -555,8 +554,8 @@ class TabLabel(Gtk.HBox):
     button = None
 
     __gsignals__ = {
-            'close-clicked': (GObject.SignalFlags.RUN_LAST, None,
-                (GObject.TYPE_OBJECT,)),
+        'close-clicked': (GObject.SignalFlags.RUN_LAST, None,
+                          (GObject.TYPE_OBJECT,)),
     }
 
     def __init__(self, title, notebook):
@@ -617,10 +616,10 @@ class TabLabel(Gtk.HBox):
 
         self.button.set_focus_on_click(False)
         self.button.set_relief(Gtk.ReliefStyle.NONE)
-#        style = Gtk.RcStyle()  # FIXME FOR GTK3 how to do it there? actually do we really want to override the theme?
-#        style.xthickness = 0
-#        style.ythickness = 0
-#        self.button.modify_style(style)
+        #        style = Gtk.RcStyle()  # FIXME FOR GTK3 how to do it there? actually do we really want to override the theme?
+        #        style.xthickness = 0
+        #        style.ythickness = 0
+        #        self.button.modify_style(style)
         self.button.add(self.icon)
         self.button.connect('clicked', self.on_close)
         self.button.set_name('terminator-tab-close-button')

@@ -8,22 +8,25 @@ write it to a config file
 """
 
 import os
-from gi.repository import GObject, Gtk, Gdk
+
+from gi.repository import Gdk, Gtk
 
 from terminatorlib import config
-from terminatorlib.util import dbg, err
-from terminatorlib.keybindings import Keybindings, KeymapError
-from terminatorlib.translation import _
 from terminatorlib.encoding import TerminatorEncoding
-from terminatorlib.terminator import Terminator
+from terminatorlib.keybindings import Keybindings, KeymapError
 from terminatorlib.plugin import PluginRegistry
+from terminatorlib.terminator import Terminator
+from terminatorlib.translation import _
+from terminatorlib.util import dbg, err
 from terminatorlib.version import APP_NAME
+
 
 def color2hex(widget):
     """Pull the colour values out of a Gtk ColorPicker widget and return them
     as 8bit hex values, sinces its default behaviour is to give 16bit values"""
     widcol = widget.get_color()
-    return ('#%02x%02x%02x' % (widcol.red>>8, widcol.green>>8, widcol.blue>>8))
+    return ('#%02x%02x%02x' % (widcol.red >> 8, widcol.green >> 8, widcol.blue >> 8))
+
 
 # FIXME: We need to check that we have represented all of Config() below
 class PrefsEditor:
@@ -40,134 +43,134 @@ class PrefsEditor:
     previous_layout_selection = None
     previous_profile_selection = None
     colorschemevalues = {'black_on_yellow': 0,
-                         'black_on_white': 1,
-                         'grey_on_black': 2,
-                         'green_on_black': 3,
-                         'white_on_black': 4,
+                         'black_on_white' : 1,
+                         'grey_on_black'  : 2,
+                         'green_on_black' : 3,
+                         'white_on_black' : 4,
                          'orange_on_black': 5,
-                         'ambience': 6,
+                         'ambience'       : 6,
                          'solarized_light': 7,
-                         'solarized_dark': 8,
-                         'gruvbox_light': 9,
-                         'gruvbox_dark': 10,
-                         'custom': 11}
-    colourschemes = {'grey_on_black': ['#aaaaaa', '#000000'],
+                         'solarized_dark' : 8,
+                         'gruvbox_light'  : 9,
+                         'gruvbox_dark'   : 10,
+                         'custom'         : 11}
+    colourschemes = {'grey_on_black'  : ['#aaaaaa', '#000000'],
                      'black_on_yellow': ['#000000', '#ffffdd'],
-                     'black_on_white': ['#000000', '#ffffff'],
-                     'white_on_black': ['#ffffff', '#000000'],
-                     'green_on_black': ['#00ff00', '#000000'],
+                     'black_on_white' : ['#000000', '#ffffff'],
+                     'white_on_black' : ['#ffffff', '#000000'],
+                     'green_on_black' : ['#00ff00', '#000000'],
                      'orange_on_black': ['#e53c00', '#000000'],
-                     'ambience': ['#ffffff', '#300a24'],
+                     'ambience'       : ['#ffffff', '#300a24'],
                      'solarized_light': ['#657b83', '#fdf6e3'],
-                     'solarized_dark': ['#839496', '#002b36'],
-                     'gruvbox_light': ['#3c3836', '#fbf1c7'],
-                     'gruvbox_dark': ['#ebdbb2', '#282828']}
-    palettevalues = {'tango': 0,
-                     'linux': 1,
-                     'xterm': 2,
-                     'rxvt': 3,
-                     'ambience': 4,
-                     'solarized': 5,
+                     'solarized_dark' : ['#839496', '#002b36'],
+                     'gruvbox_light'  : ['#3c3836', '#fbf1c7'],
+                     'gruvbox_dark'   : ['#ebdbb2', '#282828']}
+    palettevalues = {'tango'        : 0,
+                     'linux'        : 1,
+                     'xterm'        : 2,
+                     'rxvt'         : 3,
+                     'ambience'     : 4,
+                     'solarized'    : 5,
                      'gruvbox_light': 6,
-                     'gruvbox_dark': 7,
-                     'custom': 8}
-    palettes = {'tango': '#000000:#cc0000:#4e9a06:#c4a000:#3465a4:\
+                     'gruvbox_dark' : 7,
+                     'custom'       : 8}
+    palettes = {'tango'        : '#000000:#cc0000:#4e9a06:#c4a000:#3465a4:\
 #75507b:#06989a:#d3d7cf:#555753:#ef2929:#8ae234:#fce94f:#729fcf:\
 #ad7fa8:#34e2e2:#eeeeec',
-                'linux': '#000000:#aa0000:#00aa00:#aa5500:#0000aa:\
+                'linux'        : '#000000:#aa0000:#00aa00:#aa5500:#0000aa:\
 #aa00aa:#00aaaa:#aaaaaa:#555555:#ff5555:#55ff55:#ffff55:#5555ff:\
 #ff55ff:#55ffff:#ffffff',
-                'xterm': '#000000:#cd0000:#00cd00:#cdcd00:#0000ee:\
+                'xterm'        : '#000000:#cd0000:#00cd00:#cdcd00:#0000ee:\
 #cd00cd:#00cdcd:#e5e5e5:#7f7f7f:#ff0000:#00ff00:#ffff00:#5c5cff:\
 #ff00ff:#00ffff:#ffffff',
-                'rxvt': '#000000:#cd0000:#00cd00:#cdcd00:#0000cd:\
+                'rxvt'         : '#000000:#cd0000:#00cd00:#cdcd00:#0000cd:\
 #cd00cd:#00cdcd:#faebd7:#404040:#ff0000:#00ff00:#ffff00:#0000ff:\
 #ff00ff:#00ffff:#ffffff',
-                'ambience': '#2e3436:#cc0000:#4e9a06:#c4a000:\
+                'ambience'     : '#2e3436:#cc0000:#4e9a06:#c4a000:\
 #3465a4:#75507b:#06989a:#d3d7cf:#555753:#ef2929:#8ae234:#fce94f:\
 #729fcf:#ad7fa8:#34e2e2:#eeeeec',
-                'solarized': '#073642:#dc322f:#859900:#b58900:\
+                'solarized'    : '#073642:#dc322f:#859900:#b58900:\
 #268bd2:#d33682:#2aa198:#eee8d5:#002b36:#cb4b16:#586e75:#657b83:\
 #839496:#6c71c4:#93a1a1:#fdf6e3',
                 'gruvbox_light': '#fbf1c7:#cc241d:#98971a:#d79921:\
 #458588:#b16286:#689d6a:#7c6f64:#928374:#9d0006:#79740e:#b57614:\
 #076678:#8f3f71:#427b58:#3c3836',
-                'gruvbox_dark': '#282828:#cc241d:#98971a:#d79921:\
+                'gruvbox_dark' : '#282828:#cc241d:#98971a:#d79921:\
 #458588:#b16286:#689d6a:#a89984:#928374:#fb4934:#b8bb26:#fabd2f:\
 #83a598:#d3869b:#8ec07c:#ebdbb2'}
-    keybindingnames = { 'zoom_in'          : _('Increase font size'),
-                        'zoom_out'         : _('Decrease font size'),
-                        'zoom_normal'      : _('Restore original font size'),
-                        'new_tab'          : _('Create a new tab'),
-                        'cycle_next'       : _('Focus the next terminal'),
-                        'cycle_prev'       : _('Focus the previous terminal'),
-                        'go_next'          : _('Focus the next terminal'),
-                        'go_prev'          : _('Focus the previous terminal'),
-                        'go_up'            : _('Focus the terminal above'),
-                        'go_down'          : _('Focus the terminal below'),
-                        'go_left'          : _('Focus the terminal left'),
-                        'go_right'         : _('Focus the terminal right'),
-                        'rotate_cw'        : _('Rotate terminals clockwise'),
-                        'rotate_ccw'       : _('Rotate terminals counter-clockwise'),
-                        'split_horiz'      : _('Split horizontally'),
-                        'split_vert'       : _('Split vertically'),
-                        'close_term'       : _('Close terminal'),
-                        'copy'             : _('Copy selected text'),
-                        'paste'            : _('Paste clipboard'),
-                        'toggle_scrollbar' : _('Show/Hide the scrollbar'),
-                        'search'           : _('Search terminal scrollback'),
-                        'page_up'          : _('Scroll upwards one page'),
-                        'page_down'        : _('Scroll downwards one page'),
-                        'page_up_half'     : _('Scroll upwards half a page'),
-                        'page_down_half'   : _('Scroll downwards half a page'),
-                        'line_up'          : _('Scroll upwards one line'),
-                        'line_down'        : _('Scroll downwards one line'),
-                        'close_window'     : _('Close window'),
-                        'resize_up'        : _('Resize the terminal up'),
-                        'resize_down'      : _('Resize the terminal down'),
-                        'resize_left'      : _('Resize the terminal left'),
-                        'resize_right'     : _('Resize the terminal right'),
-                        'move_tab_right'   : _('Move the tab right'),
-                        'move_tab_left'    : _('Move the tab left'),
-                        'toggle_zoom'      : _('Maximize terminal'),
-                        'scaled_zoom'      : _('Zoom terminal'),
-                        'next_tab'         : _('Switch to the next tab'),
-                        'prev_tab'         : _('Switch to the previous tab'),
-                        'switch_to_tab_1'  : _('Switch to the first tab'),
-                        'switch_to_tab_2'  : _('Switch to the second tab'),
-                        'switch_to_tab_3'  : _('Switch to the third tab'),
-                        'switch_to_tab_4'  : _('Switch to the fourth tab'),
-                        'switch_to_tab_5'  : _('Switch to the fifth tab'),
-                        'switch_to_tab_6'  : _('Switch to the sixth tab'),
-                        'switch_to_tab_7'  : _('Switch to the seventh tab'),
-                        'switch_to_tab_8'  : _('Switch to the eighth tab'),
-                        'switch_to_tab_9'  : _('Switch to the ninth tab'),
-                        'switch_to_tab_10' : _('Switch to the tenth tab'),
-                        'full_screen'      : _('Toggle fullscreen'),
-                        'reset'            : _('Reset the terminal'),
-                        'reset_clear'      : _('Reset and clear the terminal'),
-                        'hide_window'      : _('Toggle window visibility'),
-                        'group_all'        : _('Group all terminals'),
-                        'group_all_toggle' : _('Group/Ungroup all terminals'),
-                        'ungroup_all'      : _('Ungroup all terminals'),
-                        'group_tab'        : _('Group terminals in tab'),
-                        'group_tab_toggle' : _('Group/Ungroup terminals in tab'),
-                        'ungroup_tab'      : _('Ungroup terminals in tab'),
-                        'new_window'       : _('Create a new window'),
-                        'new_terminator'   : _('Spawn a new Terminator process'),
-                        'broadcast_off'    : _('Don\'t broadcast key presses'),
-                        'broadcast_group'  : _('Broadcast key presses to group'),
-                        'broadcast_all'    : _('Broadcast key events to all'),
-                        'insert_number'    : _('Insert terminal number'),
-                        'insert_padded'    : _('Insert padded terminal number'),
-                        'edit_window_title': _('Edit window title'),
-                        'edit_terminal_title': _('Edit terminal title'),
-                        'edit_tab_title'   : _('Edit tab title'),
-                        'layout_launcher'  : _('Open layout launcher window'),
-                        'next_profile'     : _('Switch to next profile'),
-                        'previous_profile' : _('Switch to previous profile'),
-                        'help'             : _('Open the manual')
-            }
+    keybindingnames = {'zoom_in'            : _('Increase font size'),
+                       'zoom_out'           : _('Decrease font size'),
+                       'zoom_normal'        : _('Restore original font size'),
+                       'new_tab'            : _('Create a new tab'),
+                       'cycle_next'         : _('Focus the next terminal'),
+                       'cycle_prev'         : _('Focus the previous terminal'),
+                       'go_next'            : _('Focus the next terminal'),
+                       'go_prev'            : _('Focus the previous terminal'),
+                       'go_up'              : _('Focus the terminal above'),
+                       'go_down'            : _('Focus the terminal below'),
+                       'go_left'            : _('Focus the terminal left'),
+                       'go_right'           : _('Focus the terminal right'),
+                       'rotate_cw'          : _('Rotate terminals clockwise'),
+                       'rotate_ccw'         : _('Rotate terminals counter-clockwise'),
+                       'split_horiz'        : _('Split horizontally'),
+                       'split_vert'         : _('Split vertically'),
+                       'close_term'         : _('Close terminal'),
+                       'copy'               : _('Copy selected text'),
+                       'paste'              : _('Paste clipboard'),
+                       'toggle_scrollbar'   : _('Show/Hide the scrollbar'),
+                       'search'             : _('Search terminal scrollback'),
+                       'page_up'            : _('Scroll upwards one page'),
+                       'page_down'          : _('Scroll downwards one page'),
+                       'page_up_half'       : _('Scroll upwards half a page'),
+                       'page_down_half'     : _('Scroll downwards half a page'),
+                       'line_up'            : _('Scroll upwards one line'),
+                       'line_down'          : _('Scroll downwards one line'),
+                       'close_window'       : _('Close window'),
+                       'resize_up'          : _('Resize the terminal up'),
+                       'resize_down'        : _('Resize the terminal down'),
+                       'resize_left'        : _('Resize the terminal left'),
+                       'resize_right'       : _('Resize the terminal right'),
+                       'move_tab_right'     : _('Move the tab right'),
+                       'move_tab_left'      : _('Move the tab left'),
+                       'toggle_zoom'        : _('Maximize terminal'),
+                       'scaled_zoom'        : _('Zoom terminal'),
+                       'next_tab'           : _('Switch to the next tab'),
+                       'prev_tab'           : _('Switch to the previous tab'),
+                       'switch_to_tab_1'    : _('Switch to the first tab'),
+                       'switch_to_tab_2'    : _('Switch to the second tab'),
+                       'switch_to_tab_3'    : _('Switch to the third tab'),
+                       'switch_to_tab_4'    : _('Switch to the fourth tab'),
+                       'switch_to_tab_5'    : _('Switch to the fifth tab'),
+                       'switch_to_tab_6'    : _('Switch to the sixth tab'),
+                       'switch_to_tab_7'    : _('Switch to the seventh tab'),
+                       'switch_to_tab_8'    : _('Switch to the eighth tab'),
+                       'switch_to_tab_9'    : _('Switch to the ninth tab'),
+                       'switch_to_tab_10'   : _('Switch to the tenth tab'),
+                       'full_screen'        : _('Toggle fullscreen'),
+                       'reset'              : _('Reset the terminal'),
+                       'reset_clear'        : _('Reset and clear the terminal'),
+                       'hide_window'        : _('Toggle window visibility'),
+                       'group_all'          : _('Group all terminals'),
+                       'group_all_toggle'   : _('Group/Ungroup all terminals'),
+                       'ungroup_all'        : _('Ungroup all terminals'),
+                       'group_tab'          : _('Group terminals in tab'),
+                       'group_tab_toggle'   : _('Group/Ungroup terminals in tab'),
+                       'ungroup_tab'        : _('Ungroup terminals in tab'),
+                       'new_window'         : _('Create a new window'),
+                       'new_terminator'     : _('Spawn a new Terminator process'),
+                       'broadcast_off'      : _('Don\'t broadcast key presses'),
+                       'broadcast_group'    : _('Broadcast key presses to group'),
+                       'broadcast_all'      : _('Broadcast key events to all'),
+                       'insert_number'      : _('Insert terminal number'),
+                       'insert_padded'      : _('Insert padded terminal number'),
+                       'edit_window_title'  : _('Edit window title'),
+                       'edit_terminal_title': _('Edit terminal title'),
+                       'edit_tab_title'     : _('Edit tab title'),
+                       'layout_launcher'    : _('Open layout launcher window'),
+                       'next_profile'       : _('Switch to next profile'),
+                       'previous_profile'   : _('Switch to previous profile'),
+                       'help'               : _('Open the manual')
+                       }
 
     def __init__(self, term):
         self.config = config.Config()
@@ -295,22 +298,22 @@ class PrefsEditor:
         # DBus Server
         widget = guiget('dbuscheck')
         widget.set_active(self.config['dbus'])
-        #Hide from taskbar
+        # Hide from taskbar
         widget = guiget('hidefromtaskbcheck')
         widget.set_active(self.config['hide_from_taskbar'])
-        #Always on top
+        # Always on top
         widget = guiget('alwaysontopcheck')
         widget.set_active(self.config['always_on_top'])
-        #Hide on lose focus
+        # Hide on lose focus
         widget = guiget('hideonlosefocuscheck')
         widget.set_active(self.config['hide_on_lose_focus'])
-        #Show on all workspaces
+        # Show on all workspaces
         widget = guiget('stickycheck')
         widget.set_active(self.config['sticky'])
-        #Hide size text from the title bar
+        # Hide size text from the title bar
         widget = guiget('title_hide_sizetextcheck')
         widget.set_active(self.config['title_hide_sizetext'])
-        #Always split with profile
+        # Always split with profile
         widget = guiget('always_split_with_profile')
         widget.set_active(self.config['always_split_with_profile'])
         # Putty paste style
@@ -319,7 +322,7 @@ class PrefsEditor:
         # Smart copy
         widget = guiget('smart_copy')
         widget.set_active(self.config['smart_copy'])
-        #Titlebar font selector
+        # Titlebar font selector
         # Use system font
         widget = guiget('title_system_font_checkbutton')
         widget.set_active(self.config['title_use_system_font'])
@@ -388,7 +391,7 @@ class PrefsEditor:
                 except KeymapError:
                     pass
             liststore.append([keybinding, self.keybindingnames[keybinding],
-                             keyval, mask])
+                              keyval, mask])
 
         ## Plugins tab
         # Populate the plugin list
@@ -403,7 +406,7 @@ class PrefsEditor:
 
         for plugin in self.plugins:
             self.pluginiters[plugin] = liststore.append([plugin,
-                                             self.plugins[plugin]])
+                                                         self.plugins[plugin]])
         selection = widget.get_selection()
         selection.connect('changed', self.on_plugin_selection_changed)
         if len(self.pluginiters) > 0:
@@ -523,12 +526,12 @@ class PrefsEditor:
             forecol = self.colourschemes[ascheme][0]
             backcol = self.colourschemes[ascheme][1]
             if self.config['foreground_color'].lower() == forecol and \
-               self.config['background_color'].lower() == backcol:
+                    self.config['background_color'].lower() == backcol:
                 scheme = ascheme
                 break
         if scheme not in self.colorschemevalues:
             if self.config['foreground_color'] in [None, ''] or \
-               self.config['background_color'] in [None, '']:
+                    self.config['background_color'] in [None, '']:
                 scheme = 'grey_on_black'
             else:
                 scheme = 'custom'
@@ -572,15 +575,15 @@ class PrefsEditor:
         widget.set_active(self.palettevalues[palette])
         # Titlebar colors
         for bit in ['title_transmit_fg_color', 'title_transmit_bg_color',
-            'title_receive_fg_color', 'title_receive_bg_color',
-            'title_inactive_fg_color', 'title_inactive_bg_color']:
+                    'title_receive_fg_color', 'title_receive_bg_color',
+                    'title_inactive_fg_color', 'title_inactive_bg_color']:
             widget = guiget(bit)
             widget.set_color(Gdk.color_parse(self.config[bit]))
         # Inactive terminal shading
         widget = guiget('inactive_color_offset')
         widget.set_value(float(self.config['inactive_color_offset']))
         widget = guiget('inactive_color_offset_value_label')
-        widget.set_text('%d%%' % (int(float(self.config['inactive_color_offset'])*100)))
+        widget.set_text('%d%%' % (int(float(self.config['inactive_color_offset']) * 100)))
         # Use custom URL handler
         widget = guiget('use_custom_url_handler_checkbox')
         widget.set_active(self.config['use_custom_url_handler'])
@@ -652,7 +655,7 @@ class PrefsEditor:
         encodingstore = guiget('EncodingListStore')
         value = self.config['encoding']
         encodings = TerminatorEncoding().get_list()
-        encodings.sort(key=lambda s:s[2].lower())
+        encodings.sort(key=lambda s: s[2].lower())
 
         for encoding in encodings:
             if encoding[1] is None:
@@ -880,7 +883,7 @@ class PrefsEditor:
         """Background darkness setting changed"""
         value = widget.get_value()  # This one is rounded according to the UI.
         if value > 1.0:
-          value = 1.0
+            value = 1.0
         self.config['background_darkness'] = value
         self.config.save()
 
@@ -1057,7 +1060,7 @@ class PrefsEditor:
         """Inactive color offset setting changed"""
         value = widget.get_value()  # This one is rounded according to the UI.
         if value > 1.0:
-          value = 1.0
+            value = 1.0
         self.config['inactive_color_offset'] = value
         self.config.save()
         guiget = self.builder.get_object
@@ -1067,7 +1070,7 @@ class PrefsEditor:
     def on_handlesize_value_changed(self, widget):
         """Handle size changed"""
         value = widget.get_value()  # This one is rounded according to the UI.
-        value = int(value)          # Cast to int.
+        value = int(value)  # Cast to int.
         if value > 20:
             value = 20
         self.config['handle_size'] = value
@@ -1136,7 +1139,7 @@ class PrefsEditor:
 
         treeview = guiget('profilelist')
         model = treeview.get_model()
-        values = [ r[0] for r in model ]
+        values = [r[0] for r in model]
 
         newprofile = _('New Profile')
         if newprofile in values:
@@ -1181,7 +1184,7 @@ class PrefsEditor:
 
         treeview = guiget('layoutlist')
         model = treeview.get_model()
-        values = [ r[0] for r in model ]
+        values = [r[0] for r in model]
 
         name = _('New Layout')
         if name in values:
@@ -1391,7 +1394,7 @@ class PrefsEditor:
         if oldname == newtext or oldname == 'default':
             return
         dbg('PrefsEditor::on_profile_name_edited: Changing %s to %s' %
-        (oldname, newtext))
+            (oldname, newtext))
         self.config.rename_profile(oldname, newtext)
         self.config.save()
 
@@ -1519,9 +1522,10 @@ class PrefsEditor:
         self.config['keybindings'][binding] = None
         self.config.save()
 
-    def on_open_manual(self,  widget):
+    def on_open_manual(self, widget):
         """Open the fine manual"""
         self.term.key_help()
+
 
 class LayoutEditor:
     profile_ids_to_profile = None
@@ -1587,7 +1591,7 @@ class LayoutEditor:
     def update_profiles(self):
         """Update the list of profiles"""
         self.profile_ids_to_profile = {}
-        self.profile_profile_to_ids= {}
+        self.profile_profile_to_ids = {}
         chooser = self.builder.get_object('layout_profile_chooser')
 
         profiles = sorted(self.config.list_profiles())
@@ -1686,8 +1690,10 @@ class LayoutEditor:
         layout[self.layout_item]['directory'] = workdir
         self.config.save()
 
+
 if __name__ == '__main__':
     from terminatorlib import terminal, util
+
     util.DEBUG = True
     TERM = terminal.Terminal()
     PREFEDIT = PrefsEditor(TERM)

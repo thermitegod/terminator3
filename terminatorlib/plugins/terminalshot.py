@@ -5,14 +5,16 @@
 terminals"""
 
 import os
-from gi.repository import Gtk
-from gi.repository import GdkPixbuf
+
+from gi.repository import GdkPixbuf, Gtk
+
 import terminatorlib.plugin as plugin
 from terminatorlib.translation import _
 from terminatorlib.util import widget_pixbuf
 
 # Every plugin you want Terminator to load *must* be listed in 'AVAILABLE'
 AVAILABLE = ['TerminalShot']
+
 
 class TerminalShot(plugin.MenuItem):
     """Add custom commands to the terminal menu"""

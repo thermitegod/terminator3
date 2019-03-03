@@ -23,24 +23,30 @@ keyboard shortcuts.
 """
 
 import re
-from gi.repository import Gtk, Gdk
+
+from gi.repository import Gdk
+
 from terminatorlib.util import err
+
 
 class KeymapError(Exception):
     """Custom exception for errors in keybinding configurations"""
 
+
 MODIFIER = re.compile('<([^<]+)>')
+
+
 class Keybindings:
     """Class to handle loading and lookup of Terminator keybindings"""
 
     modifiers = {
-        'ctrl':     Gdk.ModifierType.CONTROL_MASK,
-        'control':  Gdk.ModifierType.CONTROL_MASK,
-        'primary':  Gdk.ModifierType.CONTROL_MASK,
-        'shift':    Gdk.ModifierType.SHIFT_MASK,
-        'alt':      Gdk.ModifierType.MOD1_MASK,
-        'super':    Gdk.ModifierType.SUPER_MASK,
-        'hyper':    Gdk.ModifierType.HYPER_MASK,
+        'ctrl'   : Gdk.ModifierType.CONTROL_MASK,
+        'control': Gdk.ModifierType.CONTROL_MASK,
+        'primary': Gdk.ModifierType.CONTROL_MASK,
+        'shift'  : Gdk.ModifierType.SHIFT_MASK,
+        'alt'    : Gdk.ModifierType.MOD1_MASK,
+        'super'  : Gdk.ModifierType.SUPER_MASK,
+        'hyper'  : Gdk.ModifierType.HYPER_MASK,
     }
 
     empty = {}
@@ -72,7 +78,7 @@ class Keybindings:
                 try:
                     keyval, mask = self._parsebinding(binding)
                     # Does much the same, but with poorer error handling.
-                    #keyval, mask = Gtk.accelerator_parse(binding)
+                    # keyval, mask = Gtk.accelerator_parse(binding)
                 except KeymapError as e:
                     err("keybindings.reload failed to parse binding '%s': %s" % (binding, e))
                 else:
@@ -117,12 +123,11 @@ class Keybindings:
         """Translate a keyboard event into a mapped key"""
         try:
             _found, keyval, _egp, _lvl, consumed = self.keymap.translate_keyboard_state(
-                event.hardware_keycode,
-                Gdk.ModifierType(event.get_state() & ~Gdk.ModifierType.LOCK_MASK),
-                event.group)
+                    event.hardware_keycode,
+                    Gdk.ModifierType(event.get_state() & ~Gdk.ModifierType.LOCK_MASK),
+                    event.group)
         except TypeError:
             err("keybindings.lookup failed to translate keyboard event: %s" % dir(event))
             return None
         mask = (event.get_state() & ~consumed) & self._masks
         return self._lookup.get(mask, self.empty).get(keyval, None)
-
