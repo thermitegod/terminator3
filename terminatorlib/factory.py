@@ -96,27 +96,32 @@ class Factory(Borg):
         inject_uuid(output)
         return output
 
-    def make_window(self, **kwargs):
+    @staticmethod
+    def make_window(**kwargs):
         """Make a Window"""
         from terminatorlib import window
         return window.Window(**kwargs)
 
-    def make_terminal(self, **kwargs):
+    @staticmethod
+    def make_terminal(**kwargs):
         """Make a Terminal"""
         from terminatorlib import terminal
         return terminal.Terminal()
 
-    def make_hpaned(self, **kwargs):
+    @staticmethod
+    def make_hpaned(**kwargs):
         """Make an HPaned"""
         from terminatorlib import paned
         return paned.HPaned()
 
-    def make_vpaned(self, **kwargs):
+    @staticmethod
+    def make_vpaned(**kwargs):
         """Make a VPaned"""
         from terminatorlib import paned
         return paned.VPaned()
 
-    def make_notebook(self, **kwargs):
+    @staticmethod
+    def make_notebook(**kwargs):
         """Make a Notebook"""
         from terminatorlib import notebook
         return notebook.Notebook(kwargs['window'])

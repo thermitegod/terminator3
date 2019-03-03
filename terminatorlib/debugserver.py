@@ -45,7 +45,8 @@ class PythonConsoleServer(SocketServer.BaseRequestHandler):
             self.socketio.close()
             ddbg("debugserver: done handling")
 
-    def verify_request(self, request, client_address):
+    @staticmethod
+    def verify_request(request, client_address):
         return True
 
     def finish(self):

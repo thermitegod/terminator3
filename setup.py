@@ -179,7 +179,8 @@ class InstallData(install_data):
 
         return data_files
 
-    def _find_css_files(self):
+    @staticmethod
+    def _find_css_files():
         data_files = []
 
         for css_dir in glob.glob(os.path.join(CSS_DIR, '*')):
