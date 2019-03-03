@@ -244,7 +244,7 @@ class Titlebar(Gtk.EventBox):
 
     def editing(self):
         """Determine if we're currently editing a group name or title"""
-        return (self.groupentry.get_property('visible') or self.label.editing())
+        return self.groupentry.get_property('visible') or self.label.editing()
 
     def create_group(self):
         """Create a new group"""

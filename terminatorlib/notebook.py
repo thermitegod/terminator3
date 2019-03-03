@@ -80,11 +80,11 @@ class Notebook(Container, Gtk.Notebook):
             order_a = children[a]['order']
             order_b = children[b]['order']
 
-            if (order_a == order_b):
+            if order_a == order_b:
                 return 0
-            if (order_a < order_b):
+            if order_a < order_b:
                 return -1
-            if (order_a > order_b):
+            if order_a > order_b:
                 return 1
 
         if 'children' not in layout:
@@ -449,11 +449,11 @@ class Notebook(Container, Gtk.Notebook):
         """Set the last active term for uuid"""
         widget = self.terminator.find_terminal_by_uuid(uuid.urn)
         if not widget:
-            err("Cannot find terminal with uuid: %s, so cannot make it active" % (uuid.urn))
+            err("Cannot find terminal with uuid: %s, so cannot make it active" % uuid.urn)
             return
         tabnum = self.page_num_descendant(widget)
         if tabnum == -1:
-            err("No tabnum found for terminal with uuid: %s" % (uuid.urn))
+            err("No tabnum found for terminal with uuid: %s" % uuid.urn)
             return
         nth_page = self.get_nth_page(tabnum)
         self.last_active_term[nth_page] = uuid

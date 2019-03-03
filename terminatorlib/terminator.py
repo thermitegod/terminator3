@@ -246,7 +246,7 @@ class Terminator(Borg):
         window.show(True)
         terminal.spawn_child()
 
-        return (window, terminal)
+        return window, terminal
 
     def create_layout(self, layoutname):
         """Create all the parts necessary to satisfy the specified layout"""

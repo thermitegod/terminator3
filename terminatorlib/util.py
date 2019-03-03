@@ -271,9 +271,9 @@ def get_nav_tiebreak(direction, cursor_x, cursor_y, rect):
     """We have multiple candidate terminals. Pick the closest by cursor
     position"""
     if direction in ['left', 'right']:
-        return (cursor_y >= rect.y and cursor_y <= (rect.y + rect.height))
+        return cursor_y >= rect.y and cursor_y <= (rect.y + rect.height)
     elif direction in ['up', 'down']:
-        return (cursor_x >= rect.x and cursor_x <= (rect.x + rect.width))
+        return cursor_x >= rect.x and cursor_x <= (rect.x + rect.width)
     else:
         raise ValueError('Unknown direction: %s' % direction)
 
@@ -311,7 +311,7 @@ def enumerate_descendants(parent):
 
     dbg('%d containers and %d terminals fall beneath %s' % (len(containers),
                                                             len(terminals), parent))
-    return (containers, terminals)
+    return containers, terminals
 
 
 def make_uuid(str_uuid=None):

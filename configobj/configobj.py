@@ -487,7 +487,7 @@ class Section(dict):
 
     def __reduce__(self):
         state = (dict(self), self.__dict__)
-        return (__newobj__, (self.__class__,), state)
+        return __newobj__, (self.__class__,), state
 
     def __init__(self, parent, depth, main, indict=None, name=None):
         """
@@ -707,7 +707,7 @@ class Section(dict):
 
     def keys(self):
         """D.keys() -> list of D's keys"""
-        return (self.scalars + self.sections)
+        return self.scalars + self.sections
 
     def values(self):
         """D.values() -> list of D's values"""
@@ -1778,7 +1778,7 @@ class ConfigObj(Section):
         """
         if self._inspec:
             # Parsing a configspec so don't handle comments
-            return (value, '')
+            return value, ''
         # do we look for lists in values ?
         if not self.list_values:
             mat = self._nolistvalue.match(value)
@@ -1800,7 +1800,7 @@ class ConfigObj(Section):
         # is wrong: then incorrect values will slip through
         if empty_list is not None:
             # the single comma - meaning an empty list
-            return ([], comment)
+            return [], comment
         if single is not None:
             # handle empty values
             if list_values and not single:
@@ -1812,12 +1812,12 @@ class ConfigObj(Section):
                 single = self._unquote(single)
         if list_values == '':
             # not a list value
-            return (single, comment)
+            return single, comment
         the_list = self._listvalueexp.findall(list_values)
         the_list = [self._unquote(val) for val in the_list]
         if single is not None:
             the_list += [single]
-        return (the_list, comment)
+        return the_list, comment
 
     def _multiline(self, value, infile, cur_index, maxline):
         """Extract the value, where we are in a multiline situation."""
@@ -1851,7 +1851,7 @@ class ConfigObj(Section):
             # a badly formed line
             raise SyntaxError()
         (value, comment) = mat.groups()
-        return (newvalue + value, comment, cur_index)
+        return newvalue + value, comment, cur_index
 
     def _handle_configspec(self, configspec):
         """Parse the configspec."""
@@ -1928,7 +1928,7 @@ class ConfigObj(Section):
         start = self.indent_type
         if not comment.startswith('#'):
             start += self._a_to_u(' # ')
-        return (start + comment)
+        return start + comment
 
     # Public methods
 

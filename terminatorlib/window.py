@@ -192,7 +192,7 @@ class Window(Container, Gtk.Window):
                 self.set_icon_name(icon_name)
                 return  # Success! We're done.
             else:
-                dbg('Unable to load %s icon' % (icon_name))
+                dbg('Unable to load %s icon' % icon_name)
 
         icon = self.render_icon(Gtk.STOCK_DIALOG_INFO, Gtk.IconSize.BUTTON)
         self.set_icon(icon)
@@ -289,7 +289,7 @@ class Window(Container, Gtk.Window):
         """Display a confirmation dialog when the user is closing multiple
         terminals in one window"""
 
-        return (not (self.construct_confirm_close(window, type) == Gtk.ResponseType.ACCEPT))
+        return not (self.construct_confirm_close(window, type) == Gtk.ResponseType.ACCEPT)
 
     def on_destroy_event(self, widget, data=None):
         """Handle window destruction"""
@@ -395,7 +395,7 @@ class Window(Container, Gtk.Window):
         self.present()
 
         # Window must be shown, then hidden for the hotkeys to be registered
-        if (self.ignore_startup_show and startup == True):
+        if self.ignore_startup_show and startup == True:
             self.position = self.get_position()
             self.hide()
 

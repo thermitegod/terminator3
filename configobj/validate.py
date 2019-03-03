@@ -1396,7 +1396,7 @@ def _test(value, *args, **keywargs):
     >>> default == None
     1
     """
-    return (value, args, keywargs)
+    return value, args, keywargs
 
 
 def _test2():

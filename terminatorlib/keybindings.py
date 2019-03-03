@@ -110,7 +110,7 @@ class Keybindings:
         keyval = Gdk.keyval_from_name(key)
         if keyval == 0:
             raise KeymapError("Key '%s' is unrecognised" % key)
-        return (keyval, mask)
+        return keyval, mask
 
     def _lookup_modifier(self, modifier):
         """Map modifier names to gtk values"""

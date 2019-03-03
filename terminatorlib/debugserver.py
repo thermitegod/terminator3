@@ -173,4 +173,4 @@ def spawn(env):
     debugserver = threading.Thread(target=tcpserver.serve_forever, name="DebugServer")
     debugserver.setDaemon(True)
     debugserver.start()
-    return (debugserver, tcpserver)
+    return debugserver, tcpserver

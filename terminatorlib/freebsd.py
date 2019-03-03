@@ -52,7 +52,7 @@ libc = CDLL(find_library('c'))
 uintlen = c_size_t(sizeof(c_uint))
 ver = c_uint(0)
 
-if (libc.sysctlbyname('kern.osreldate', byref(ver), byref(uintlen), None, 0) < 0):
+if libc.sysctlbyname('kern.osreldate', byref(ver), byref(uintlen), None, 0) < 0:
     raise OSError, "sysctlbyname returned < 0"
 
 # kern.proc.filedesc added for procstat(1) after these __FreeBSD_versions

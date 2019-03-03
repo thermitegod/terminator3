@@ -558,7 +558,7 @@ class Terminal(Gtk.VBox):
         else:
             menu_y = widget_y + widget_h
 
-        return (widget_x, menu_y, 1)
+        return widget_x, menu_y, 1
 
     def set_group(self, _item, name):
         """Set a particular group"""
@@ -750,7 +750,7 @@ class Terminal(Gtk.VBox):
             if terminal_box_style_context.has_class(munged_profile):
                 terminal_box_style_context.remove_class(munged_profile)
         munged_profile = "".join([c if c.isalnum() else "-" for c in self.get_profile()])
-        css_class_name = "terminator-profile-%s" % (munged_profile)
+        css_class_name = "terminator-profile-%s" % munged_profile
         terminal_box_style_context.add_class(css_class_name)
         self.set_cursor_color()
         self.vte.set_cursor_shape(getattr(Vte.CursorShape,
@@ -808,7 +808,7 @@ class Terminal(Gtk.VBox):
 
     def get_window_title(self):
         """Return the window title"""
-        return (self.vte.get_window_title() or str(self.command))
+        return self.vte.get_window_title() or str(self.command)
 
     def on_group_button_press(self, widget, event):
         """Handler for the group button"""
@@ -877,7 +877,7 @@ class Terminal(Gtk.VBox):
             # handle the case where user has re-bound copy to ctrl+<key>
             # we only copy if there is a selection otherwise let it fall through
             # to ^<key>
-            if (mapping == "copy" and event.get_state() & Gdk.ModifierType.CONTROL_MASK):
+            if mapping == "copy" and event.get_state() & Gdk.ModifierType.CONTROL_MASK:
                 if self.vte.get_has_selection():
                     getattr(self, "key_" + mapping)()
                     return True
@@ -1552,15 +1552,15 @@ class Terminal(Gtk.VBox):
         col, row = self.vte.get_cursor_position()
         width = self.vte.get_char_width()
         height = self.vte.get_char_height()
-        return (col * width, row * height)
+        return col * width, row * height
 
     def get_font_size(self):
         """Return the width/height of our font"""
-        return (self.vte.get_char_width(), self.vte.get_char_height())
+        return self.vte.get_char_width(), self.vte.get_char_height()
 
     def get_size(self):
         """Return the column/rows of the terminal"""
-        return (self.vte.get_column_count(), self.vte.get_row_count())
+        return self.vte.get_column_count(), self.vte.get_row_count()
 
     def on_bell(self, widget):
         """Set the urgency hint/icon/flash for our window"""
