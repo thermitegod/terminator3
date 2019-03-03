@@ -8,5 +8,6 @@ AVAILABLE = ['TestPlugin']
 class TestPlugin(plugin.Plugin):
     capabilities = ['test']
 
-    def do_test(self):
+    @staticmethod
+    def do_test():
         return 'TestPluginWin'

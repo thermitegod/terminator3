@@ -122,7 +122,8 @@ class CustomCommandsMenu(plugin.MenuItem):
             i = i + 1
         config.save()
 
-    def _execute(self, widget, data):
+    @staticmethod
+    def _execute(widget, data):
         command = data['command']
         if command[-1] != '\n':
             command = command + '\n'
@@ -247,7 +248,8 @@ class CustomCommandsMenu(plugin.MenuItem):
             iter = store.iter_next(iter)
             i = i + 1
 
-    def on_toggled(self, widget, path, data):
+    @staticmethod
+    def on_toggled(widget, path, data):
         treeview = data['treeview']
         store = treeview.get_model()
         iter = store.get_iter(path)
@@ -258,7 +260,8 @@ class CustomCommandsMenu(plugin.MenuItem):
                                              )
         store.set_value(iter, CC_COL_ENABLED, not enabled)
 
-    def on_selection_changed(self, selection, data=None):
+    @staticmethod
+    def on_selection_changed(selection, data=None):
         treeview = selection.get_tree_view()
         (model, iter) = selection.get_selected()
         data['button_top'].set_sensitive(iter is not None)
@@ -330,7 +333,8 @@ class CustomCommandsMenu(plugin.MenuItem):
                     gerr(_("Name *%s* already exist") % item['name'])
         dialog.destroy()
 
-    def on_goto_top(self, button, data):
+    @staticmethod
+    def on_goto_top(button, data):
         treeview = data['treeview']
         selection = treeview.get_selection()
         (store, iter) = selection.get_selected()
@@ -340,7 +344,8 @@ class CustomCommandsMenu(plugin.MenuItem):
         firstiter = store.get_iter_first()
         store.move_before(iter, firstiter)
 
-    def on_go_up(self, button, data):
+    @staticmethod
+    def on_go_up(button, data):
         treeview = data['treeview']
         selection = treeview.get_selection()
         (store, iter) = selection.get_selected()
@@ -360,7 +365,8 @@ class CustomCommandsMenu(plugin.MenuItem):
                 break
             tmpiter = next
 
-    def on_go_down(self, button, data):
+    @staticmethod
+    def on_go_down(button, data):
         treeview = data['treeview']
         selection = treeview.get_selection()
         (store, iter) = selection.get_selected()
@@ -371,7 +377,8 @@ class CustomCommandsMenu(plugin.MenuItem):
         if next:
             store.swap(iter, next)
 
-    def on_goto_last(self, button, data):
+    @staticmethod
+    def on_goto_last(button, data):
         treeview = data['treeview']
         selection = treeview.get_selection()
         (store, iter) = selection.get_selected()
@@ -386,7 +393,8 @@ class CustomCommandsMenu(plugin.MenuItem):
 
         store.move_after(iter, lastiter)
 
-    def on_delete(self, button, data):
+    @staticmethod
+    def on_delete(button, data):
         treeview = data['treeview']
         selection = treeview.get_selection()
         (store, iter) = selection.get_selected()
