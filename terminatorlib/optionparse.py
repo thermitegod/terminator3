@@ -137,5 +137,5 @@ def parse_options():
     if options.profile not in configobj.list_profiles():
         options.profile = 'default'
 
-    if util.DEBUG == True:
+    if util.DEBUG:
         dbg('OptionParse::parse_options: command line options: %s' % options)

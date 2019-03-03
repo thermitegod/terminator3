@@ -57,7 +57,7 @@ class EditableLabel(Gtk.EventBox):
 
     def editing(self):
         """Return if we are currently editing"""
-        return self._entry != None
+        return self._entry is not None
 
     def set_text(self, text, force=False):
         """set the text of the label"""

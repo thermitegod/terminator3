@@ -329,7 +329,7 @@ class PrefsEditor:
         self.on_title_system_font_checkbutton_toggled(widget)
         # Font selector
         widget = guiget('title_font_selector')
-        if self.config['title_use_system_font'] == True:
+        if self.config['title_use_system_font']:
             fontname = self.config.get_system_prop_font()
             if fontname is not None:
                 widget.set_font_name(fontname)
@@ -427,7 +427,7 @@ class PrefsEditor:
         # Font selector
         widget = guiget('font_selector')
 
-        if self.config['use_system_font'] == True:
+        if self.config['use_system_font']:
             fontname = self.config.get_system_mono_font()
             if fontname is not None:
                 widget.set_font_name(fontname)
@@ -860,7 +860,7 @@ class PrefsEditor:
         """Scrollback infiniteness changed"""
         spinbutton = self.builder.get_object('scrollback_lines_spinbutton')
         value = widget.get_active()
-        if value == True:
+        if value:
             spinbutton.set_sensitive(False)
         else:
             spinbutton.set_sensitive(True)
@@ -1268,7 +1268,7 @@ class PrefsEditor:
         self.config['use_system_font'] = value
         self.config.save()
 
-        if self.config['use_system_font'] == True:
+        if self.config['use_system_font']:
             fontname = self.config.get_system_mono_font()
             if fontname is not None:
                 widget.set_font_name(fontname)
@@ -1286,7 +1286,7 @@ class PrefsEditor:
         self.config['title_use_system_font'] = value
         self.config.save()
 
-        if self.config['title_use_system_font'] == True:
+        if self.config['title_use_system_font']:
             fontname = self.config.get_system_prop_font()
             if fontname is not None:
                 widget.set_font_name(fontname)
@@ -1315,7 +1315,7 @@ class PrefsEditor:
         backtype = None
         imagewidget = guiget('image_radiobutton')
         transwidget = guiget('transparent_radiobutton')
-        if transwidget.get_active() == True:
+        if transwidget.get_active():
             backtype = 'transparent'
         else:
             backtype = 'solid'

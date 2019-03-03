@@ -456,8 +456,7 @@ class ConfigBase(Borg):
         if self.global_config is None:
             self.global_config = copy(DEFAULTS['global_config'])
         if self.profiles is None:
-            self.profiles = {}
-            self.profiles['default'] = copy(DEFAULTS['profiles']['default'])
+            self.profiles = {'default': copy(DEFAULTS['profiles']['default'])}
         if self.keybindings is None:
             self.keybindings = copy(DEFAULTS['keybindings'])
         if self.plugins is None:
@@ -486,7 +485,7 @@ class ConfigBase(Borg):
 
         defaultconfig['plugins'] = {}
 
-        if DEBUG == True:
+        if DEBUG:
             with open(os.path.join(os.environ.get('TMPDIR', '/tmp'),
                                    'terminator_configspec_debug.txt'),
                       mode='wt') as f:

@@ -255,7 +255,7 @@ class Window(Container, Gtk.Window):
         cwd = None
         profile = None
 
-        if self.get_property('term_zoomed') == True:
+        if self.get_property('term_zoomed'):
             err("You can't create a tab while a terminal is maximised/zoomed")
             return
 
@@ -275,7 +275,7 @@ class Window(Container, Gtk.Window):
         """Handle a window close request"""
         maker = Factory()
         if maker.isinstance(self.get_child(), 'Terminal'):
-            if self.get_property('term_zoomed') == True:
+            if self.get_property('term_zoomed'):
                 return self.confirm_close(window, _('window'))
             else:
                 dbg('Window::on_delete_event: Only one child, closing is fine')
@@ -337,14 +337,14 @@ class Window(Container, Gtk.Window):
 
     def set_maximised(self, value):
         """Set the maximised state of the window from the supplied value"""
-        if value == True:
+        if value:
             self.maximize()
         else:
             self.unmaximize()
 
     def set_fullscreen(self, value):
         """Set the fullscreen state of the window from the supplied value"""
-        if value == True:
+        if value:
             self.fullscreen()
         else:
             self.unfullscreen()
@@ -355,14 +355,14 @@ class Window(Container, Gtk.Window):
 
     def set_hidden(self, value):
         """Set the visibility of the window from the supplied value"""
-        if value == True:
+        if value:
             self.ignore_startup_show = True
         else:
             self.ignore_startup_show = False
 
     def set_iconified(self, value):
         """Set the minimised state of the window from the supplied value"""
-        if value == True:
+        if value:
             self.iconify()
 
     def set_always_on_top(self, value):
@@ -371,12 +371,12 @@ class Window(Container, Gtk.Window):
 
     def set_sticky(self, value):
         """Set the sticky hint from the supplied value"""
-        if value == True:
+        if value:
             self.stick()
 
     def set_real_transparency(self, value=True):
         """Enable RGBA if supported on the current screen"""
-        if self.is_composited() == False:
+        if not self.is_composited():
             value = False
 
         screen = self.get_screen()
@@ -438,8 +438,7 @@ class Window(Container, Gtk.Window):
 
     def get_children(self):
         """Return a single list of our child"""
-        children = []
-        children.append(self.get_child())
+        children = [self.get_child()]
         return children
 
     def hoover(self):
@@ -454,7 +453,7 @@ class Window(Container, Gtk.Window):
 
     def split_axis(self, widget, vertical=True, cwd=None, sibling=None, widgetfirst=True):
         """Split the window"""
-        if self.get_property('term_zoomed') == True:
+        if self.get_property('term_zoomed'):
             err("You can't split while a terminal is maximised/zoomed")
             return
 
@@ -602,7 +601,7 @@ class Window(Container, Gtk.Window):
     def deferred_set_rough_geometry_hints(self):
         # no parameters are used in set_rough_geometry_hints, so we can
         # use the set_rough_geometry_hints
-        if self.pending_set_rough_geometry_hint == True:
+        if self.pending_set_rough_geometry_hint:
             return
         self.pending_set_rough_geometry_hint = True
         GLib.idle_add(self.do_deferred_set_rough_geometry_hints)
@@ -614,7 +613,7 @@ class Window(Container, Gtk.Window):
     def set_rough_geometry_hints(self):
         """Walk all the terminals along the top and left edges to fake up how
         many columns/rows we sort of have"""
-        if self.ismaximised == True:
+        if self.ismaximised:
             return
         if not hasattr(self, 'cached_maker'):
             self.cached_maker = Factory()
@@ -851,7 +850,7 @@ class Window(Container, Gtk.Window):
                     if util.get_nav_tiebreak(direction, cursor_x, cursor_y,
                                              rect):
                         next = terminals.index(term)
-                        break;
+                        break
         else:
             err('Unknown navigation direction: %s' % direction)
 

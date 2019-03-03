@@ -271,9 +271,9 @@ def get_nav_tiebreak(direction, cursor_x, cursor_y, rect):
     """We have multiple candidate terminals. Pick the closest by cursor
     position"""
     if direction in ['left', 'right']:
-        return cursor_y >= rect.y and cursor_y <= (rect.y + rect.height)
+        return rect.y <= cursor_y <= (rect.y + rect.height)
     elif direction in ['up', 'down']:
-        return cursor_x >= rect.x and cursor_x <= (rect.x + rect.width)
+        return rect.x <= cursor_x <= (rect.x + rect.width)
     else:
         raise ValueError('Unknown direction: %s' % direction)
 
@@ -324,7 +324,7 @@ def make_uuid(str_uuid=None):
 def inject_uuid(target):
     """Inject a UUID into an existing object"""
     uuid = make_uuid()
-    if not hasattr(target, "uuid") or target.uuid == None:
+    if not hasattr(target, "uuid") or target.uuid is None:
         dbg("Injecting UUID %s into: %s" % (uuid, target))
         target.uuid = uuid
     else:

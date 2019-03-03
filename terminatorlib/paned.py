@@ -249,15 +249,12 @@ class Paned(Container):
 
     def get_children(self):
         """Return an ordered list of our children"""
-        children = []
-        children.append(self.get_child1())
-        children.append(self.get_child2())
+        children = [self.get_child1(), self.get_child2()]
         return children
 
     def get_child_metadata(self, widget):
         """Return metadata about a child"""
-        metadata = {}
-        metadata['had_focus'] = widget.has_focus()
+        metadata = {'had_focus': widget.has_focus()}
 
     def get_handlesize(self):
         """Why oh why, gtk3?"""

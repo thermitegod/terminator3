@@ -172,7 +172,7 @@ class TerminalPopupMenu(object):
 
             menu.append(Gtk.SeparatorMenuItem())
 
-        if self.config['show_titlebar'] == False:
+        if not self.config['show_titlebar']:
             item = Gtk.MenuItem.new_with_mnemonic(_('Grouping'))
             submenu = self.terminal.populate_group_menu()
             submenu.show_all()
@@ -254,7 +254,7 @@ class TerminalPopupMenu(object):
             if encoding == terminal.default_encoding:
                 extratext = " (%s)" % _("Default")
             elif encoding == current_encoding and \
-                    terminal.custom_encoding == True:
+                    terminal.custom_encoding is True:
                 extratext = " (%s)" % _("User defined")
             else:
                 extratext = ""

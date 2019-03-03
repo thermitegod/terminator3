@@ -36,7 +36,7 @@ try:
     # pylint: disable-msg=W0611
     from gi.repository import Gtk, Gdk
 
-    if Gdk.Display.get_default() == None:
+    if Gdk.Display.get_default() is None:
         print('You need to run terminator in an X environment. ' \
               'Make sure $DISPLAY is properly set')
         sys.exit(1)
@@ -97,9 +97,9 @@ if __name__ == '__main__':
                     OPTIONS.working_directory = ORIGCWD
                 optionslist = {}
                 for opt, val in OPTIONS.__dict__.items():
-                    if type(val) == type([]):
+                    if isinstance(type(val), type([])):
                         val = ' '.join(val)
-                    if val == True:
+                    if val:
                         val = 'True'
                     optionslist[opt] = val and '%s' % val or ''
                 optionslist = dbus.Dictionary(optionslist, signature='ss')

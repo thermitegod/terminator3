@@ -171,7 +171,7 @@ class Titlebar(Gtk.EventBox):
             self.modify_bg(Gtk.StateType.NORMAL,
                            Gdk.color_parse(title_bg))
             if not self.get_desired_visibility():
-                if default_bg == True:
+                if default_bg:
                     color = term.get_style_context().get_background_color(Gtk.StateType.NORMAL)  # VERIFY FOR GTK3
                 else:
                     color = Gdk.color_parse(title_bg)

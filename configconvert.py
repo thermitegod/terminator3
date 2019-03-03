@@ -241,13 +241,8 @@ def defaults_to_configspec():
     configspecdata['profiles'] = {}
     configspecdata['profiles']['__many__'] = section
 
-    section = {}
-    section['type'] = 'string'
-    section['parent'] = 'string'
-    section['profile'] = 'string(default=default)'
-    section['command'] = 'string(default="")'
-    section['position'] = 'string(default="")'
-    section['size'] = 'list(default=list(-1,-1))'
+    section = {'type': 'string', 'parent': 'string', 'profile': 'string(default=default)',
+               'command': 'string(default="")', 'position': 'string(default="")', 'size': 'list(default=list(-1,-1))'}
     configspecdata['layouts'] = {}
     configspecdata['layouts']['__many__'] = {}
     configspecdata['layouts']['__many__']['__many__'] = section

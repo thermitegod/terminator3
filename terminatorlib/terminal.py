@@ -447,7 +447,7 @@ class Terminal(Gtk.VBox):
             cnxs = []
             item = Gtk.RadioMenuItem.new_with_mnemonic(groupitems, _('_None'))
             groupitems = item.get_group()
-            item.set_active(self.group == None)
+            item.set_active(self.group is None)
             cnxs.append([item, 'toggled', self.set_group, None])
             menu.append(item)
 
@@ -461,10 +461,10 @@ class Terminal(Gtk.VBox):
             for cnx in cnxs:
                 cnx[0].connect(cnx[1], cnx[2], cnx[3])
 
-        if self.group != None or len(self.terminator.groups) > 0:
+        if self.group is not None or len(self.terminator.groups) > 0:
             menu.append(Gtk.SeparatorMenuItem())
 
-        if self.group != None:
+        if self.group is not None:
             item = Gtk.MenuItem(label=_('Remove group %s') % self.group)
             item.connect('activate', self.ungroup, self.group)
             menu.append(item)
@@ -484,7 +484,7 @@ class Terminal(Gtk.VBox):
             item.connect('activate', lambda x: self.emit('ungroup-all'))
             menu.append(item)
 
-        if self.group != None:
+        if self.group is not None:
             menu.append(Gtk.SeparatorMenuItem())
 
             item = Gtk.MenuItem(label=_('Close group %s') % self.group)
@@ -617,7 +617,7 @@ class Terminal(Gtk.VBox):
             self.cnxids.new(self.vte, 'child-exited',
                             lambda x, y: self.emit('close-term'))
 
-        if self.custom_encoding != True:
+        if not self.custom_encoding:
             self.vte.set_encoding(self.config['encoding'])
         # Word char support was missing from vte 0.38, silently skip this setting
         if hasattr(self.vte, 'set_word_char_exceptions'):
@@ -670,7 +670,7 @@ class Terminal(Gtk.VBox):
 
         if not self.custom_font_size:
             try:
-                if self.config['use_system_font'] == True:
+                if self.config['use_system_font']:
                     font = self.config.get_system_mono_font()
                 else:
                     font = self.config['font']
@@ -756,26 +756,26 @@ class Terminal(Gtk.VBox):
         self.vte.set_cursor_shape(getattr(Vte.CursorShape,
                                           self.config['cursor_shape'].upper()));
 
-        if self.config['cursor_blink'] == True:
+        if self.config['cursor_blink']:
             self.vte.set_cursor_blink_mode(Vte.CursorBlinkMode.ON)
         else:
             self.vte.set_cursor_blink_mode(Vte.CursorBlinkMode.OFF)
 
-        if self.config['force_no_bell'] == True:
+        if self.config['force_no_bell']:
             self.vte.set_audible_bell(False)
             self.cnxids.remove_signal(self.vte, 'bell')
         else:
             self.vte.set_audible_bell(self.config['audible_bell'])
             self.cnxids.remove_signal(self.vte, 'bell')
-            if self.config['urgent_bell'] == True or \
-                    self.config['icon_bell'] == True or \
-                    self.config['visible_bell'] == True:
+            if self.config['urgent_bell'] is True or \
+                    self.config['icon_bell'] is True or \
+                    self.config['visible_bell'] is True:
                 try:
                     self.cnxids.new(self.vte, 'bell', self.on_bell)
                 except TypeError:
                     err('bell signal unavailable with this version of VTE')
 
-        if self.config['scrollback_infinite'] == True:
+        if self.config['scrollback_infinite']:
             scrollback_lines = -1
         else:
             scrollback_lines = self.config['scrollback_lines']
@@ -1250,7 +1250,7 @@ class Terminal(Gtk.VBox):
     def deferred_on_vte_size_allocate(self, widget, allocation):
         # widget & allocation are not used in on_vte_size_allocate, so we
         # can use the on_vte_size_allocate instead of duplicating the code
-        if self.pending_on_vte_size_allocate == True:
+        if self.pending_on_vte_size_allocate:
             return
         self.pending_on_vte_size_allocate = True
         GLib.idle_add(self.do_deferred_on_vte_size_allocate, widget, allocation)
@@ -1280,14 +1280,10 @@ class Terminal(Gtk.VBox):
 
     def get_zoom_data(self):
         """Return a dict of information for Window"""
-        data = {}
-        data['old_font'] = self.vte.get_font().copy()
-        data['old_char_height'] = self.vte.get_char_height()
-        data['old_char_width'] = self.vte.get_char_width()
-        data['old_allocation'] = self.vte.get_allocation()
-        data['old_columns'] = self.vte.get_column_count()
-        data['old_rows'] = self.vte.get_row_count()
-        data['old_parent'] = self.get_parent()
+        data = {'old_font'      : self.vte.get_font().copy(), 'old_char_height': self.vte.get_char_height(),
+                'old_char_width': self.vte.get_char_width(), 'old_allocation': self.vte.get_allocation(),
+                'old_columns'   : self.vte.get_column_count(), 'old_rows': self.vte.get_row_count(),
+                'old_parent'    : self.get_parent()}
 
         return data
 
@@ -1357,11 +1353,11 @@ class Terminal(Gtk.VBox):
         shell = None
         command = None
 
-        if self.terminator.doing_layout == True:
+        if self.terminator.doing_layout:
             dbg('still laying out, refusing to spawn a child')
             return
 
-        if respawn == False:
+        if not respawn:
             self.vte.grab_focus()
 
         options = self.config.options_get()
@@ -1410,11 +1406,8 @@ class Terminal(Gtk.VBox):
         except AttributeError:
             pass
 
-        envv = []
-        envv.append('TERM=%s' % self.config['term'])
-        envv.append('COLORTERM=%s' % self.config['colorterm'])
-        envv.append('PWD=%s' % self.cwd)
-        envv.append('TERMINATOR_UUID=%s' % self.uuid.urn)
+        envv = ['TERM=%s' % self.config['term'], 'COLORTERM=%s' % self.config['colorterm'], 'PWD=%s' % self.cwd,
+                'TERMINATOR_UUID=%s' % self.uuid.urn]
         if self.terminator.dbus_name:
             envv.append('TERMINATOR_DBUS_NAME=%s' % self.terminator.dbus_name)
         if self.terminator.dbus_path:
@@ -1471,7 +1464,7 @@ class Terminal(Gtk.VBox):
 
     def open_url(self, url, prepare=False):
         """Open a given URL, conditionally unpacking it from a VTE match"""
-        if prepare == True:
+        if prepare:
             url = self.prepare_url(url)
         dbg('open_url: URL: %s (prepared: %s)' % (url, prepare))
 
@@ -1534,7 +1527,7 @@ class Terminal(Gtk.VBox):
 
     def zoom_orig(self):
         """Restore original font size"""
-        if self.config['use_system_font'] == True:
+        if self.config['use_system_font']:
             font = self.config.get_system_mono_font()
         else:
             font = self.config['font']
@@ -1564,13 +1557,13 @@ class Terminal(Gtk.VBox):
 
     def on_bell(self, widget):
         """Set the urgency hint/icon/flash for our window"""
-        if self.config['urgent_bell'] == True:
+        if self.config['urgent_bell']:
             window = self.get_toplevel()
             if window.is_toplevel():
                 window.set_urgency_hint(True)
-        if self.config['icon_bell'] == True:
+        if self.config['icon_bell']:
             self.titlebar.icon_bell()
-        if self.config['visible_bell'] == True:
+        if self.config['visible_bell']:
             # Repurposed the code used for drag and drop overlay to provide a visual terminal flash
             alloc = widget.get_allocation()
 
@@ -1604,10 +1597,7 @@ class Terminal(Gtk.VBox):
 
     def describe_layout(self, count, parent, global_layout, child_order):
         """Describe our layout"""
-        layout = {}
-        layout['type'] = 'Terminal'
-        layout['parent'] = parent
-        layout['order'] = child_order
+        layout = {'type': 'Terminal', 'parent': parent, 'order': child_order}
         if self.group:
             layout['group'] = self.group
         profile = self.get_profile()

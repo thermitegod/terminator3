@@ -313,7 +313,7 @@ class InterpolationEngine(object):
 
     def interpolate(self, key, value):
         # short-cut
-        if not self._cookie in value:
+        if self._cookie not in value:
             return value
 
         def recursive_interpolate(key, value, section, backtrail):
@@ -939,9 +939,9 @@ class Section(dict):
         0
         """
         val = self[key]
-        if val == True:
+        if val:
             return True
-        elif val == False:
+        elif not val:
             return False
         else:
             try:
@@ -2232,9 +2232,9 @@ class ConfigObj(Section):
                 section.inline_comments[entry] = configspec.inline_comments.get(entry, '')
             check = self.validate(validator, preserve_errors=preserve_errors, copy=copy, section=section[entry])
             out[entry] = check
-            if check == False:
+            if not check:
                 ret_true = False
-            elif check == True:
+            elif check:
                 ret_false = False
             else:
                 ret_true = False
@@ -2350,15 +2350,15 @@ def flatten_errors(cfg, res, levels=None, results=None):
         # first time called
         levels = []
         results = []
-    if res == True:
+    if res:
         return results
-    if res == False or isinstance(res, Exception):
+    if res is False or isinstance(res, Exception):
         results.append((levels[:], None, res))
         if levels:
             levels.pop()
         return results
     for (key, val) in res.items():
-        if val == True:
+        if val:
             continue
         if isinstance(cfg.get(key), dict):
             # Go down one level

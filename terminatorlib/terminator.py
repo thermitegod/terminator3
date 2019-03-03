@@ -88,7 +88,7 @@ class Terminator(Borg):
             self.groups = []
         if not self.config:
             self.config = Config()
-        if self.groupsend == None:
+        if self.groupsend is None:
             self.groupsend = self.groupsend_type[self.config['broadcast_default']]
         if not self.keybindings:
             self.keybindings = Keybindings()
@@ -294,9 +294,7 @@ class Terminator(Borg):
                         continue
                     if layout[obj]['parent'] in objects:
                         # Our parent has been created, add ourselves
-                        childobj = {}
-                        childobj['type'] = layout[obj]['type']
-                        childobj['children'] = {}
+                        childobj = {'type': layout[obj]['type'], 'children': {}}
 
                         # Copy over any additional object keys
                         for objkey in layout[obj].keys():
@@ -439,7 +437,7 @@ class Terminator(Borg):
     def reconfigure(self):
         """Update configuration for the whole application"""
 
-        if self.style_providers != []:
+        if self.style_providers:
             for style_provider in self.style_providers:
                 Gtk.StyleContext.remove_provider_for_screen(
                         Gdk.Screen.get_default(),
@@ -605,11 +603,11 @@ class Terminator(Borg):
 
             for terminal in self.terminals:
                 if terminal.group:
-                    if not terminal.group in inuse:
+                    if terminal.group not in inuse:
                         inuse.append(terminal.group)
 
             for group in self.groups:
-                if not group in inuse:
+                if group not in inuse:
                     todestroy.append(group)
 
             dbg('Terminator::group_hoover: %d groups, hoovering %d' %
@@ -659,7 +657,7 @@ class Terminator(Borg):
         if self.groupsend == self.groupsend_type['all']:
             return self.terminals
         elif self.groupsend == self.groupsend_type['group']:
-            if widget.group != None:
+            if widget.group is not None:
                 return self.get_sibling_terms(widget)
         return [widget]
 

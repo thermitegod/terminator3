@@ -218,8 +218,7 @@ class Notebook(Container, Gtk.Notebook):
     def get_child_metadata(self, widget):
         """Fetch the relevant metadata for a widget which we'd need
         to recreate it when it's readded"""
-        metadata = {}
-        metadata['tabnum'] = self.page_num(widget)
+        metadata = {'tabnum': self.page_num(widget)}
         label = self.get_tab_label(widget)
         if not label:
             dbg('unable to find label for widget: %s' % widget)
@@ -460,7 +459,7 @@ class Notebook(Container, Gtk.Notebook):
 
     def clean_last_active_term(self):
         """Clean up old entries in last_active_term"""
-        if self.terminator.doing_layout == True:
+        if self.terminator.doing_layout:
             return
         last_active_term = {}
         for tabnum in range(0, self.get_n_pages()):
@@ -475,7 +474,7 @@ class Notebook(Container, Gtk.Notebook):
         data = {'tabs_last_active_term': tabs_last_active_term}
 
         self.pending_on_tab_switch_args = (notebook, page, page_num, data)
-        if self.pending_on_tab_switch == True:
+        if self.pending_on_tab_switch:
             return
         GLib.idle_add(self.do_deferred_on_tab_switch)
         self.pending_on_tab_switch = True
@@ -499,13 +498,13 @@ class Notebook(Container, Gtk.Notebook):
         # print("self: %s" % self)
         # print("event: %s" % event)
         child = self.get_nth_page(self.get_current_page())
-        if child == None:
+        if child is None:
             print("Child = None,  return false")
             return False
 
         event_widget = Gtk.get_event_widget(event)
 
-        if event_widget == None or \
+        if event_widget is None or \
                 event_widget == child or \
                 event_widget.is_ancestor(child):
             print("event_widget is wrong one,  return false")
@@ -515,11 +514,11 @@ class Notebook(Container, Gtk.Notebook):
         # at this point.
         action_widget = self.get_action_widget(Gtk.PackType.START)
         if event_widget == action_widget or \
-                (action_widget != None and event_widget.is_ancestor(action_widget)):
+                (action_widget is not None and event_widget.is_ancestor(action_widget)):
             return False
         action_widget = self.get_action_widget(Gtk.PackType.END)
         if event_widget == action_widget or \
-                (action_widget != None and event_widget.is_ancestor(action_widget)):
+                (action_widget is not None and event_widget.is_ancestor(action_widget)):
             return False
 
         if event.direction in [Gdk.ScrollDirection.RIGHT,

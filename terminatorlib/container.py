@@ -96,7 +96,7 @@ class Container(object):
         """Replace the child oldwidget with newwidget. This is the bare minimum
         required for this operation. Containers should override it if they have
         more complex requirements"""
-        if not oldwidget in self.get_children():
+        if oldwidget not in self.get_children():
             err('%s is not a child of %s' % (oldwidget, self))
             return
         self.remove(oldwidget)
