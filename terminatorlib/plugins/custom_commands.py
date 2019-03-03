@@ -322,7 +322,7 @@ class CustomCommandsMenu(plugin.MenuItem):
                 store = data['treeview'].get_model()
                 iter = store.get_iter_first()
                 name_exist = False
-                while iter != None:
+                while iter is not None:
                     if store.get_value(iter, CC_COL_NAME) == item['name']:
                         name_exist = True
                         break
@@ -434,7 +434,7 @@ class CustomCommandsMenu(plugin.MenuItem):
             else:
                 tmpiter = store.get_iter_first()
                 name_exist = False
-                while tmpiter != None:
+                while tmpiter is not None:
                     if store.get_path(tmpiter) != store.get_path(iter) and store.get_value(tmpiter, CC_COL_NAME) == item['name']:
                         name_exist = True
                         break
