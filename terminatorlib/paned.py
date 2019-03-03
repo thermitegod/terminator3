@@ -180,7 +180,7 @@ class Paned(Container):
         maker = Factory()
         # 1 Find highest ancestor of the same type => ha
         highest_ancestor = self
-        while type(highest_ancestor.get_parent()) == type(highest_ancestor):
+        while isinstance(highest_ancestor.get_parent(), type(highest_ancestor)):
             highest_ancestor = highest_ancestor.get_parent()
 
         highest_ancestor.set_autoresize(False)
@@ -205,7 +205,7 @@ class Paned(Container):
         while toproc:
             curr = toproc.pop(0)
             for child in curr[0].get_children():
-                if type(child) == type(curr[0]):
+                if isinstance(child, type(curr[0])):
                     childset = [child, [], 0, curr]
                     curr[1].append(childset)
                     toproc.append(childset)

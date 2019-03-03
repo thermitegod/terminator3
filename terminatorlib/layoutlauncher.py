@@ -100,7 +100,7 @@ class LayoutLauncher:
 
 
 if __name__ == '__main__':
-    import util
+    from terminatorlib import util
 
     util.DEBUG = True
 

@@ -50,7 +50,7 @@ def get_pid_cwd():
         func = linux_get_pid_cwd
     elif system == 'FreeBSD':
         try:
-            import freebsd
+            from terminatorlib import freebsd
             func = freebsd.get_process_cwd
             dbg('Using FreeBSD get_pid_cwd')
         except (OSError, NotImplementedError, ImportError):
