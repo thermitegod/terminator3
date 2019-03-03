@@ -467,7 +467,8 @@ class ConfigBase(Borg):
             for layout in DEFAULTS['layouts']:
                 self.layouts[layout] = copy(DEFAULTS['layouts'][layout])
 
-    def get_default_config(self, defaultconfig={}):
+    @staticmethod
+    def get_default_config(defaultconfig={}):
         """Convert our tree of default values into a ConfigObj validation
         specification"""
 

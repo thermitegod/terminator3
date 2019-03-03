@@ -135,7 +135,8 @@ class EditableLabel(Gtk.EventBox):
         if key == 'Escape':
             self._entry_to_label(None, None)
 
-    def _on_entry_buttonpress(self, widget, event):
+    @staticmethod
+    def _on_entry_buttonpress(widget, event):
         """handle button events in Gtk.Entry."""
         # Block right clicks to avoid a deadlock.
         # The correct solution here would be for _entry_to_label to trigger a

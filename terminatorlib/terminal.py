@@ -537,7 +537,8 @@ class Terminal(Gtk.VBox):
 
         return menu
 
-    def position_popup_group_menu(self, menu, *args):
+    @staticmethod
+    def position_popup_group_menu(menu, *args):
         """Calculate the position of the group popup menu"""
         # GTK API, or GIR just changed the args. See LP#1518058
         widget = args[-1]
@@ -993,7 +994,8 @@ class Terminal(Gtk.VBox):
         """Show or hide the terminal scrollbar"""
         self.toggle_widget_visibility(self.scrollbar)
 
-    def toggle_widget_visibility(self, widget):
+    @staticmethod
+    def toggle_widget_visibility(widget):
         """Show or hide a widget"""
         if widget.get_property('visible'):
             widget.hide()
@@ -1068,7 +1070,8 @@ class Terminal(Gtk.VBox):
         widget.disconnect(connec)
         widget._draw_data = None
 
-    def on_draw(self, widget, context):
+    @staticmethod
+    def on_draw(widget, context):
         """Handle an expose event while dragging"""
         if not widget._draw_data:
             return False
@@ -1153,7 +1156,8 @@ class Terminal(Gtk.VBox):
         srcpaned.hoover()
         widgetsrc.ensure_visible_and_focussed()
 
-    def get_location(self, term, x, y):
+    @staticmethod
+    def get_location(term, x, y):
         """Get our location within the terminal"""
         # get the diagonales function for the receiving widget
         term_alloc = term.get_allocation()
@@ -1591,7 +1595,8 @@ class Terminal(Gtk.VBox):
             # Add timeout to clean up display
             GObject.timeout_add(100, self.on_bell_cleanup, widget, alloc)
 
-    def on_bell_cleanup(self, widget, alloc):
+    @staticmethod
+    def on_bell_cleanup(widget, alloc):
         """Queue a redraw to clear the visual flash overlay"""
         widget.queue_draw_area(0, 0, alloc.width, alloc.height)
         widget.get_window().process_updates(True)
@@ -1894,7 +1899,8 @@ class Terminal(Gtk.VBox):
     def key_edit_terminal_title(self):
         self.titlebar.label.edit()
 
-    def key_layout_launcher(self):
+    @staticmethod
+    def key_layout_launcher():
         LAYOUTLAUNCHER = LayoutLauncher()
 
     def key_page_up(self):

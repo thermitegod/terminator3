@@ -670,7 +670,8 @@ class Validator(object):
 
         return fun_name, fun_args, fun_kwargs, default
 
-    def _unquote(self, val):
+    @staticmethod
+    def _unquote(val):
         """Unquote a value if necessary."""
         if (len(val) >= 2) and (val[0] in ("'", '"')) and (val[0] == val[-1]):
             val = val[1:-1]
@@ -685,7 +686,8 @@ class Validator(object):
             out.append(self._unquote(arg))
         return name, out
 
-    def _pass(self, value):
+    @staticmethod
+    def _pass(value):
         """
         Dummy check that always passes
 

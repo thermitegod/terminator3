@@ -136,12 +136,14 @@ class Terminator(Borg):
             self.gnome_client = False
             dbg('GNOME session support not available')
 
-    def save_yourself(self, *args):
+    @staticmethod
+    def save_yourself(*args):
         """Save as much state as possible for the session manager"""
         dbg('preparing session manager state')
         # FIXME: Implement this
 
-    def die(self, *args):
+    @staticmethod
+    def die(*args):
         """Die at the hands of the session manager"""
         dbg('session manager asked us to die')
         # FIXME: Implement this
@@ -572,7 +574,8 @@ class Terminator(Borg):
             if maker.isinstance(child, 'Notebook'):
                 child.configure()
 
-    def on_css_parsing_error(self, provider, section, error, user_data=None):
+    @staticmethod
+    def on_css_parsing_error(provider, section, error, user_data=None):
         """Report CSS parsing issues"""
         file_path = section.get_file().get_path()
         line_no = section.get_end_line() + 1

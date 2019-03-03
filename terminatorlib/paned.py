@@ -473,12 +473,14 @@ class Paned(Container):
         else:
             self.set_position(self.get_position())
 
-    def position_by_ratio(self, total_size, handle_size, ratio):
+    @staticmethod
+    def position_by_ratio(total_size, handle_size, ratio):
         non_separator_size = max(total_size - handle_size, 0)
         ratio = min(max(ratio, 0.0), 1.0)
         return int(round(non_separator_size * ratio))
 
-    def ratio_by_position(self, total_size, handle_size, position):
+    @staticmethod
+    def ratio_by_position(total_size, handle_size, position):
         non_separator_size = max(total_size - handle_size, 0)
         if non_separator_size == 0:
             return None

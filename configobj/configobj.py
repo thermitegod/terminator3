@@ -159,7 +159,8 @@ class Builder(object):
     def build_List(self, o):
         return map(self.build, o.getChildren())
 
-    def build_Const(self, o):
+    @staticmethod
+    def build_Const(o):
         return o.value
 
     def build_Dict(self, o):
@@ -172,7 +173,8 @@ class Builder(object):
     def build_Tuple(self, o):
         return tuple(self.build_List(o))
 
-    def build_Name(self, o):
+    @staticmethod
+    def build_Name(o):
         if o.name == 'None':
             return None
         if o.name == 'True':
@@ -1429,7 +1431,8 @@ class ConfigObj(Section):
         else:
             return aString
 
-    def _decode(self, infile, encoding):
+    @staticmethod
+    def _decode(infile, encoding):
         """
         Decode infile to unicode. Using the specified encoding.
 
@@ -1455,7 +1458,8 @@ class ConfigObj(Section):
             return line.decode(self.default_encoding)
         return line
 
-    def _str(self, value):
+    @staticmethod
+    def _str(value):
         """
         Used by ``stringify`` within validate, to turn non-string values
         into strings.
@@ -1632,7 +1636,8 @@ class ConfigObj(Section):
             self.final_comment = comment_list
         self.list_values = temp_list_values
 
-    def _match_depth(self, sect, depth):
+    @staticmethod
+    def _match_depth(sect, depth):
         """
         Given a section and a depth level, walk back through the sections
         parents to see if the depth level matches a previous section.
@@ -1668,7 +1673,8 @@ class ConfigObj(Section):
         # reraise when parsing has finished
         self._errors.append(error)
 
-    def _unquote(self, value):
+    @staticmethod
+    def _unquote(value):
         """Return an unquoted version of a value"""
         if not value:
             # should only happen during parsing of lists
@@ -1745,7 +1751,8 @@ class ConfigObj(Section):
 
         return quot % value
 
-    def _get_single_quote(self, value):
+    @staticmethod
+    def _get_single_quote(value):
         if ("'" in value) and ('"' in value):
             raise ConfigObjError('Value "%s" cannot be safely quoted.' % value)
         elif '"' in value:
@@ -1754,7 +1761,8 @@ class ConfigObj(Section):
             quot = dquot
         return quot
 
-    def _get_triple_quote(self, value):
+    @staticmethod
+    def _get_triple_quote(value):
         if (value.find('"""') != -1) and (value.find("'''") != -1):
             raise ConfigObjError('Value "%s" cannot be safely quoted.' % value)
         if value.find('"""') == -1:
@@ -1864,7 +1872,8 @@ class ConfigObj(Section):
 
         self.configspec = configspec
 
-    def _set_configspec(self, section, copy):
+    @staticmethod
+    def _set_configspec(section, copy):
         """
         Called by validate. Handles setting the configspec on subsections
         including sections to be validated by __many__

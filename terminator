@@ -21,7 +21,6 @@
 import os
 import pwd
 import sys
-
 import psutil
 
 try:
