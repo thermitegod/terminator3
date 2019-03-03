@@ -9,7 +9,7 @@ from gi.repository import Gtk
 
 from terminatorlib import config
 from terminatorlib.terminator import Terminator
-from terminatorlib.util import dbg, spawn_new_terminator
+from terminatorlib.util import dbg, spawn_new_terminator, cmp
 
 
 class LayoutLauncher:
@@ -71,7 +71,7 @@ class LayoutLauncher:
         """Update the contents of the layout"""
         self.layouttreestore.clear()
         layouts = self.config.list_layouts()
-        for layout in sorted(layouts, cmp=lambda x, y: cmp(x.lower(), y.lower())):
+        for layout in sorted(layouts, key=lambda x, y: cmp(x.lower(), y.lower())):
             if layout != "default":
                 self.layouttreestore.append([layout])
             else:

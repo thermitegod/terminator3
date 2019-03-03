@@ -88,6 +88,14 @@ def gerr(message=None):
     dialog.run()
     dialog.destroy()
 
+    
+def cmp(x, y):
+    if x > y:
+        return 1
+    if x < y:
+        return -1
+    return 0
+
 
 def has_ancestor(widget, wtype):
     """Walk up the family tree of widget to see if any ancestors are of type"""
