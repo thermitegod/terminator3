@@ -112,11 +112,7 @@ class CustomCommandsMenu(plugin.MenuItem):
             name = command['name']
             command = command['command']
 
-            item = {}
-            item['enabled'] = enabled
-            item['name'] = name
-            item['command'] = command
-            item['position'] = i
+            item = {'enabled': enabled, 'name': name, 'command': command, 'position': i}
 
             config.plugin_set(self.__class__.__name__, name, item)
             i = i + 1
