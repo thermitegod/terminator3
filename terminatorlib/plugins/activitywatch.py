@@ -95,7 +95,7 @@ class ActivityWatch(plugin.MenuItem):
             if this_time - last_time > hush_period:
                 show_notify = True
 
-        if show_notify == True:
+        if show_notify:
             note.show()
             self.last_notifies[terminal] = this_time
 

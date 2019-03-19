@@ -13,7 +13,7 @@ gi.require_version('Vte', '2.91')  # vte-0.38 (gnome-3.14)
 from gi.repository import Vte
 from itertools import product
 import subprocess
-import urllib
+import urllib.parse
 
 from terminatorlib import plugin, util
 from terminatorlib.util import dbg, err, spawn_new_terminator, make_uuid, manual_lookup, display_manager
@@ -145,7 +145,7 @@ class Terminal(Gtk.VBox):
         self.vte.show()
 
         self.default_encoding = self.vte.get_encoding()
-        self.regex_flags = (GLib.RegexCompileFlags.OPTIMIZE | \
+        self.regex_flags = (GLib.RegexCompileFlags.OPTIMIZE |
                             GLib.RegexCompileFlags.MULTILINE)
         self.update_url_matches()
 
@@ -1115,8 +1115,7 @@ class Terminal(Gtk.VBox):
                     str = ''
                     for fname in txt_lines[:-1]:
                         dbg('drag data fname: %s' % fname)
-                        fname = "'%s'" % urllib.unquote(fname[7:].replace("'",
-                                                                          '\'\\\'\''))
+                        fname = "'%s'" % urllib.parse.unquote(fname[7:].replace("'", '\'\\\'\''))
                         str += fname + ' '
                     txt = str
             for term in self.terminator.get_target_terms(self):
@@ -1126,8 +1125,7 @@ class Terminal(Gtk.VBox):
         widgetsrc = data.terminator.terminals[int(selection_data.get_data())]
         srcvte = Gtk.drag_get_source_widget(drag_context)
         # check if computation requireds
-        if (isinstance(srcvte, Gtk.EventBox) and
-            srcvte == self.titlebar) or srcvte == widget:
+        if (isinstance(srcvte, Gtk.EventBox) and srcvte == self.titlebar) or srcvte == widget:
             return
 
         srchbox = widgetsrc

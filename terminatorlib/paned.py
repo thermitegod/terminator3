@@ -217,9 +217,7 @@ class Paned(Container):
                         p[2] = p[2] + 1
                         p = p[3]
                     # (1c) If Shift modifier, redistribute lower sections too
-                    if recurse_down and \
-                            (maker.isinstance(child, 'VPaned') or \
-                             maker.isinstance(child, 'HPaned')):
+                    if recurse_down and (maker.isinstance(child, 'VPaned') or maker.isinstance(child, 'HPaned')):
                         child.do_redistribute(False, True)
 
         # 3 Get ancestor x/y => a, and handle size => hs

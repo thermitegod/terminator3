@@ -94,8 +94,8 @@ class TerminalPopupMenu(object):
             menu.append(item)
 
             item = Gtk.MenuItem.new_with_mnemonic(namecopy)
-            item.connect('activate',
-                         lambda x: terminal.clipboard.set_text(terminal.prepare_url(url), len(terminal.prepare_url(url))))
+            item.connect('activate', lambda x: terminal.clipboard.set_text(terminal.prepare_url(url),
+                                                                           len(terminal.prepare_url(url))))
             menu.append(item)
 
             menu.append(Gtk.SeparatorMenuItem())

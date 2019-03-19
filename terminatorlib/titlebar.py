@@ -194,7 +194,7 @@ class Titlebar(Gtk.EventBox):
     def get_desired_visibility(self):
         """Returns True if the titlebar is supposed to be visible. False if
         not"""
-        if self.editing() == True or self.terminal.group:
+        if self.editing() is True or self.terminal.group:
             dbg('implicit desired visibility')
             return True
         else:

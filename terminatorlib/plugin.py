@@ -108,8 +108,7 @@ class PluginRegistry(borg.Borg):
                             if item not in self.instances:
                                 self.instances[item] = func()
                     except Exception as ex:
-                        err('PluginRegistry::load_plugins: Importing plugin %s \
-failed: %s' % (plugin, ex))
+                        err('PluginRegistry::load_plugins: Importing plugin %s failed: %s' % (plugin, ex))
 
         self.done = True
 

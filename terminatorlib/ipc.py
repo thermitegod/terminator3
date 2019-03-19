@@ -63,7 +63,7 @@ class DBusService(Borg, dbus.service.Object):
     @dbus.service.method(BUS_NAME, in_signature='a{ss}')
     def new_window_cmdline(self, options=dbus.Dictionary()):
         """Create a new Window"""
-        dbg('dbus method called: new_window with parameters %s' % (options))
+        dbg('dbus method called: new_window with parameters %s' % options)
         oldopts = self.terminator.config.options_get()
         oldopts.__dict__ = options
         self.terminator.config.options_set(oldopts)
@@ -73,7 +73,7 @@ class DBusService(Borg, dbus.service.Object):
     @dbus.service.method(BUS_NAME, in_signature='a{ss}')
     def new_tab_cmdline(self, options=dbus.Dictionary()):
         """Create a new tab"""
-        dbg('dbus method called: new_tab with parameters %s' % (options))
+        dbg('dbus method called: new_tab with parameters %s' % options)
         oldopts = self.terminator.config.options_get()
         oldopts.__dict__ = options
         self.terminator.config.options_set(oldopts)
@@ -123,7 +123,7 @@ class DBusService(Borg, dbus.service.Object):
         elif type == 'vsplit':
             terminal.key_split_vert()
         else:
-            return "ERROR: Unknown type \"%s\" specified" % (type)
+            return "ERROR: Unknown type \"%s\" specified" % type
         terminals_after = set(self.get_terminals())
         # Detect the new terminal UUID
         new_terminal_set = list(terminals_after - terminals_before)

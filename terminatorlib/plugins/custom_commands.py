@@ -294,7 +294,7 @@ class CustomCommandsMenu(plugin.MenuItem):
 
         dialog.vbox.pack_start(table, True, True, 0)
         dialog.show_all()
-        return (dialog, enabled, name, command)
+        return dialog, enabled, name, command
 
     def on_new(self, button, data):
         (dialog, enabled, name, command) = self._create_command_dialog()

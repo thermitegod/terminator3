@@ -173,11 +173,11 @@ class Container(object):
         primary.set_use_markup(True)
         primary.set_alignment(0, 0.5)
         if reqtype == 'window':
-            label_text = _('This window has several terminals open. Closing \
-the window will also close all terminals within it.')
+            label_text = _('This window has several terminals open. Closing '
+                           'the window will also close all terminals within it.')
         elif reqtype == 'tab':
-            label_text = _('This tab has several terminals open. Closing \
-the tab will also close all terminals within it.')
+            label_text = _('This tab has several terminals open. Closing '
+                           'the tab will also close all terminals within it.')
         else:
             label_text = ''
         secondary = Gtk.Label(label=label_text)

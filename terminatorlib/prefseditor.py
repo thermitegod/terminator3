@@ -74,30 +74,22 @@ class PrefsEditor:
                      'gruvbox_light': 6,
                      'gruvbox_dark' : 7,
                      'custom'       : 8}
-    palettes = {'tango'        : '#000000:#cc0000:#4e9a06:#c4a000:#3465a4:\
-#75507b:#06989a:#d3d7cf:#555753:#ef2929:#8ae234:#fce94f:#729fcf:\
-#ad7fa8:#34e2e2:#eeeeec',
-                'linux'        : '#000000:#aa0000:#00aa00:#aa5500:#0000aa:\
-#aa00aa:#00aaaa:#aaaaaa:#555555:#ff5555:#55ff55:#ffff55:#5555ff:\
-#ff55ff:#55ffff:#ffffff',
-                'xterm'        : '#000000:#cd0000:#00cd00:#cdcd00:#0000ee:\
-#cd00cd:#00cdcd:#e5e5e5:#7f7f7f:#ff0000:#00ff00:#ffff00:#5c5cff:\
-#ff00ff:#00ffff:#ffffff',
-                'rxvt'         : '#000000:#cd0000:#00cd00:#cdcd00:#0000cd:\
-#cd00cd:#00cdcd:#faebd7:#404040:#ff0000:#00ff00:#ffff00:#0000ff:\
-#ff00ff:#00ffff:#ffffff',
-                'ambience'     : '#2e3436:#cc0000:#4e9a06:#c4a000:\
-#3465a4:#75507b:#06989a:#d3d7cf:#555753:#ef2929:#8ae234:#fce94f:\
-#729fcf:#ad7fa8:#34e2e2:#eeeeec',
-                'solarized'    : '#073642:#dc322f:#859900:#b58900:\
-#268bd2:#d33682:#2aa198:#eee8d5:#002b36:#cb4b16:#586e75:#657b83:\
-#839496:#6c71c4:#93a1a1:#fdf6e3',
-                'gruvbox_light': '#fbf1c7:#cc241d:#98971a:#d79921:\
-#458588:#b16286:#689d6a:#7c6f64:#928374:#9d0006:#79740e:#b57614:\
-#076678:#8f3f71:#427b58:#3c3836',
-                'gruvbox_dark' : '#282828:#cc241d:#98971a:#d79921:\
-#458588:#b16286:#689d6a:#a89984:#928374:#fb4934:#b8bb26:#fabd2f:\
-#83a598:#d3869b:#8ec07c:#ebdbb2'}
+    palettes = {'tango'        : '#000000:#cc0000:#4e9a06:#c4a000:#3465a4:#75507b:#06989a:#d3d7cf:'
+                                 '#555753:#ef2929:#8ae234:#fce94f:#729fcf:#ad7fa8:#34e2e2:#eeeeec',
+                'linux'        : '#000000:#aa0000:#00aa00:#aa5500:#0000aa:#aa00aa:#00aaaa:#aaaaaa:'
+                                 '#555555:#ff5555:#55ff55:#ffff55:#5555ff:#ff55ff:#55ffff:#ffffff',
+                'xterm'        : '#000000:#cd0000:#00cd00:#cdcd00:#0000ee:#cd00cd:#00cdcd:#e5e5e5:'
+                                 '#7f7f7f:#ff0000:#00ff00:#ffff00:#5c5cff:#ff00ff:#00ffff:#ffffff',
+                'rxvt'         : '#000000:#cd0000:#00cd00:#cdcd00:#0000cd:#cd00cd:#00cdcd:#faebd7:'
+                                 '#404040:#ff0000:#00ff00:#ffff00:#0000ff:#ff00ff:#00ffff:#ffffff',
+                'ambience'     : '#2e3436:#cc0000:#4e9a06:#c4a000:#3465a4:#75507b:#06989a:#d3d7cf:'
+                                 '#555753:#ef2929:#8ae234:#fce94f:#729fcf:#ad7fa8:#34e2e2:#eeeeec',
+                'solarized'    : '#073642:#dc322f:#859900:#b58900:#268bd2:#d33682:#2aa198:#eee8d5:'
+                                 '#002b36:#cb4b16:#586e75:#657b83:#839496:#6c71c4:#93a1a1:#fdf6e3',
+                'gruvbox_light': '#fbf1c7:#cc241d:#98971a:#d79921:#458588:#b16286:#689d6a:#7c6f64:'
+                                 '#928374:#9d0006:#79740e:#b57614:#076678:#8f3f71:#427b58:#3c3836',
+                'gruvbox_dark' : '#282828:#cc241d:#98971a:#d79921:#458588:#b16286:#689d6a:#a89984:'
+                                 '#928374:#fb4934:#b8bb26:#fabd2f:#83a598:#d3869b:#8ec07c:#ebdbb2'}
     keybindingnames = {'zoom_in'            : _('Increase font size'),
                        'zoom_out'           : _('Decrease font size'),
                        'zoom_normal'        : _('Restore original font size'),

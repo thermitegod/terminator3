@@ -18,8 +18,9 @@ from terminatorlib.version import APP_NAME, APP_VERSION
 
 def ddbg(msg):
     # uncomment this to get lots of spam from debugserver
+    # dbg(msg)
     return
-    dbg(msg)
+
 
 class PythonConsoleServer(socketserver.BaseRequestHandler):
     env = None
