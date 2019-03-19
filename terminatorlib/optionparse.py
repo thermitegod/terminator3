@@ -92,7 +92,7 @@ def parse_options():
         (('--new-tab',),
          dict(action='store_true', dest='new_tab',
               help=_('If Terminator is already running, just open a new tab'))),
-        (('-e', '--execute',),
+        (('-e', '-x', '--execute',),
          dict(action='store', dest='execute', nargs=REMAINDER,
               help=_('Use the rest of arguments as a command to execute'))),
     ]
