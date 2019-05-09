@@ -28,6 +28,11 @@ Original config file will remain untouched
 python3 ./configconvert.py -i ${HOME}/.config/terminator/config -o ${HOME}/.config/terminator/config.json
 ```
 
+### Issues
+
+Atempting to writing layouts will tuncate parts of config.json leaving a broken config
+need to fix
+
 ### Forked from
 
 https://github.com/multiSnow/terminator3
