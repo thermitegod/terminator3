@@ -13,7 +13,7 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with this program; if not, write to the Free Software
-#    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  
+#    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
 #    USA
 
 """Terminator by Chris Jones <cmsj@tenshu.net>"""
@@ -37,13 +37,11 @@ try:
     from gi.repository import Gtk, Gdk
 
     if Gdk.Display.get_default() is None:
-        print('You need to run terminator in an X environment. ' \
-              'Make sure $DISPLAY is properly set')
+        print('Terminator needs an X environment to run. Make sure $DISPLAY is properly set')
         sys.exit(1)
 
 except ImportError:
-    print('You need to install the python bindings for ' \
-          'gobject, gtk and pango to run Terminator.')
+    print('Install python bindings for gobject, gtk and pango to run Terminator.')
     sys.exit(1)
 
 from terminatorlib import optionparse
@@ -91,7 +89,7 @@ if __name__ == '__main__':
             except ipc.DBusException:
                 dbg('Unable to become master process, operating via DBus')
                 # get rid of the None and True types so dbus can handle them (empty
-                # and 'True' strings are used instead), also arrays are joined 
+                # and 'True' strings are used instead), also arrays are joined
                 # (the -x argument for example)
                 if OPTIONS.working_directory is None:
                     OPTIONS.working_directory = ORIGCWD
