@@ -29,9 +29,6 @@ from terminatorlib.translation import _
 # pylint: disable-msg=R0903
 class TerminatorEncoding:
     """Class to store encoding details"""
-
-    # The commented out entries below are so marked because gnome-terminal has done
-    #  the same.
     encodings = [
         [True, None, _("Current Locale")],
         [False, "ISO-8859-1", _("Western")],
@@ -41,8 +38,6 @@ class TerminatorEncoding:
         [False, "ISO-8859-5", _("Cyrillic")],
         [False, "ISO-8859-6", _("Arabic")],
         [False, "ISO-8859-7", _("Greek")],
-        [False, "ISO-8859-8", _("Hebrew Visual")],
-        [False, "ISO-8859-8-I", _("Hebrew")],
         [False, "ISO-8859-9", _("Turkish")],
         [False, "ISO-8859-10", _("Nordic")],
         [False, "ISO-8859-13", _("Baltic")],
@@ -66,7 +61,6 @@ class TerminatorEncoding:
         [False, "IBM852", _("Central European")],
         [False, "IBM855", _("Cyrillic")],
         [False, "IBM857", _("Turkish")],
-        [False, "IBM862", _("Hebrew")],
         [False, "IBM864", _("Arabic")],
         [False, "ISO-2022-JP", _("Japanese")],
         [False, "ISO-2022-KR", _("Korean")],
@@ -82,7 +76,6 @@ class TerminatorEncoding:
         [False, "MAC_GREEK", _("Greek")],
         [False, "MAC_GUJARATI", _("Gujarati")],
         [False, "MAC_GURMUKHI", _("Gurmukhi")],
-        [False, "MAC_HEBREW", _("Hebrew")],
         [False, "MAC_ICELANDIC", _("Icelandic")],
         [False, "MAC_ROMAN", _("Western")],
         [False, "MAC_ROMANIAN", _("Romanian")],
@@ -98,7 +91,6 @@ class TerminatorEncoding:
         [False, "WINDOWS-1252", _("Western")],
         [False, "WINDOWS-1253", _("Greek")],
         [False, "WINDOWS-1254", _("Turkish")],
-        [False, "WINDOWS-1255", _("Hebrew")],
         [False, "WINDOWS-1256", _("Arabic")],
         [False, "WINDOWS-1257", _("Baltic")],
         [False, "WINDOWS-1258", _("Vietnamese")]
