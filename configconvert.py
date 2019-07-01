@@ -8,7 +8,7 @@ from configobj.validate import Validator
 DEFAULTS = {
     'global_config': {
         'dbus'                         : True,
-        'focus'                        : 'click',
+        'focus'                        : 'mouse',
         'handle_size'                  : -1,
         'geometry_hinting'             : False,
         'window_state'                 : 'normal',
@@ -34,10 +34,8 @@ DEFAULTS = {
         'title_receive_bg_color'       : '#0076c9',
         'title_inactive_fg_color'      : '#000000',
         'title_inactive_bg_color'      : '#c0bebf',
-        'inactive_color_offset'        : 0.8,
-        'enabled_plugins'              : ['LaunchpadBugURLHandler',
-                                          'LaunchpadCodeURLHandler',
-                                          'APTURLHandler'],
+        'inactive_color_offset'        : 1.0,
+        'enabled_plugins'              : [],
         'suppress_multiple_term_dialog': False,
         'always_split_with_profile'    : False,
         'title_use_system_font'        : True,
@@ -145,12 +143,11 @@ DEFAULTS = {
             'scroll_background'  : True,
             'scroll_on_keystroke': True,
             'scroll_on_output'   : False,
-            'scrollback_lines'   : 500,
+            'scrollback_lines'   : 1000,
             'scrollback_infinite': False,
             'exit_action'        : 'close',
-            'palette'            : '#2e3436:#cc0000:#4e9a06:#c4a000:\
-#3465a4:#75507b:#06989a:#d3d7cf:#555753:#ef2929:#8ae234:#fce94f:\
-#729fcf:#ad7fa8:#34e2e2:#eeeeec',
+            'palette'            : '#2e3436:#cc0000:#4e9a06:#c4a000:#3465a4:#75507b:#06989a:#d3d7cf:'
+                                   '#555753:#ef2929:#8ae234:#fce94f:#729fcf:#ad7fa8:#34e2e2:#eeeeec',
             'word_chars'         : '-,./?%&#:_',
             'mouse_autohide'     : True,
             'login_shell'        : False,
