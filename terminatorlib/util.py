@@ -88,7 +88,7 @@ def gerr(message=None):
     dialog.run()
     dialog.destroy()
 
-    
+
 def cmp(x, y):
     if x > y:
         return 1
@@ -202,15 +202,7 @@ def widget_pixbuf(widget, maxsize=None):
 
 
 def get_config_dir():
-    """Expand all the messy nonsense for finding where ~/.config/terminator
-    really is"""
-    try:
-        configdir = os.environ['XDG_CONFIG_HOME']
-    except KeyError:
-        configdir = os.path.join(os.path.expanduser('~'), '.config')
-
-    dbg('Found config dir: %s' % configdir)
-    return os.path.join(configdir, 'terminator')
+    return os.path.join(os.getenv('XDG_CONFIG_HOME', os.path.join(os.environ.get('HOME'), '.config')), 'terminator')
 
 
 def dict_diff(reference, working):
