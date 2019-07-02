@@ -139,13 +139,13 @@ for %s' % (len(self.instances), capability))
     def enable(self, plugin):
         """Enable a plugin"""
         if plugin in self.instances:
-            err("Cannot enable plugin %s, already enabled" % plugin)
-        dbg("Enabling %s" % plugin)
+            err('Cannot enable plugin %s, already enabled' % plugin)
+        dbg('Enabling %s' % plugin)
         self.instances[plugin] = self.available_plugins[plugin]()
 
     def disable(self, plugin):
         """Disable a plugin"""
-        dbg("Disabling %s" % plugin)
+        dbg('Disabling %s' % plugin)
         self.instances[plugin].unload()
         del self.instances[plugin]
 

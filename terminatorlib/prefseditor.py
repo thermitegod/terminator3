@@ -180,7 +180,7 @@ class PrefsEditor:
             with open(librarypath, mode='rt') as f:
                 gladedata = f.read()
         except Exception as ex:
-            print("Failed to find preferences.glade")
+            print('Failed to find preferences.glade')
             print(ex)
             return
 
@@ -653,7 +653,7 @@ class PrefsEditor:
             if encoding[1] is None:
                 continue
 
-            label = "%s %s" % (encoding[2], encoding[1])
+            label = '%s %s' % (encoding[2], encoding[1])
             rowiter = encodingstore.append([label, encoding[1]])
 
             if encoding[1] == value:

@@ -20,8 +20,8 @@ class TerminalShot(plugin.MenuItem):
     """Add custom commands to the terminal menu"""
     capabilities = ['terminal_menu']
     dialog_action = Gtk.FileChooserAction.SAVE
-    dialog_buttons = (_("_Cancel"), Gtk.ResponseType.CANCEL,
-                      _("_Save"), Gtk.ResponseType.OK)
+    dialog_buttons = (_('_Cancel'), Gtk.ResponseType.CANCEL,
+                      _('_Save'), Gtk.ResponseType.OK)
 
     def __init__(self):
         plugin.MenuItem.__init__(self)
@@ -29,7 +29,7 @@ class TerminalShot(plugin.MenuItem):
     def callback(self, menuitems, menu, terminal):
         """Add our menu items to the menu"""
         item = Gtk.MenuItem.new_with_mnemonic(_('Terminal _screenshot'))
-        item.connect("activate", self.terminalshot, terminal)
+        item.connect('activate', self.terminalshot, terminal)
         menuitems.append(item)
 
     def terminalshot(self, _widget, terminal):
@@ -37,7 +37,7 @@ class TerminalShot(plugin.MenuItem):
         # Grab a pixbuf of the terminal
         orig_pixbuf = widget_pixbuf(terminal)
 
-        savedialog = Gtk.FileChooserDialog(title=_("Save image"),
+        savedialog = Gtk.FileChooserDialog(title=_('Save image'),
                                            action=self.dialog_action)
         savedialog.add_buttons(*self.dialog_buttons)
         savedialog.set_transient_for(_widget.get_toplevel())

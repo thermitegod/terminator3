@@ -58,9 +58,9 @@ class ActivityWatch(plugin.MenuItem):
         item = Gtk.CheckMenuItem.new_with_mnemonic(_('Watch for _activity'))
         item.set_active(terminal in self.watches)
         if item.get_active():
-            item.connect("activate", self.unwatch, terminal)
+            item.connect('activate', self.unwatch, terminal)
         else:
-            item.connect("activate", self.watch, terminal)
+            item.connect('activate', self.watch, terminal)
         menuitems.append(item)
         dbg('Menu item appended')
 
@@ -122,20 +122,19 @@ class InactivityWatch(plugin.MenuItem):
 
     def callback(self, menuitems, menu, terminal):
         """Add our menu item to the menu"""
-        item = Gtk.CheckMenuItem.new_with_mnemonic(_("Watch for _silence"))
+        item = Gtk.CheckMenuItem.new_with_mnemonic(_('Watch for _silence'))
         item.set_active(terminal in self.watches)
         if item.get_active():
-            item.connect("activate", self.unwatch, terminal)
+            item.connect('activate', self.unwatch, terminal)
         else:
-            item.connect("activate", self.watch, terminal)
+            item.connect('activate', self.watch, terminal)
         menuitems.append(item)
         dbg('Menu items appended')
 
     def watch(self, _widget, terminal):
         """Watch a terminal"""
         vte = terminal.get_vte()
-        self.watches[terminal] = vte.connect('contents-changed',
-                                             self.reset_timer, terminal)
+        self.watches[terminal] = vte.connect('contents-changed', self.reset_timer, terminal)
         timeout_id = GObject.timeout_add(watch_interval, self.check_times, terminal)
         self.timers[terminal] = timeout_id
         dbg('timer %s added for %s' % (timeout_id, terminal))

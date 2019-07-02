@@ -72,7 +72,7 @@ class Keybindings:
                 bindings = (bindings,)
 
             for binding in bindings:
-                if not binding or binding == "None":
+                if not binding or binding == 'None':
                     continue
 
                 try:
@@ -80,7 +80,7 @@ class Keybindings:
                     # Does much the same, but with poorer error handling.
                     # keyval, mask = Gtk.accelerator_parse(binding)
                 except KeymapError as e:
-                    err("keybindings.reload failed to parse binding '%s': %s" % (binding, e))
+                    err('keybindings.reload failed to parse binding <%s>: %s' % (binding, e))
                 else:
                     if mask & Gdk.ModifierType.SHIFT_MASK:
                         if keyval == Gdk.KEY_Tab:
@@ -109,7 +109,7 @@ class Keybindings:
             raise KeymapError('No key found')
         keyval = Gdk.keyval_from_name(key)
         if keyval == 0:
-            raise KeymapError("Key '%s' is unrecognised" % key)
+            raise KeymapError('Key <%s> is unrecognised' % key)
         return keyval, mask
 
     def _lookup_modifier(self, modifier):
@@ -117,7 +117,7 @@ class Keybindings:
         try:
             return self.modifiers[modifier.lower()]
         except KeyError:
-            raise KeymapError("Unhandled modifier '<%s>'" % modifier)
+            raise KeymapError('Unhandled modifier <%s>' % modifier)
 
     def lookup(self, event):
         """Translate a keyboard event into a mapped key"""
@@ -127,7 +127,7 @@ class Keybindings:
                     Gdk.ModifierType(event.get_state() & ~Gdk.ModifierType.LOCK_MASK),
                     event.group)
         except TypeError:
-            err("keybindings.lookup failed to translate keyboard event: %s" % dir(event))
+            err('keybindings.lookup failed to translate keyboard event: %s' % dir(event))
             return None
         mask = (event.get_state() & ~consumed) & self._masks
         return self._lookup.get(mask, self.empty).get(keyval, None)

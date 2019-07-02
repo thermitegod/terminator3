@@ -60,5 +60,5 @@ class MavenPluginURLHandler(plugin.URLHandler):
                     else:
                         return 'http://mojo.codehaus.org/%s' % artifactid
 
-        plugin.err("Wrong match '%s' for MavenPluginURLHandler." % url)
+        plugin.err('Wrong match \'%s\' for MavenPluginURLHandler.' % url)
         return ''

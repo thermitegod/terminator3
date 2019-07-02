@@ -106,9 +106,9 @@ class Titlebar(Gtk.EventBox):
         """Update our contents"""
         default_bg = False
         if self.config['title_hide_sizetext']:
-            self.label.set_text("%s" % self.termtext)
+            self.label.set_text('%s' % self.termtext)
         else:
-            self.label.set_text("%s %s" % (self.termtext, self.sizetext))
+            self.label.set_text('%s %s' % (self.termtext, self.sizetext))
 
         if (not self.config['title_use_system_font']) and self.config['title_font']:
             title_font = Pango.FontDescription(self.config['title_font'])
@@ -212,7 +212,7 @@ class Titlebar(Gtk.EventBox):
 
     def update_terminal_size(self, width, height):
         """Update the displayed terminal size"""
-        self.sizetext = "%sx%s" % (width, height)
+        self.sizetext = '%sx%s' % (width, height)
         self.update()
 
     def set_terminal_title(self, widget, title):

@@ -259,20 +259,20 @@ class Terminal(Gtk.VBox):
 
     def update_url_matches(self):
         """Update the regexps used to match URLs"""
-        userchars = "-A-Za-z0-9"
-        passchars = "-A-Za-z0-9,?;.:/!%$^*&~\"#'"
-        hostchars = "-A-Za-z0-9:\[\]"
-        pathchars = "-A-Za-z0-9_$.+!*(),;:@&=?/~#%'"
-        schemes = "(news:|telnet:|nntp:|file:/|https?:|ftps?:|webcal:)"
-        user = "[" + userchars + "]+(:[" + passchars + "]+)?"
-        urlpath = "/[" + pathchars + "]*[^]'.}>) \t\r\n,\\\"]"
+        userchars = '-A-Za-z0-9'
+        passchars = '-A-Za-z0-9,?;.:/!%$^*&~"#\''
+        hostchars = '-A-Za-z0-9:\[\]'
+        pathchars = '-A-Za-z0-9_$.+!*(),;:@&=?/~#%\''
+        schemes = '(news:|telnet:|nntp:|file:/|https?:|ftps?:|webcal:)'
+        user = '[' + userchars + ']+(:[' + passchars + ']+)?'
+        urlpath = '/[' + pathchars + ']*[^]\'.}>) \t\r\n,\\"]'
 
-        lboundry = "\\b"
-        rboundry = "\\b"
+        lboundry = '\\b'
+        rboundry = '\\b'
 
         re = (lboundry + schemes +
-              "//(" + user + "@)?[" + hostchars + ".]+(:[0-9]+)?(" +
-              urlpath + ")?" + rboundry + "/?")
+              '//(' + user + '@)?[' + hostchars + '.]+(:[0-9]+)?(' +
+              urlpath + ')?' + rboundry + '/?')
         reg = GLib.Regex.new(re, self.regex_flags, 0)
         self.matches['full_uri'] = self.vte.match_add_gregex(reg, 0)
 
@@ -280,25 +280,25 @@ class Terminal(Gtk.VBox):
             err('Terminal::update_url_matches: Failed adding URL matches')
         else:
             re = (lboundry +
-                  '(callto:|h323:|sip:)' + "[" + userchars + "+][" +
-                  userchars + ".]*(:[0-9]+)?@?[" + pathchars + "]+" +
+                  '(callto:|h323:|sip:)' + '[' + userchars + '+][' +
+                  userchars + '.]*(:[0-9]+)?@?[' + pathchars + ']+' +
                   rboundry)
             reg = GLib.Regex.new(re, self.regex_flags, 0)
             self.matches['voip'] = self.vte.match_add_gregex(reg, 0)
             re = (lboundry +
-                  "(www|ftp)[" + hostchars + "]*\.[" + hostchars +
-                  ".]+(:[0-9]+)?(" + urlpath + ")?" + rboundry + "/?")
+                  '(www|ftp)[' + hostchars + ']*\.[' + hostchars +
+                  '.]+(:[0-9]+)?(' + urlpath + ')?' + rboundry + '/?')
             reg = GLib.Regex.new(re, self.regex_flags, 0)
             self.matches['addr_only'] = self.vte.match_add_gregex(reg, 0)
             re = (lboundry +
-                  "(mailto:)?[a-zA-Z0-9][a-zA-Z0-9.+-]*@[a-zA-Z0-9]" +
-                  "[a-zA-Z0-9-]*\.[a-zA-Z0-9][a-zA-Z0-9-]+" +
-                  "[.a-zA-Z0-9-]*" + rboundry)
+                  '(mailto:)?[a-zA-Z0-9][a-zA-Z0-9.+-]*@[a-zA-Z0-9]' +
+                  '[a-zA-Z0-9-]*\.[a-zA-Z0-9][a-zA-Z0-9-]+' +
+                  '[.a-zA-Z0-9-]*' + rboundry)
             reg = GLib.Regex.new(re, self.regex_flags, 0)
             self.matches['email'] = self.vte.match_add_gregex(reg, 0)
             re = (lboundry +
-                  """news:[-A-Z\^_a-z{|}~!"#$%&'()*+,./0-9;:=?`]+@""" +
-                  "[-A-Za-z0-9.]+(:[0-9]+)?" + rboundry)
+                  'news:[-A-Z\^_a-z{|}~!"#$%&\'()*+,./0-9;:=?`]+@' +
+                  '[-A-Za-z0-9.]+(:[0-9]+)?' + rboundry)
             reg = GLib.Regex.new(re, self.regex_flags, 0)
             self.matches['nntp'] = self.vte.match_add_gregex(reg, 0)
 
@@ -352,8 +352,8 @@ class Terminal(Gtk.VBox):
         self.cnxids.new(self.vte, 'scroll-event', self.on_mousewheel)
         self.cnxids.new(self.vte, 'popup-menu', self.popup_menu)
 
-        srcvtetargets = [("vte", Gtk.TargetFlags.SAME_APP, self.TARGET_TYPE_VTE)]
-        dsttargets = [("vte", Gtk.TargetFlags.SAME_APP, self.TARGET_TYPE_VTE),
+        srcvtetargets = [('vte', Gtk.TargetFlags.SAME_APP, self.TARGET_TYPE_VTE)]
+        dsttargets = [('vte', Gtk.TargetFlags.SAME_APP, self.TARGET_TYPE_VTE),
                       ('text/x-moz-url', 0, self.TARGET_TYPE_MOZ),
                       ('_NETSCAPE_URL', 0, 0)]
         '''
@@ -497,9 +497,9 @@ class Terminal(Gtk.VBox):
         groupitems = []
         cnxs = []
 
-        for key, value in {_('Broadcast _all')  : 'all',
+        for key, value in {_('Broadcast _all'): 'all',
                            _('Broadcast _group'): 'group',
-                           _('Broadcast _off')  : 'off'}.items():
+                           _('Broadcast _off'): 'off'}.items():
             item = Gtk.RadioMenuItem.new_with_mnemonic(groupitems, key)
             groupitems = item.get_group()
             dbg('Terminal::populate_group_menu: %s active: %s' %
@@ -696,17 +696,17 @@ class Terminal(Gtk.VBox):
         if factor > 1.0:
             factor = 1.0
         self.fgcolor_inactive = self.fgcolor_active.copy()
-        dbg(("fgcolor_inactive set to: RGB(%s,%s,%s)", getattr(self.fgcolor_inactive, "red"),
-             getattr(self.fgcolor_inactive, "green"),
-             getattr(self.fgcolor_inactive, "blue")))
+        dbg(('fgcolor_inactive set to: RGB(%s,%s,%s)', getattr(self.fgcolor_inactive, 'red'),
+             getattr(self.fgcolor_inactive, 'green'),
+             getattr(self.fgcolor_inactive, 'blue')))
 
         for bit in ['red', 'green', 'blue']:
             setattr(self.fgcolor_inactive, bit,
                     getattr(self.fgcolor_inactive, bit) * factor)
 
-        dbg(("fgcolor_inactive set to: RGB(%s,%s,%s)", getattr(self.fgcolor_inactive, "red"),
-             getattr(self.fgcolor_inactive, "green"),
-             getattr(self.fgcolor_inactive, "blue")))
+        dbg(('fgcolor_inactive set to: RGB(%s,%s,%s)', getattr(self.fgcolor_inactive, 'red'),
+             getattr(self.fgcolor_inactive, 'green'),
+             getattr(self.fgcolor_inactive, 'blue')))
         colors = self.config['palette'].split(':')
         self.palette_active = []
         for color in colors:
@@ -719,15 +719,15 @@ class Terminal(Gtk.VBox):
             shades = [0, 95, 135, 175, 215, 255]
             for r, g, b in product(range(0, 6), repeat=3):
                 newcolor = Gdk.RGBA()
-                setattr(newcolor, "red", shades[r] / 255.0)
-                setattr(newcolor, "green", shades[g] / 255.0)
-                setattr(newcolor, "blue", shades[b] / 255.0)
+                setattr(newcolor, 'red', shades[r] / 255.0)
+                setattr(newcolor, 'green', shades[g] / 255.0)
+                setattr(newcolor, 'blue', shades[b] / 255.0)
                 self.palette_active.append(newcolor)
             for y in range(8, 248, 10):
                 newcolor = Gdk.RGBA()
-                setattr(newcolor, "red", y / 255.0)
-                setattr(newcolor, "green", y / 255.0)
-                setattr(newcolor, "blue", y / 255.0)
+                setattr(newcolor, 'red', y / 255.0)
+                setattr(newcolor, 'green', y / 255.0)
+                setattr(newcolor, 'blue', y / 255.0)
                 self.palette_active.append(newcolor)
         self.palette_inactive = []
         for color in self.palette_active:
@@ -745,12 +745,12 @@ class Terminal(Gtk.VBox):
         profiles = self.config.base.profiles
         terminal_box_style_context = self.terminalbox.get_style_context()
         for profile in profiles.keys():
-            munged_profile = "terminator-profile-%s" % (
-                "".join([c if c.isalnum() else "-" for c in profile]))
+            munged_profile = 'terminator-profile-%s' % (
+                ''.join([c if c.isalnum() else '-' for c in profile]))
             if terminal_box_style_context.has_class(munged_profile):
                 terminal_box_style_context.remove_class(munged_profile)
-        munged_profile = "".join([c if c.isalnum() else "-" for c in self.get_profile()])
-        css_class_name = "terminator-profile-%s" % munged_profile
+        munged_profile = ''.join([c if c.isalnum() else '-' for c in self.get_profile()])
+        css_class_name = 'terminator-profile-%s' % munged_profile
         terminal_box_style_context.add_class(css_class_name)
         self.set_cursor_color()
         self.vte.set_cursor_shape(getattr(Vte.CursorShape,
@@ -868,7 +868,7 @@ class Terminal(Gtk.VBox):
         # FIXME: Does keybindings really want to live in Terminator()?
         mapping = self.terminator.keybindings.lookup(event)
 
-        if mapping == "hide_window":
+        if mapping == 'hide_window':
             return False
 
         if mapping and mapping not in ['close_window',
@@ -877,14 +877,14 @@ class Terminal(Gtk.VBox):
             # handle the case where user has re-bound copy to ctrl+<key>
             # we only copy if there is a selection otherwise let it fall through
             # to ^<key>
-            if mapping == "copy" and event.get_state() & Gdk.ModifierType.CONTROL_MASK:
+            if mapping == 'copy' and event.get_state() & Gdk.ModifierType.CONTROL_MASK:
                 if self.vte.get_has_selection():
-                    getattr(self, "key_" + mapping)()
+                    getattr(self, 'key_' + mapping)()
                     return True
                 elif not self.config['smart_copy']:
                     return True
             else:
-                getattr(self, "key_" + mapping)()
+                getattr(self, 'key_' + mapping)()
                 return True
 
         # FIXME: This is all clearly wrong. We should be doing this better
@@ -1049,15 +1049,15 @@ class Terminal(Gtk.VBox):
         bottommiddle = (alloc.width / 2, alloc.height)
         middleleft = (0, alloc.height / 2)
         middleright = (alloc.width, alloc.height / 2)
-        # print("%f %f %d %d" %(coef1, coef2, b1,b2))
+        # print('%f %f %d %d' %(coef1, coef2, b1,b2))
         coord = ()
-        if pos == "right":
+        if pos == 'right':
             coord = (topright, topmiddle, bottommiddle, bottomright)
-        elif pos == "top":
+        elif pos == 'top':
             coord = (topleft, topright, middleright, middleleft)
-        elif pos == "left":
+        elif pos == 'left':
             coord = (topleft, topmiddle, bottommiddle, bottomleft)
-        elif pos == "bottom":
+        elif pos == 'bottom':
             coord = (bottomleft, bottomright, middleright, middleleft)
 
         # here, we define some widget internal values
@@ -1103,7 +1103,7 @@ class Terminal(Gtk.VBox):
                 txt = txt.decode('utf-16').encode('utf-8')
                 txt = txt.split('\n')[0]
 
-            txt_lines = txt.split("\r\n")
+            txt_lines = txt.split('\r\n')
             if txt_lines[-1] == '':
                 for line in txt_lines[:-1]:
                     if line[0:7] != 'file://':
@@ -1115,7 +1115,7 @@ class Terminal(Gtk.VBox):
                     str = ''
                     for fname in txt_lines[:-1]:
                         dbg('drag data fname: %s' % fname)
-                        fname = "'%s'" % urllib.parse.unquote(fname[7:].replace("'", '\'\\\'\''))
+                        fname = '\'%s\'' % urllib.parse.unquote(fname[7:].replace('\'', '\'\\\'\''))
                         str += fname + ' '
                     txt = str
             for term in self.terminator.get_target_terms(self):
@@ -1388,7 +1388,7 @@ class Terminal(Gtk.VBox):
             shell = util.shell_lookup()
 
             if self.config['login_shell']:
-                args.insert(0, "-%s" % shell)
+                args.insert(0, '-%s' % shell)
             else:
                 args.insert(0, shell)
 

@@ -26,7 +26,7 @@ import psutil
 try:
     ORIGCWD = os.getcwd()
 except OSError:
-    ORIGCWD = os.path.expanduser("~")
+    ORIGCWD = os.path.expanduser('~')
 
 # Check we have simple basics like Gtk+ and a valid $DISPLAY
 try:
@@ -63,7 +63,7 @@ if __name__ == '__main__':
 
     dbus_service = None
 
-    dbg("%s starting up, version %s" % (APP_NAME, APP_VERSION))
+    dbg('%s starting up, version %s' % (APP_NAME, APP_VERSION))
 
     optionparse.parse_options()
     OPTIONS = optionparse.options

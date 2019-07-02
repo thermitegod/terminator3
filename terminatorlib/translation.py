@@ -27,7 +27,7 @@ try:
     gettext.textdomain(APP_NAME)
     _translate = gettext.gettext
 except:
-    dbg("Using fallback _()")
+    dbg('Using fallback _()')
 
 
     def _translate(text):

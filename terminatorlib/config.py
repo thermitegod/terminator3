@@ -448,8 +448,7 @@ class ConfigBase(Borg):
         if self.whined is None:
             self.whined = False
         if self.sections is None:
-            self.sections = ['global_config', 'keybindings', 'profiles',
-                             'layouts', 'plugins']
+            self.sections = ['global_config', 'keybindings', 'profiles', 'layouts', 'plugins']
         if self.global_config is None:
             self.global_config = copy(DEFAULTS['global_config'])
         if self.profiles is None:

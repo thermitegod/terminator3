@@ -23,10 +23,10 @@ CSS_DIR = os.path.join('terminatorlib', 'themes')
 
 class TerminatorDist(Distribution):
     global_options = Distribution.global_options + [
-        ("build-documentation", None, "Build the documentation"),
-        ("install-documentation", None, "Install the documentation"),
-        ("without-gettext", None, "Don't build/install gettext .mo files"),
-        ("without-icon-cache", None, "Don't attempt to run gtk-update-icon-cache")]
+        ('build-documentation', None, 'Build the documentation'),
+        ('install-documentation', None, 'Install the documentation'),
+        ('without-gettext', None, 'Do not build/install gettext .mo files'),
+        ('without-icon-cache', None, 'Do not attempt to run gtk-update-icon-cache')]
 
     def __init__(self, *args):
         self.without_gettext = False
@@ -54,10 +54,10 @@ class BuildData(build):
                     try:
                         rc = subprocess.run(['msgfmt', '-o', mo, po]).returncode
                         if rc:
-                            raise Warning("msgfmt returned %d" % rc)
+                            raise Warning('msgfmt returned %d' % rc)
                     except Exception as e:
-                        error("Building gettext files failed. Ensure you have gettext installed. Alternatively, try setup.py --without-gettext [build|install]")
-                        error("Error: %s" % str(e))
+                        error('Building gettext files failed. Ensure you have gettext installed. Alternatively, try setup.py --without-gettext [build|install]')
+                        error('Error: %s' % str(e))
                         sys.exit(1)
 
         TOP_BUILDDIR = '.'
@@ -65,7 +65,6 @@ class BuildData(build):
         desktop_in = 'data/terminator.desktop.in'
         desktop_data = 'data/terminator.desktop'
 
-        old_local = os.environ.get('C_ALL', None)
         os.environ['C_ALL'] = 'C'
         try:
             rc = subprocess.run((INTLTOOL_MERGE, '-d', '-u', '-c',
@@ -89,13 +88,13 @@ class BuildData(build):
         except:
             rc = 1
         if rc != 0:
-            # run the appdata_in through a command to strip the "_" characters
+            # run the appdata_in through a command to strip the '_' characters
             with open(appdata_in) as file_in, open(appdata_data, 'w') as file_data:
                 [file_data.write(line.replace('<_', '<').replace('</_', '</')) for line in file_in]
 
 
 class Uninstall(Command):
-    description = "Attempt an uninstall from an install --record file"
+    description = 'Attempt an uninstall from an install --record file'
 
     user_options = [('manifest=', None, 'Installation record filename')]
 
@@ -114,25 +113,25 @@ class Uninstall(Command):
         try:
             try:
                 if not self.manifest:
-                    raise DistutilsFileError("Pass manifest with --manifest=file")
+                    raise DistutilsFileError('Pass manifest with --manifest=file')
                 f = open(self.manifest)
                 files = [file.strip() for file in f]
             except IOError as e:
-                raise DistutilsFileError("unable to open install manifest: %s", str(e))
+                raise DistutilsFileError('unable to open install manifest: %s', str(e))
         finally:
             if f:
                 f.close()
 
         for file in files:
             if os.path.isfile(file) or os.path.islink(file):
-                info("removing %s" % repr(file))
+                info('removing %s' % repr(file))
                 if not self.dry_run:
                     try:
                         os.unlink(file)
                     except OSError as e:
-                        warn("could not delete: %s" % repr(file))
+                        warn('could not delete: %s' % repr(file))
             elif not os.path.isdir(file):
-                info("skipping %s" % repr(file))
+                info('skipping %s' % repr(file))
 
         dirs = set()
         for file in reversed(sorted(files)):
@@ -141,15 +140,15 @@ class Uninstall(Command):
                 dirs.add(dir)
                 # Only nuke empty Python library directories, else we could destroy
                 # e.g. locale directories we're the only app with a .mo installed for.
-                if dir.find("site-packages/") > 0:
-                    info("removing %s" % repr(dir))
+                if dir.find('site-packages/') > 0:
+                    info('removing %s' % repr(dir))
                     if not self.dry_run:
                         try:
                             os.rmdir(dir)
                         except OSError as e:
-                            warn("could not remove directory: %s" % str(e))
+                            warn('could not remove directory: %s' % str(e))
                 else:
-                    info("skipping empty directory %s" % repr(dir))
+                    info('skipping empty directory %s' % repr(dir))
 
 
 class InstallData(install_data):
@@ -162,11 +161,11 @@ class InstallData(install_data):
 
     # We should do this on uninstall too
     def _update_icon_cache(self):
-        info("running gtk-update-icon-cache")
+        info('running gtk-update-icon-cache')
         try:
-            subprocess.run(["gtk-update-icon-cache", "-q", "-f", "-t", os.path.join(self.install_dir, "share/icons/hicolor")])
+            subprocess.run(['gtk-update-icon-cache', '-q', '-f', '-t', os.path.join(self.install_dir, 'share/icons/hicolor')])
         except Exception as e:
-            warn("updating the GTK icon cache failed: %s" % str(e))
+            warn('updating the GTK icon cache failed: %s' % str(e))
 
     def _find_mo_files(self):
         data_files = []

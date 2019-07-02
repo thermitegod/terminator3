@@ -49,10 +49,10 @@ class TerminalPopupMenu(object):
             button = 3
 
         if url and url[0]:
-            dbg("URL matches id: %d" % url[1])
+            dbg('URL matches id: %d' % url[1])
             if not url[1] in terminal.matches.values():
-                err("Unknown URL match id: %d" % url[1])
-                dbg("Available matches: %s" % terminal.matches)
+                err('Unknown URL match id: %d' % url[1])
+                dbg('Available matches: %s' % terminal.matches)
 
             nameopen = None
             namecopy = None
@@ -68,14 +68,14 @@ class TerminalPopupMenu(object):
                     if terminal.matches[pluginname] == url[1]:
                         break
 
-                dbg("Found match ID (%d) in terminal.matches plugin %s" %
+                dbg('Found match ID (%d) in terminal.matches plugin %s' %
                     (url[1], pluginname))
                 registry = plugin.PluginRegistry()
                 registry.load_plugins()
                 plugins = registry.get_plugins_by_capability('url_handler')
                 for urlplugin in plugins:
                     if urlplugin.handler_name == pluginname:
-                        dbg("Identified matching plugin: %s" %
+                        dbg('Identified matching plugin: %s' %
                             urlplugin.handler_name)
                         nameopen = _(urlplugin.nameopen)
                         namecopy = _(urlplugin.namecopy)
@@ -237,7 +237,7 @@ class TerminalPopupMenu(object):
         """Add the encoding list to the menu"""
         terminal = self.terminal
         active_encodings = terminal.config['active_encodings']
-        item = Gtk.MenuItem.new_with_mnemonic(_("Encodings"))
+        item = Gtk.MenuItem.new_with_mnemonic(_('Encodings'))
         menu.append(item)
         submenu = Gtk.Menu()
         item.set_submenu(submenu)
@@ -252,12 +252,12 @@ class TerminalPopupMenu(object):
 
         for encoding in active_encodings:
             if encoding == terminal.default_encoding:
-                extratext = " (%s)" % _("Default")
+                extratext = ' (%s)' % _('Default')
             elif encoding == current_encoding and \
                     terminal.custom_encoding is True:
-                extratext = " (%s)" % _("User defined")
+                extratext = ' (%s)' % _('User defined')
             else:
-                extratext = ""
+                extratext = ''
 
             radioitem = Gtk.RadioMenuItem(label=_(encoding) + extratext)
 
@@ -271,7 +271,7 @@ class TerminalPopupMenu(object):
                               encoding)
             submenu.append(radioitem)
 
-        item = Gtk.MenuItem.new_with_mnemonic(_("Other Encodings"))
+        item = Gtk.MenuItem.new_with_mnemonic(_('Other Encodings'))
         submenu.append(item)
         # second level
 
@@ -284,9 +284,9 @@ class TerminalPopupMenu(object):
                 continue
 
             if encoding[1] is None:
-                label = "%s %s" % (encoding[2], terminal.vte.get_encoding())
+                label = '%s %s' % (encoding[2], terminal.vte.get_encoding())
             else:
-                label = "%s %s" % (encoding[2], encoding[1])
+                label = '%s %s' % (encoding[2], encoding[1])
 
             radioitem = Gtk.RadioMenuItem(label=label)
             if group is None:

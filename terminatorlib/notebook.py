@@ -225,7 +225,7 @@ class Notebook(Container, Gtk.Notebook):
         elif label.get_custom_label():
             metadata['label'] = label.get_custom_label()
         else:
-            dbg('don\'t grab the label as it was not customised')
+            dbg('do not grab the label as it was not customised')
         return metadata
 
     def get_children(self):
@@ -437,22 +437,22 @@ class Notebook(Container, Gtk.Notebook):
     def page_num_descendant(self, widget):
         """Find the tabnum of the tab containing a widget at any level"""
         tabnum = self.page_num(widget)
-        dbg("widget is direct child if not equal -1 - tabnum: %d" % tabnum)
+        dbg('widget is direct child if not equal -1 - tabnum: %d' % tabnum)
         while tabnum == -1 and widget.get_parent():
             widget = widget.get_parent()
             tabnum = self.page_num(widget)
-        dbg("found tabnum containing widget: %d" % tabnum)
+        dbg('found tabnum containing widget: %d' % tabnum)
         return tabnum
 
     def set_last_active_term(self, uuid):
         """Set the last active term for uuid"""
         widget = self.terminator.find_terminal_by_uuid(uuid.urn)
         if not widget:
-            err("Cannot find terminal with uuid: %s, so cannot make it active" % uuid.urn)
+            err('Cannot find terminal with uuid: %s, so cannot make it active' % uuid.urn)
             return
         tabnum = self.page_num_descendant(widget)
         if tabnum == -1:
-            err("No tabnum found for terminal with uuid: %s" % uuid.urn)
+            err('No tabnum found for terminal with uuid: %s' % uuid.urn)
             return
         nth_page = self.get_nth_page(tabnum)
         self.last_active_term[nth_page] = uuid
@@ -495,11 +495,11 @@ class Notebook(Container, Gtk.Notebook):
 
     def on_scroll_event(self, notebook, event):
         """Handle scroll events for scrolling through tabs"""
-        # print("self: %s" % self)
-        # print("event: %s" % event)
+        # print('self: %s' % self)
+        # print('event: %s' % event)
         child = self.get_nth_page(self.get_current_page())
         if child is None:
-            print("Child = None,  return false")
+            print('Child = None,  return false')
             return False
 
         event_widget = Gtk.get_event_widget(event)
@@ -507,7 +507,7 @@ class Notebook(Container, Gtk.Notebook):
         if event_widget is None or \
                 event_widget == child or \
                 event_widget.is_ancestor(child):
-            print("event_widget is wrong one,  return false")
+            print('event_widget is wrong one,  return false')
             return False
 
         # Not sure if we need these. I don't think wehave any action widgets

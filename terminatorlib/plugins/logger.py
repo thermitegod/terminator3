@@ -22,8 +22,8 @@ class Logger(plugin.MenuItem):
     capabilities = ['terminal_menu']
     loggers = None
     dialog_action = Gtk.FileChooserAction.SAVE
-    dialog_buttons = (_("_Cancel"), Gtk.ResponseType.CANCEL,
-                      _("_Save"), Gtk.ResponseType.OK)
+    dialog_buttons = (_('_Cancel'), Gtk.ResponseType.CANCEL,
+                      _('_Save'), Gtk.ResponseType.OK)
 
     def __init__(self):
         plugin.MenuItem.__init__(self)
@@ -35,10 +35,10 @@ class Logger(plugin.MenuItem):
         vte_terminal = terminal.get_vte()
         if vte_terminal not in self.loggers:
             item = Gtk.MenuItem.new_with_mnemonic(_('Start _Logger'))
-            item.connect("activate", self.start_logger, terminal)
+            item.connect('activate', self.start_logger, terminal)
         else:
             item = Gtk.MenuItem.new_with_mnemonic(_('Stop _Logger'))
-            item.connect("activate", self.stop_logger, terminal)
+            item.connect('activate', self.stop_logger, terminal)
             item.set_has_tooltip(True)
             item.set_tooltip_text("Saving at '" + self.loggers[vte_terminal]["filepath"] + "'")
         menuitems.append(item)
@@ -48,16 +48,16 @@ class Logger(plugin.MenuItem):
         content = terminal.get_text_range(row_start, col_start, row_end, col_end,
                                           lambda *a: True)
         content = content[0]
-        fd = self.loggers[terminal]["fd"]
+        fd = self.loggers[terminal]['fd']
         # Don't write the last char which is always '\n'
         fd.write(content[:-1])
-        self.loggers[terminal]["col"] = col_end
-        self.loggers[terminal]["row"] = row_end
+        self.loggers[terminal]['col'] = col_end
+        self.loggers[terminal]['row'] = row_end
 
     def save(self, terminal):
         """ 'contents-changed' callback """
-        last_saved_col = self.loggers[terminal]["col"]
-        last_saved_row = self.loggers[terminal]["row"]
+        last_saved_col = self.loggers[terminal]['col']
+        last_saved_row = self.loggers[terminal]['row']
         (col, row) = terminal.get_cursor_position()
         # Save only when buffer is nearly full,
         # for the sake of efficiency
@@ -67,7 +67,7 @@ class Logger(plugin.MenuItem):
 
     def start_logger(self, _widget, Terminal):
         """ Handle menu item callback by saving text to a file"""
-        savedialog = Gtk.FileChooserDialog(title=_("Save Log File As"),
+        savedialog = Gtk.FileChooserDialog(title=_('Save Log File As'),
                                            action=self.dialog_action)
         savedialog.add_buttons(*self.dialog_buttons)
         savedialog.set_transient_for(_widget.get_toplevel())
@@ -86,11 +86,12 @@ class Logger(plugin.MenuItem):
                 vte_terminal = Terminal.get_vte()
                 (col, row) = vte_terminal.get_cursor_position()
 
-                self.loggers[vte_terminal] = {"filepath"  : logfile,
-                                              "handler_id": 0, "fd": fd,
-                                              "col"       : col, "row": row}
+                self.loggers[vte_terminal] = {'filepath': logfile,
+                                              'handler_id': 0, 'fd': fd,
+                                              'col': col, 'row': row}
+
                 # Add contents-changed callback
-                self.loggers[vte_terminal]["handler_id"] = vte_terminal.connect('contents-changed', self.save)
+                self.loggers[vte_terminal]['handler_id'] = vte_terminal.connect('contents-changed', self.save)
             except:
                 e = sys.exc_info()[1]
                 error = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL, Gtk.MessageType.ERROR,
@@ -102,13 +103,13 @@ class Logger(plugin.MenuItem):
 
     def stop_logger(self, _widget, terminal):
         vte_terminal = terminal.get_vte()
-        last_saved_col = self.loggers[vte_terminal]["col"]
-        last_saved_row = self.loggers[vte_terminal]["row"]
+        last_saved_col = self.loggers[vte_terminal]['col']
+        last_saved_row = self.loggers[vte_terminal]['row']
         (col, row) = vte_terminal.get_cursor_position()
         if last_saved_col != col or last_saved_row != row:
             # Save unwritten bufer to the file
             self.write_content(vte_terminal, last_saved_row, last_saved_col, row, col)
-        fd = self.loggers[vte_terminal]["fd"]
+        fd = self.loggers[vte_terminal]['fd']
         fd.close()
-        vte_terminal.disconnect(self.loggers[vte_terminal]["handler_id"])
+        vte_terminal.disconnect(self.loggers[vte_terminal]['handler_id'])
         del self.loggers[vte_terminal]

@@ -40,7 +40,7 @@ class EditableLabel(Gtk.EventBox):
         'edit-done': (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
-    def __init__(self, text=""):
+    def __init__(self, text=''):
         """ Class initialiser"""
         GObject.GObject.__init__(self)
 
@@ -49,7 +49,7 @@ class EditableLabel(Gtk.EventBox):
         self._custom = False
         self.set_visible_window(False)
         self.add(self._label)
-        self.connect("button-press-event", self._on_click_text)
+        self.connect('button-press-event', self._on_click_text)
 
     def set_angle(self, angle):
         """set angle of the label"""
@@ -78,13 +78,13 @@ class EditableLabel(Gtk.EventBox):
         self._entry.set_text(self._label.get_text())
         self._entry.show()
         self.add(self._entry)
-        sig = self._entry.connect("focus-out-event", self._entry_to_label)
+        sig = self._entry.connect('focus-out-event', self._entry_to_label)
         self._entry_handler_id.append(sig)
-        sig = self._entry.connect("activate", self._on_entry_activated)
+        sig = self._entry.connect('activate', self._on_entry_activated)
         self._entry_handler_id.append(sig)
-        sig = self._entry.connect("key-press-event", self._on_entry_keypress)
+        sig = self._entry.connect('key-press-event', self._on_entry_keypress)
         self._entry_handler_id.append(sig)
-        sig = self._entry.connect("button-press-event", self._on_entry_buttonpress)
+        sig = self._entry.connect('button-press-event', self._on_entry_buttonpress)
         self._entry_handler_id.append(sig)
         self._entry.grab_focus()
 

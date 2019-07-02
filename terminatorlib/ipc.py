@@ -46,15 +46,12 @@ class DBusService(Borg, dbus.service.Object):
         if not self.bus_name:
             dbg('Checking for bus name availability: %s' % BUS_NAME)
             bus = dbus.SessionBus()
-            proxy = bus.get_object('org.freedesktop.DBus',
-                                   '/org/freedesktop/DBus')
+            proxy = bus.get_object('org.freedesktop.DBus', '/org/freedesktop/DBus')
             flags = 1 | 4  # allow replacement | do not queue
             if not proxy.RequestName(BUS_NAME, dbus.UInt32(flags)) in (1, 4):
                 dbg('bus name unavailable: %s' % BUS_NAME)
-                raise dbus.exceptions.DBusException(
-                        "Couldn't get DBus name %s: Name exists" % BUS_NAME)
-            self.bus_name = dbus.service.BusName(BUS_NAME,
-                                                 bus=dbus.SessionBus())
+                raise dbus.exceptions.DBusException('Could not get DBus name %s: Name exists' % BUS_NAME)
+            self.bus_name = dbus.service.BusName(BUS_NAME, bus=dbus.SessionBus())
         if not self.bus_path:
             self.bus_path = BUS_PATH
         if not self.terminator:
@@ -88,7 +85,7 @@ class DBusService(Borg, dbus.service.Object):
         terminals_after = set(self.get_terminals())
         new_terminal_set = list(terminals_after - terminals_before)
         if len(new_terminal_set) != 1:
-            return "ERROR: Cannot determine the UUID of the added terminal"
+            return 'ERROR: Cannot determine the UUID of the added terminal'
         else:
             return new_terminal_set[0]
 
@@ -111,11 +108,11 @@ class DBusService(Borg, dbus.service.Object):
         """Split a terminal horizontally or vertically, by UUID"""
         dbg('dbus method called: %s' % type)
         if not uuid:
-            return "ERROR: No UUID specified"
+            return 'ERROR: No UUID specified'
         terminal = self.terminator.find_terminal_by_uuid(uuid)
         terminals_before = set(self.get_terminals())
         if not terminal:
-            return "ERROR: Terminal with supplied UUID not found"
+            return 'ERROR: Terminal with supplied UUID not found'
         elif type == 'tab':
             terminal.key_new_tab()
         elif type == 'hsplit':
@@ -123,12 +120,12 @@ class DBusService(Borg, dbus.service.Object):
         elif type == 'vsplit':
             terminal.key_split_vert()
         else:
-            return "ERROR: Unknown type \"%s\" specified" % type
+            return 'ERROR: Unknown type "%s" specified' % type
         terminals_after = set(self.get_terminals())
         # Detect the new terminal UUID
         new_terminal_set = list(terminals_after - terminals_before)
         if len(new_terminal_set) != 1:
-            return "ERROR: Cannot determine the UUID of the added terminal"
+            return 'ERROR: Cannot determine the UUID of the added terminal'
         else:
             return new_terminal_set[0]
 
@@ -162,12 +159,12 @@ class DBusService(Borg, dbus.service.Object):
             # return root_widget.uuid.urn
             for tab_child in root_widget.get_children():
                 terms = [tab_child]
-                if not maker.isinstance(terms[0], "Terminal"):
+                if not maker.isinstance(terms[0], 'Terminal'):
                     terms = enumerate_descendants(tab_child)[1]
                 if terminal in terms:
                     # FIXME: There are no uuid's assigned to the the notebook, or the actual tabs!
                     # This would fail: return root_widget.uuid.urn
-                    return ""
+                    return ''
 
     @dbus.service.method(BUS_NAME)
     def get_tab_title(self, uuid=None):
@@ -176,10 +173,10 @@ class DBusService(Borg, dbus.service.Object):
         terminal = self.terminator.find_terminal_by_uuid(uuid)
         window = terminal.get_toplevel()
         root_widget = window.get_children()[0]
-        if maker.isinstance(root_widget, "Notebook"):
+        if maker.isinstance(root_widget, 'Notebook'):
             for tab_child in root_widget.get_children():
                 terms = [tab_child]
-                if not maker.isinstance(terms[0], "Terminal"):
+                if not maker.isinstance(terms[0], 'Terminal'):
                     terms = enumerate_descendants(tab_child)[1]
                 if terminal in terms:
                     return root_widget.get_tab_label(tab_child).get_label()

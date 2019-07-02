@@ -31,7 +31,7 @@ class PythonConsoleServer(socketserver.BaseRequestHandler):
         self.console = TerminatorConsole(PythonConsoleServer.env)
 
     def handle(self):
-        ddbg("debugserver: handling")
+        ddbg('debugserver: handling')
         try:
             self.socketio = self.request.makefile()
             sys.stdout = self.socketio
@@ -43,7 +43,7 @@ class PythonConsoleServer(socketserver.BaseRequestHandler):
             sys.stdin = sys.__stdin__
             sys.stderr = sys.__stderr__
             self.socketio.close()
-            ddbg("debugserver: done handling")
+            ddbg('debugserver: done handling')
 
     @staticmethod
     def verify_request(request, client_address):
@@ -96,10 +96,10 @@ class TerminatorConsole(code.InteractiveConsole):
         data = data.replace(NULL, '')
 
         bits = re.findall(DoDont, data)
-        ddbg("bits = %r" % bits)
+        ddbg('bits = %r' % bits)
         if bits:
             data = re.sub(DoDont, '\\1', data)
-            ddbg("telnet: DO/DON'T answer")
+            ddbg('telnet: DO/DON\'T answer')
             # answer DO and DON'T with WON'T
             for bit in bits:
                 self.write(IAC + WONT + bit[1])
@@ -107,33 +107,33 @@ class TerminatorConsole(code.InteractiveConsole):
         bits = re.findall(WillWont, data)
         if bits:
             data = re.sub(WillWont, '\\1', data)
-            ddbg("telnet: WILL/WON'T answer")
+            ddbg('telnet: WILL/WON\'T answer')
             for bit in bits:
                 # answer WILLs and WON'T with DON'Ts
                 self.write(IAC + DONT + bit[1])
 
         bits = re.findall(AreYouThere, data)
         if bits:
-            ddbg("telnet: am I there answer")
+            ddbg('telnet: am I there answer')
             data = re.sub(AreYouThere, '\\1', data)
             for bit in bits:
-                self.write("Yes, I'm still here, I think.\n")
+                self.write('Yes, I am still here, I think.\n')
 
         (data, interrupts) = re.subn(IpTelnet, '\\1', data)
         if interrupts:
-            ddbg("debugserver: Ctrl-C detected")
+            ddbg('debugserver: Ctrl-C detected')
             raise KeyboardInterrupt
 
         data = re.sub(OtherTelnet, '\\1', data)  # and any other Telnet codes
         data = data.replace(IAC + IAC, IAC)  # and handle escapes
 
         if data != odata:
-            ddbg("debugserver: Replaced %r with %r" % (odata, data))
+            ddbg('debugserver: Replaced %r with %r' % (odata, data))
 
         return data
 
     def raw_input(self, prompt=None):
-        ddbg("debugserver: raw_input prompt = %r" % prompt)
+        ddbg('debugserver: raw_input prompt = %r' % prompt)
         if prompt:
             self.write(prompt)
 
@@ -152,17 +152,17 @@ class TerminatorConsole(code.InteractiveConsole):
                 buf += data
 
     def write(self, data):
-        ddbg("debugserver: write %r" % data)
+        ddbg('debugserver: write %r' % data)
         self.server.socketio.write(data)
         self.server.socketio.flush()
 
     def run(self, server):
         self.server = server
 
-        self.write("Welcome to the %s-%s debug server, have a nice stay\n" % (APP_NAME, APP_VERSION))
+        self.write('Welcome to the %s-%s debug server, have a nice stay\n' % (APP_NAME, APP_VERSION))
         self.interact()
         try:
-            self.write("Time to go.  Bye!\n")
+            self.write('Time to go.  Bye!\n')
         except:
             pass
 
@@ -170,8 +170,8 @@ class TerminatorConsole(code.InteractiveConsole):
 def spawn(env):
     PythonConsoleServer.env = env
     tcpserver = socketserver.TCPServer(('127.0.0.1', 0), PythonConsoleServer)
-    dbg("debugserver: listening on %s" % str(tcpserver.server_address))
-    debugserver = threading.Thread(target=tcpserver.serve_forever, name="DebugServer")
+    dbg('debugserver: listening on %s' % str(tcpserver.server_address))
+    debugserver = threading.Thread(target=tcpserver.serve_forever, name='DebugServer')
     debugserver.setDaemon(True)
     debugserver.start()
     return debugserver, tcpserver

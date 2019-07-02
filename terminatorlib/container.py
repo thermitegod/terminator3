@@ -196,7 +196,7 @@ class Container(object):
         box.pack_start(labels, False, False, 6)
         dialog.vbox.pack_start(box, False, False, 12)
 
-        checkbox = Gtk.CheckButton(label=_("Do not show this message next time"))
+        checkbox = Gtk.CheckButton(label=_('Do not show this message next time'))
         dialog.vbox.pack_end(checkbox, True, True, 0)
 
         dialog.show_all()

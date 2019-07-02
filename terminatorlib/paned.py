@@ -306,7 +306,7 @@ class Paned(Container):
             elif not sibling.get_toplevel().is_child_notebook():
                 Terminator().find_terminal_by_uuid(sibling.get_toplevel().last_active_term.urn).grab_focus()
         else:
-            dbg("Paned::wrapcloseterm: self.closeterm failed")
+            dbg('Paned::wrapcloseterm: self.closeterm failed')
 
     def hoover(self):
         """Check that we still have a reason to exist"""

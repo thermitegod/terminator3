@@ -43,7 +43,7 @@ DEBUGCLASSES = []
 DEBUGMETHODS = []
 
 
-def dbg(log=""):
+def dbg(log=''):
     """Print a message if debugging is enabled"""
     if DEBUG:
         stackitem = inspect.stack()[1]
@@ -54,24 +54,24 @@ def dbg(log=""):
             self_name = names[0]
             classname = local_vars[self_name].__class__.__name__
         except IndexError:
-            classname = "noclass"
+            classname = 'noclass'
         if DEBUGFILES:
             line = stackitem[2]
             filename = parent_frame.f_code.co_filename
-            extra = " (%s:%s)" % (filename, line)
+            extra = ' (%s:%s)' % (filename, line)
         else:
-            extra = ""
+            extra = ''
         if DEBUGCLASSES != [] and classname not in DEBUGCLASSES:
             return
         if DEBUGMETHODS != [] and method not in DEBUGMETHODS:
             return
         try:
-            print("%s::%s: %s%s" % (classname, method, log, extra), file=sys.stderr)
+            print('%s::%s: %s%s' % (classname, method, log, extra), file=sys.stderr)
         except IOError:
             pass
 
 
-def err(log=""):
+def err(log=''):
     """Print an error message"""
     try:
         print(log, file=sys.stderr)
@@ -314,11 +314,11 @@ def make_uuid(str_uuid=None):
 def inject_uuid(target):
     """Inject a UUID into an existing object"""
     uuid = make_uuid()
-    if not hasattr(target, "uuid") or target.uuid is None:
-        dbg("Injecting UUID %s into: %s" % (uuid, target))
+    if not hasattr(target, 'uuid') or target.uuid is None:
+        dbg('Injecting UUID %s into: %s' % (uuid, target))
         target.uuid = uuid
     else:
-        dbg("Object already has a UUID: %s" % target)
+        dbg('Object already has a UUID: %s' % target)
 
 
 def spawn_new_terminator(cwd, args):
@@ -333,7 +333,7 @@ def spawn_new_terminator(cwd, args):
             err('Unable to locate Terminator')
             return False
 
-    dbg("Spawning: %s" % cmd)
+    dbg('Spawning: %s' % cmd)
     subprocess.run([cmd] + args)
 
 

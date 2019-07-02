@@ -487,7 +487,7 @@ class Terminator(Borg):
                 tmp_win.add(tmp_vte)
                 tmp_win.realize()
                 bgcolor = tmp_vte.get_style_context().get_background_color(Gtk.StateType.NORMAL)
-                bgcolor = "#{0:02x}{1:02x}{2:02x}".format(int(bgcolor.red * 255),
+                bgcolor = '#{0:02x}{1:02x}{2:02x}'.format(int(bgcolor.red * 255),
                                                           int(bgcolor.green * 255),
                                                           int(bgcolor.blue * 255))
                 tmp_win.remove(tmp_vte)
@@ -499,9 +499,9 @@ class Terminator(Borg):
             if profiles[profile]['background_type'] == 'transparent':
                 bgalpha = profiles[profile]['background_darkness']
             else:
-                bgalpha = "1"
+                bgalpha = '1'
 
-            munged_profile = "".join([c if c.isalnum() else "-" for c in profile])
+            munged_profile = ''.join([c if c.isalnum() else '-' for c in profile])
             css += template % (munged_profile, bgcolor, bgalpha)
 
         style_provider = Gtk.CssProvider()
