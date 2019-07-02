@@ -192,7 +192,7 @@ def widget_pixbuf(widget, maxsize=None):
 
 
 def get_config_dir():
-    return os.path.join(os.getenv('XDG_CONFIG_HOME', os.path.join(os.environ.get('HOME'), '.config')), 'terminator')
+    return os.path.join(os.getenv('XDG_CONFIG_HOME'), 'terminator')
 
 
 def dict_diff(reference, working):

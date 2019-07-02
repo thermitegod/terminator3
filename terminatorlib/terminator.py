@@ -509,7 +509,7 @@ class Terminator(Borg):
         self.style_providers.append(style_provider)
 
         # Attempt to load some theme specific stylistic tweaks for appearances
-        usr_theme_dir = os.path.expanduser('~/.local/share/themes')
+        usr_theme_dir = os.path.join(os.getenv('XDG_DATA_HOME'), 'themes')
         (head, _tail) = os.path.split(borg.__file__)
         app_theme_dir = os.path.join(head, 'themes')
 
