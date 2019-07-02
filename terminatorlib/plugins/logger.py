@@ -86,9 +86,7 @@ class Logger(plugin.MenuItem):
                 vte_terminal = Terminal.get_vte()
                 (col, row) = vte_terminal.get_cursor_position()
 
-                self.loggers[vte_terminal] = {'filepath': logfile,
-                                              'handler_id': 0, 'fd': fd,
-                                              'col': col, 'row': row}
+                self.loggers[vte_terminal] = dict(filepath=logfile, handler_id=0, fd=fd, col=col, row=row)
 
                 # Add contents-changed callback
                 self.loggers[vte_terminal]['handler_id'] = vte_terminal.connect('contents-changed', self.save)
