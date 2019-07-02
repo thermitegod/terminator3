@@ -753,8 +753,7 @@ class Terminal(Gtk.VBox):
         css_class_name = 'terminator-profile-%s' % munged_profile
         terminal_box_style_context.add_class(css_class_name)
         self.set_cursor_color()
-        self.vte.set_cursor_shape(getattr(Vte.CursorShape,
-                                          self.config['cursor_shape'].upper()));
+        self.vte.set_cursor_shape(getattr(Vte.CursorShape, self.config['cursor_shape'].upper()))
 
         if self.config['cursor_blink']:
             self.vte.set_cursor_blink_mode(Vte.CursorBlinkMode.ON)
@@ -1023,7 +1022,7 @@ class Terminal(Gtk.VBox):
     def on_drag_motion(self, widget, drag_context, x, y, _time, _data):
         """*shrug*"""
         if not drag_context.list_targets() == [Gdk.atom_intern('vte', False)] and \
-                (Gtk.targets_include_text(drag_context.list_targets()) or \
+                (Gtk.targets_include_text(drag_context.list_targets()) or
                  Gtk.targets_include_uri(drag_context.list_targets())):
             # copy text from another widget
             return
@@ -1272,7 +1271,7 @@ class Terminal(Gtk.VBox):
             sloppy = self.config.get_system_focus() in ['sloppy', 'mouse']
         elif self.config['focus'] in ['sloppy', 'mouse']:
             sloppy = True
-        if sloppy == True and self.titlebar.editing() == False:
+        if sloppy is True and self.titlebar.editing() is False:
             term.grab_focus()
             return False
 
