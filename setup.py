@@ -30,7 +30,7 @@ class TerminatorDist(Distribution):
 
     def __init__(self, *args):
         self.without_gettext = False
-        self.without_icon_cache = False
+        self.without_icon_cache = True
         Distribution.__init__(self, *args)
 
 
