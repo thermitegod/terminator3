@@ -124,7 +124,7 @@ class Paned(Container):
 
             if metadata and \
                     'had_focus' in metadata and \
-                    metadata['had_focus'] == True:
+                    metadata['had_focus'] is True:
                 widget.grab_focus()
 
         elif isinstance(widget, Gtk.Paned):

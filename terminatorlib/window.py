@@ -393,7 +393,7 @@ class Window(Container, Gtk.Window):
         self.present()
 
         # Window must be shown, then hidden for the hotkeys to be registered
-        if self.ignore_startup_show and startup == True:
+        if self.ignore_startup_show and startup is True:
             self.position = self.get_position()
             self.hide()
 

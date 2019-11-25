@@ -1370,7 +1370,7 @@ class PrefsEditor:
         # Update the treeview
         model[path][1] = self.plugins[plugin]
 
-        enabled_plugins = [x for x in self.plugins if self.plugins[x] == True]
+        enabled_plugins = [x for x in self.plugins if self.plugins[x] is True]
         self.config['enabled_plugins'] = enabled_plugins
         self.config.save()
 
