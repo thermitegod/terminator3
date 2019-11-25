@@ -14,7 +14,6 @@
 
 import os
 import platform
-import pwd
 
 from terminatorlib.util import dbg, err
 
@@ -23,10 +22,7 @@ def get_default_cwd():
     """Determine a reasonable default cwd"""
     cwd = os.getcwd()
     if not os.path.exists(cwd) or not os.path.isdir(cwd):
-        try:
-            cwd = pwd.getpwuid(os.getuid())[5]
-        except KeyError:
-            cwd = '/'
+        cwd = os.path.expanduser('~')
 
     return cwd
 
