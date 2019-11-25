@@ -92,8 +92,7 @@ class Window(Container, Gtk.Window):
 
             if options.geometry:
                 if not self.parse_geometry(options.geometry):
-                    err('Window::__init__: Unable to parse geometry: %s' %
-                        options.geometry)
+                    err(f'Window::__init__: Unable to parse geometry: {options.geometry}')
 
         self.apply_icon(icon_to_apply)
         self.pending_set_rough_geometry_hint = False
@@ -103,14 +102,14 @@ class Window(Container, Gtk.Window):
         if prop.name in ['term_zoomed', 'term-zoomed']:
             return self.term_zoomed
         else:
-            raise AttributeError('unknown property %s' % prop.name)
+            raise AttributeError(f'unknown property {prop.name}')
 
     def do_set_property(self, prop, value):
         """Handle gobject setting a property"""
         if prop.name in ['term_zoomed', 'term-zoomed']:
             self.term_zoomed = value
         else:
-            raise AttributeError('unknown property %s' % prop.name)
+            raise AttributeError(f'unknown property {prop.name}')
 
     def register_callbacks(self):
         """Connect the GTK+ signals we care about"""
@@ -182,7 +181,7 @@ class Window(Container, Gtk.Window):
                 self.set_icon_from_file(requested_icon)
                 return
             except (NameError, GObject.GError):
-                dbg('Unable to load %s icon as file' % (repr(requested_icon)))
+                dbg(f'Unable to load {repr(requested_icon)} icon as file')
 
             icon_name_list.insert(0, requested_icon)
 
@@ -192,7 +191,7 @@ class Window(Container, Gtk.Window):
                 self.set_icon_name(icon_name)
                 return  # Success! We're done.
             else:
-                dbg('Unable to load %s icon' % icon_name)
+                dbg(f'Unable to load {icon_name} icon')
 
         icon = self.render_icon(Gtk.STOCK_DIALOG_INFO, Gtk.IconSize.BUTTON)
         self.set_icon(icon)
@@ -206,7 +205,7 @@ class Window(Container, Gtk.Window):
         mapping = self.terminator.keybindings.lookup(event)
 
         if mapping:
-            dbg('Window::on_key_press: looked up %r' % mapping)
+            dbg(f'Window::on_key_press: looked up {mapping}')
             if mapping == 'full_screen':
                 self.set_fullscreen(not self.isfullscreen)
             elif mapping == 'close_window':
@@ -283,7 +282,7 @@ class Window(Container, Gtk.Window):
         elif maker.isinstance(self.get_child(), 'Container'):
             return self.confirm_close(window, _('window'))
         else:
-            dbg('unknown child: %s' % self.get_child())
+            dbg(f'unknown child: {self.get_child()}')
 
     def confirm_close(self, window, type):
         """Display a confirmation dialog when the user is closing multiple
@@ -330,8 +329,7 @@ class Window(Container, Gtk.Window):
                                  Gdk.WindowState.FULLSCREEN)
         self.ismaximised = bool(event.new_window_state &
                                 Gdk.WindowState.MAXIMIZED)
-        dbg('Window::on_window_state_changed: fullscreen=%s, maximised=%s' \
-            % (self.isfullscreen, self.ismaximised))
+        dbg(f'Window::on_window_state_changed: fullscreen={self.isfullscreen}, maximised={self.ismaximised}')
 
         return False
 
@@ -586,7 +584,7 @@ class Window(Container, Gtk.Window):
         elif maker.isinstance(child, 'Terminal'):
             terminals[child] = child.get_allocation()
         else:
-            err('Unknown child type %s' % type(child))
+            err(f'Unknown child type {type(child)}')
 
         return terminals
 
@@ -636,8 +634,7 @@ class Window(Container, Gtk.Window):
                 column_sum = column_sum + cols
 
         if column_sum == 0 or row_sum == 0:
-            dbg('column_sum=%s,row_sum=%s. No terminals found in >=1 axis' %
-                (column_sum, row_sum))
+            dbg(f'column_sum={column_sum},row_sum={row_sum}. No terminals found in >=1 axis')
             return
 
         # FIXME: I don't think we should just use whatever font size info is on
@@ -652,9 +649,9 @@ class Window(Container, Gtk.Window):
         extra_width = win_width - total_font_width
         extra_height = win_height - total_font_height
 
-        dbg('setting geometry hints: (ewidth:%s)(eheight:%s),\
-(fwidth:%s)(fheight:%s)' % (extra_width, extra_height,
-                            font_width, font_height))
+        dbg('setting geometry hints: '
+            f'(ewidth:{extra_width})(eheight:{extra_height}),'
+            f'(fwidth:{font_width})(fheight:{font_height})')
         geometry = Gdk.Geometry()
         geometry.base_width = extra_width
         geometry.base_height = extra_height
@@ -731,7 +728,7 @@ class Window(Container, Gtk.Window):
 
         pagenum = notebook.get_current_page()
         while True:
-            group = _('Tab %d') % pagenum
+            group = _(f'Tab {pagenum}')
             if group not in self.terminator.groups:
                 break
             pagenum += 1
@@ -761,10 +758,10 @@ class Window(Container, Gtk.Window):
         notebook = self.get_child()
 
         if not maker.isinstance(notebook, 'Notebook'):
-            dbg('not in a notebook, refusing to move tab %s' % direction)
+            dbg(f'not in a notebook, refusing to move tab {direction}')
             return
 
-        dbg('moving tab %s' % direction)
+        dbg(f'moving tab {direction}')
         numpages = notebook.get_n_pages()
         page = notebook.get_current_page()
         child = notebook.get_nth_page(page)
@@ -780,7 +777,7 @@ class Window(Container, Gtk.Window):
             else:
                 page = page + 1
         else:
-            err('unknown direction: %s' % direction)
+            err(f'unknown direction: {direction}')
             return
 
         notebook.reorder_child(child, page)
@@ -852,7 +849,7 @@ class Window(Container, Gtk.Window):
                         next = terminals.index(term)
                         break
         else:
-            err('Unknown navigation direction: %s' % direction)
+            err(f'Unknown navigation direction: {direction}')
 
         if next is not None:
             terminals[next].grab_focus()
@@ -860,17 +857,17 @@ class Window(Container, Gtk.Window):
     def create_layout(self, layout):
         """Apply any config items from our layout"""
         if 'children' not in layout:
-            err('layout describes no children: %s' % layout)
+            err(f'layout describes no children: {layout}')
             return
         children = layout['children']
         if len(children) != 1:
             # We're a Window, we can only have one child
-            err('incorrect number of children for Window: %s' % layout)
+            err(f'incorrect number of children for Window: {layout}')
             return
 
         child = children[tuple(children.keys())[0]]
         terminal = self.get_children()[0]
-        dbg('Making a child of type: %s' % child['type'])
+        dbg(f'Making a child of type: {child["type"]}')
         if child['type'] == 'VPaned':
             self.split_axis(terminal, True)
         elif child['type'] == 'HPaned':
@@ -884,7 +881,7 @@ class Window(Container, Gtk.Window):
         elif child['type'] == 'Terminal':
             pass
         else:
-            err('unknown child type: %s' % child['type'])
+            err(f'unknown child type: {child["type"]}')
             return
 
         self.get_children()[0].create_layout(child)
@@ -930,7 +927,7 @@ class WindowTitle(object):
         if self.forced:
             title = self.text
         else:
-            title = "%s" % self.text
+            title = f'{self.text}'
 
         self.window.set_title(title)
 

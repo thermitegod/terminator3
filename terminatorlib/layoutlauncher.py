@@ -95,7 +95,7 @@ class LayoutLauncher:
             selection.select_iter(self.layouttreestore.get_iter_first())
             (listmodel, rowiter) = selection.get_selected()
         layout = listmodel.get_value(rowiter, 0)
-        dbg('Clicked for %s' % layout)
+        dbg(f'Clicked for {layout}')
         spawn_new_terminator(self.terminator.origcwd, ['-u', '-l', layout])
 
 

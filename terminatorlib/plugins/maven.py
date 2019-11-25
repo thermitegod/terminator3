@@ -51,14 +51,14 @@ class MavenPluginURLHandler(plugin.URLHandler):
             if artifactid is not None:
                 if re.match(MavenPluginURLHandler.maven_filters['apache_maven_plugin_artifact_id'], artifactid):
                     if goal is not None:
-                        return 'http://maven.apache.org/plugins/%s/%s-mojo.html' % (artifactid, goal)
+                        return f'http://maven.apache.org/plugins/{artifactid}/{goal}-mojo.html'
                     else:
-                        return 'http://maven.apache.org/plugins/%s' % artifactid
+                        return f'http://maven.apache.org/plugins/{artifactid}'
                 elif re.match(MavenPluginURLHandler.maven_filters['codehaus_maven_plugin_artifact_id'], artifactid):
                     if goal is not None:
-                        return 'http://mojo.codehaus.org/%s/%s-mojo.html' % (artifactid, goal)
+                        return f'http://mojo.codehaus.org/{artifactid}/{goal}-mojo.html'
                     else:
-                        return 'http://mojo.codehaus.org/%s' % artifactid
+                        return f'http://mojo.codehaus.org/{artifactid}'
 
-        plugin.err('Wrong match \'%s\' for MavenPluginURLHandler.' % url)
+        plugin.err(f'Wrong match \'{url}\' for MavenPluginURLHandler.')
         return ''

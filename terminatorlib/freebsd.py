@@ -85,11 +85,11 @@ if __name__ == '__main__':
     import os
     import sys
 
-    print(' => %d cwd = %s' % (os.getpid(), get_process_cwd(os.getpid())))
+    print(f' => {os.getpid()} cwd = {get_process_cwd(os.getpid())}')
     for pid in sys.argv:
         try:
             pid = int(pid)
         except:
             pass
         else:
-            print(' => %d cwd = %s' % (pid, get_process_cwd(pid)))
+            print(f' => {pid} cwd = {get_process_cwd(pid)}')

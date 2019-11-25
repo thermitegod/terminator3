@@ -132,7 +132,7 @@ class Paned(Container):
                 self.connect_child(widget, 'resize-term', self.resizeterm)
                 self.connect_child(widget, 'size-allocate', self.new_size)
             except TypeError:
-                err('Paned::add: %s has no signal resize-term' % widget)
+                err(f'Paned::add: {widget} has no signal resize-term')
 
     def on_button_press(self, widget, event):
         """Handle button presses on a Pane"""
@@ -265,7 +265,7 @@ class Paned(Container):
 
     def wrapcloseterm(self, widget):
         """A child terminal has closed, so this container must die"""
-        dbg('Paned::wrapcloseterm: Called on %s' % widget)
+        dbg(f'Paned::wrapcloseterm: Called on {widget}')
 
         if self.closeterm(widget):
             # At this point we only have one child, which is the surviving term
@@ -295,7 +295,7 @@ class Paned(Container):
             metadata = None
             parent = self.get_parent()
             metadata = parent.get_child_metadata(self)
-            dbg('metadata obtained for %s: %s' % (self, metadata))
+            dbg(f'metadata obtained for {self}: {metadata}')
             parent.remove(self)
             self.cnxids.remove_all()
             parent.add(sibling, metadata)
@@ -353,13 +353,13 @@ class Paned(Container):
     def create_layout(self, layout):
         """Apply layout configuration"""
         if 'children' not in layout:
-            err('layout specifies no children: %s' % layout)
+            err(f'layout specifies no children: {layout}')
             return
 
         children = layout['children']
         if len(children) != 2:
             # Paned widgets can only have two children
-            err('incorrect number of children for Paned: %s' % layout)
+            err(f'incorrect number of children for Paned: {layout}')
             return
 
         keys = []
@@ -383,7 +383,7 @@ class Paned(Container):
         num = 0
         for child_key in keys:
             child = children[child_key]
-            dbg('Making a child of type: %s' % child['type'])
+            dbg(f'Making a child of type: {child["type"]}')
             if child['type'] == 'Terminal':
                 pass
             elif child['type'] == 'VPaned':
@@ -399,7 +399,7 @@ class Paned(Container):
                     terminal = self.get_child2()
                 self.split_axis(terminal, False)
             else:
-                err('unknown child type: %s' % child['type'])
+                err(f'unknown child type: {child["type"]}')
             num = num + 1
 
         self.get_child1().create_layout(children[keys[0]])

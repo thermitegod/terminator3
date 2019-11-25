@@ -63,7 +63,7 @@ if __name__ == '__main__':
 
     dbus_service = None
 
-    dbg('%s starting up, version %s' % (APP_NAME, APP_VERSION))
+    dbg(f'{APP_NAME} starting up, version {APP_VERSION}')
 
     optionparse.parse_options()
     OPTIONS = optionparse.options
@@ -99,7 +99,7 @@ if __name__ == '__main__':
                         val = ' '.join(val)
                     if val:
                         val = 'True'
-                    optionslist[opt] = val and '%s' % val or ''
+                    optionslist[opt] = val and f'{val}' or ''
                 optionslist = dbus.Dictionary(optionslist, signature='ss')
                 if OPTIONS.new_tab:
                     dbg('Requesting a new tab')
@@ -120,10 +120,10 @@ if __name__ == '__main__':
         TERMINATOR.ibus_running = ibus_running
 
         try:
-            dbg('Creating a terminal with layout: %s' % OPTIONS.layout)
+            dbg(f'Creating a terminal with layout: {OPTIONS.layout}')
             TERMINATOR.create_layout(OPTIONS.layout)
         except (KeyError, ValueError) as ex:
-            err('layout creation failed, creating a window ("%s")' % ex)
+            err(f'layout creation failed, creating a window ("{ex}")')
             TERMINATOR.new_window()
         TERMINATOR.layout_done()
 

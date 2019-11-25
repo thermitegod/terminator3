@@ -58,7 +58,7 @@ def dbg(log=''):
         if DEBUGFILES:
             line = stackitem[2]
             filename = parent_frame.f_code.co_filename
-            extra = ' (%s:%s)' % (filename, line)
+            extra = f' ({filename}:{line})'
         else:
             extra = ''
         if DEBUGCLASSES != [] and classname not in DEBUGCLASSES:
@@ -66,7 +66,7 @@ def dbg(log=''):
         if DEBUGMETHODS != [] and method not in DEBUGMETHODS:
             return
         try:
-            print('%s::%s: %s%s' % (classname, method, log, extra), file=sys.stderr)
+            print(f'{classname}::{method}: {log}{extra}', file=sys.stderr)
         except IOError:
             pass
 
@@ -119,7 +119,7 @@ def path_lookup(command):
         else:
             return None
     elif command[:2] == './' and os.path.isfile(command):
-        dbg('path_lookup: Relative filename %s found in cwd' % command)
+        dbg(f'path_lookup: Relative filename {command} found in cwd')
         return command
 
     try:
@@ -130,15 +130,15 @@ def path_lookup(command):
         dbg('path_lookup: PATH not set in environment, using fallbacks')
         paths = ['/usr/local/bin', '/usr/bin', '/bin']
 
-    dbg('path_lookup: Using %d paths: %s' % (len(paths), paths))
+    dbg(f'path_lookup: Using {len(paths)} paths: {paths}')
 
     for path in paths:
         target = os.path.join(path, command)
         if os.path.isfile(target):
-            dbg('path_lookup: found %s' % target)
+            dbg(f'path_lookup: found {target}')
             return target
 
-    dbg('path_lookup: Unable to locate %s' % command)
+    dbg(f'path_lookup: Unable to locate {command}')
 
 
 def shell_lookup():
@@ -157,7 +157,7 @@ def shell_lookup():
         else:
             rshell = path_lookup(shell)
             if rshell is not None:
-                dbg('shell_lookup: Found %s at %s' % (shell, rshell))
+                dbg(f'shell_lookup: Found {shell} at {rshell}')
                 return rshell
     dbg('shell_lookup: Unable to locate a shell')
 
@@ -226,7 +226,7 @@ def get_edge(allocation, direction):
     try:
         return dd[direction]
     except KeyError:
-        raise ValueError('Unknown direction %s' % direction)
+        raise ValueError(f'Unknown direction {direction}')
 
 
 def get_nav_possible(edge, allocation, direction, p1, p2):
@@ -241,7 +241,7 @@ def get_nav_possible(edge, allocation, direction, p1, p2):
     try:
         return dd[direction]
     except KeyError:
-        raise ValueError('Unknown direction: %s' % direction)
+        raise ValueError(f'Unknown direction: {direction}')
 
 
 def get_nav_offset(edge, allocation, direction):
@@ -254,7 +254,7 @@ def get_nav_offset(edge, allocation, direction):
     try:
         return dd[direction]
     except KeyError:
-        raise ValueError('Unknown direction: %s' % direction)
+        raise ValueError(f'Unknown direction: {direction}')
 
 
 def get_nav_tiebreak(direction, cursor_x, cursor_y, rect):
@@ -265,7 +265,7 @@ def get_nav_tiebreak(direction, cursor_x, cursor_y, rect):
     elif direction in ['up', 'down']:
         return rect.x <= cursor_x <= (rect.x + rect.width)
     else:
-        raise ValueError('Unknown direction: %s' % direction)
+        raise ValueError(f'Unknown direction: {direction}')
 
 
 def enumerate_descendants(parent):
@@ -299,8 +299,7 @@ def enumerate_descendants(parent):
                     terminals.append(descendant)
             containers.append(child)
 
-    dbg('%d containers and %d terminals fall beneath %s' % (len(containers),
-                                                            len(terminals), parent))
+    dbg(f'{len(containers)} containers and {len(terminals)} terminals fall beneath {parent}')
     return containers, terminals
 
 
@@ -315,10 +314,10 @@ def inject_uuid(target):
     """Inject a UUID into an existing object"""
     uuid = make_uuid()
     if not hasattr(target, 'uuid') or target.uuid is None:
-        dbg('Injecting UUID %s into: %s' % (uuid, target))
+        dbg(f'Injecting UUID {uuid} into: {target}')
         target.uuid = uuid
     else:
-        dbg('Object already has a UUID: %s' % target)
+        dbg(f'Object already has a UUID: {target}')
 
 
 def spawn_new_terminator(cwd, args):
@@ -333,7 +332,7 @@ def spawn_new_terminator(cwd, args):
             err('Unable to locate Terminator')
             return False
 
-    dbg('Spawning: %s' % cmd)
+    dbg(f'Spawning: {cmd}')
     subprocess.run([cmd] + args)
 
 

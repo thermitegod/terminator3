@@ -203,9 +203,9 @@ def defaults_to_configspec():
         if keytype in keymap:
             keytype = keymap[keytype]
         elif keytype == 'list':
-            value = 'list(%s)' % ','.join(value)
+            value = f'list({",".join(value)})'
 
-        keytype = '%s(default=%s)' % (keytype, value)
+        keytype = f'{keytype}(default={value})'
 
         if key == 'custom_url_handler':
             keytype = 'string(default="")'
@@ -218,7 +218,7 @@ def defaults_to_configspec():
         value = DEFAULTS['keybindings'][key]
         if value is None or value == '':
             continue
-        section[key] = 'string(default=%s)' % value
+        section[key] = f'string(default={value})'
     configspecdata['keybindings'] = section
 
     section = {}
@@ -228,11 +228,11 @@ def defaults_to_configspec():
         if keytype in keymap:
             keytype = keymap[keytype]
         elif keytype == 'list':
-            value = 'list(%s)' % ','.join(value)
+            value = f'list({",".join(value)})'
         if keytype == 'string':
-            value = '"%s"' % value
+            value = f'"{value}"'
 
-        keytype = '%s(default=%s)' % (keytype, value)
+        keytype = f'{keytype}(default={value})'
 
         section[key] = keytype
     configspecdata['profiles'] = {}

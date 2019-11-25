@@ -88,13 +88,13 @@ class Notebook(Container, Gtk.Notebook):
                 return 1
 
         if 'children' not in layout:
-            err('layout specifies no children: %s' % layout)
+            err(f'layout specifies no children: {layout}')
             return
 
         children = layout['children']
         if len(children) <= 1:
             # Notebooks should have two or more children
-            err('incorrect number of children for Notebook: %s' % layout)
+            err(f'incorrect number of children for Notebook: {layout}')
             return
 
         num = 0
@@ -103,7 +103,7 @@ class Notebook(Container, Gtk.Notebook):
 
         for child_key in keys:
             child = children[child_key]
-            dbg('Making a child of type: %s' % child['type'])
+            dbg(f'Making a child of type: {child["type"]}')
             if child['type'] == 'Terminal':
                 pass
             elif child['type'] == 'VPaned':
@@ -140,11 +140,11 @@ class Notebook(Container, Gtk.Notebook):
 
     def split_axis(self, widget, vertical=True, cwd=None, sibling=None, widgetfirst=True):
         """Split the axis of a terminal inside us"""
-        dbg('called for widget: %s' % widget)
+        dbg(f'called for widget: {widget}')
         order = None
         page_num = self.page_num(widget)
         if page_num == -1:
-            err('Notebook::split_axis: %s not found in Notebook' % widget)
+            err(f'Notebook::split_axis: {widget} not found in Notebook')
             return
 
         label = self.get_tab_label(widget)
@@ -201,8 +201,7 @@ class Notebook(Container, Gtk.Notebook):
         """Remove a widget from the container"""
         page_num = self.page_num(widget)
         if page_num == -1:
-            err('%s not found in Notebook. Actual parent is: %s' %
-                (widget, widget.get_parent()))
+            err(f'{widget} not found in Notebook. Actual parent is: {widget.get_parent()}')
             return False
         self.remove_page(page_num)
         self.disconnect_child(widget)
@@ -221,7 +220,7 @@ class Notebook(Container, Gtk.Notebook):
         metadata = {'tabnum': self.page_num(widget)}
         label = self.get_tab_label(widget)
         if not label:
-            dbg('unable to find label for widget: %s' % widget)
+            dbg(f'unable to find label for widget: {widget}')
         elif label.get_custom_label():
             metadata['label'] = label.get_custom_label()
         else:
@@ -283,14 +282,14 @@ class Notebook(Container, Gtk.Notebook):
 
         label = TabLabel(self.window.get_title(), self)
         if metadata and 'label' in metadata:
-            dbg('creating TabLabel with text: %s' % metadata['label'])
+            dbg(f'creating TabLabel with text: {metadata["label"]}')
             label.set_custom_label(metadata['label'])
         label.connect('close-clicked', self.closetab)
 
         label.show_all()
         widget.show_all()
 
-        dbg('inserting page at position: %s' % tabpos)
+        dbg(f'inserting page at position: {tabpos}')
         self.insert_page(widget, None, tabpos)
 
         if maker.isinstance(widget, 'Terminal'):
@@ -316,7 +315,7 @@ class Notebook(Container, Gtk.Notebook):
 
     def wrapcloseterm(self, widget):
         """A child terminal has closed"""
-        dbg('Notebook::wrapcloseterm: called on %s' % widget)
+        dbg(f'Notebook::wrapcloseterm: called on {widget}')
         if self.closeterm(widget):
             dbg('Notebook::wrapcloseterm: closeterm succeeded')
             self.hoover()
@@ -329,7 +328,7 @@ class Notebook(Container, Gtk.Notebook):
         try:
             nb = widget.notebook
         except AttributeError:
-            err('TabLabel::closetab: called on non-Notebook: %s' % widget)
+            err(f'TabLabel::closetab: called on non-Notebook: {widget}')
             return
 
         for i in range(0, nb.get_n_pages() + 1):
@@ -338,7 +337,7 @@ class Notebook(Container, Gtk.Notebook):
                 break
 
         if tabnum is None:
-            err('TabLabel::closetab: %s not in %s. Bailing.' % (label, nb))
+            err(f'TabLabel::closetab: {label} not in {nb}. Bailing.')
             return
 
         maker = Factory()
@@ -371,7 +370,7 @@ class Notebook(Container, Gtk.Notebook):
                 dbg('Notebook::closetab: user cancelled request')
                 return
         else:
-            err('Notebook::closetab: child is unknown type %s' % child)
+            err(f'Notebook::closetab: child is unknown type {child}')
             return
 
     def resizeterm(self, widget, keyname):
@@ -406,7 +405,7 @@ class Notebook(Container, Gtk.Notebook):
         notebook = self.find_tab_root(widget)
         label = self.get_tab_label(notebook)
         if not label:
-            err('Notebook::update_tab_label_text: %s not found' % widget)
+            err(f'Notebook::update_tab_label_text: {widget} not found')
             return
 
         label.set_label(text)
@@ -418,7 +417,7 @@ class Notebook(Container, Gtk.Notebook):
             numpages = numpages - 1
             page = self.get_nth_page(numpages)
             if not page:
-                dbg('Removing empty page: %d' % numpages)
+                dbg(f'Removing empty page: {numpages}')
                 self.remove_page(numpages)
 
         if self.get_n_pages() == 1:
@@ -437,22 +436,22 @@ class Notebook(Container, Gtk.Notebook):
     def page_num_descendant(self, widget):
         """Find the tabnum of the tab containing a widget at any level"""
         tabnum = self.page_num(widget)
-        dbg('widget is direct child if not equal -1 - tabnum: %d' % tabnum)
+        dbg(f'widget is direct child if not equal -1 - tabnum: {tabnum}')
         while tabnum == -1 and widget.get_parent():
             widget = widget.get_parent()
             tabnum = self.page_num(widget)
-        dbg('found tabnum containing widget: %d' % tabnum)
+        dbg(f'found tabnum containing widget: {tabnum}')
         return tabnum
 
     def set_last_active_term(self, uuid):
         """Set the last active term for uuid"""
         widget = self.terminator.find_terminal_by_uuid(uuid.urn)
         if not widget:
-            err('Cannot find terminal with uuid: %s, so cannot make it active' % uuid.urn)
+            err(f'Cannot find terminal with uuid: {uuid.urn}, so cannot make it active')
             return
         tabnum = self.page_num_descendant(widget)
         if tabnum == -1:
-            err('No tabnum found for terminal with uuid: %s' % uuid.urn)
+            err(f'No tabnum found for terminal with uuid: {uuid.urn}')
             return
         nth_page = self.get_nth_page(tabnum)
         self.last_active_term[nth_page] = uuid
@@ -495,8 +494,8 @@ class Notebook(Container, Gtk.Notebook):
 
     def on_scroll_event(self, notebook, event):
         """Handle scroll events for scrolling through tabs"""
-        # print('self: %s' % self)
-        # print('event: %s' % event)
+        # print(f'self: {self}')
+        # print(f'event: {event}')
         child = self.get_nth_page(self.get_current_page())
         if child is None:
             print('Child = None,  return false')

@@ -45,7 +45,7 @@ class Borg:
         if borgtype is None:
             raise TypeError('Borg::__init__: You must pass a borgtype')
         if borgtype not in self.__shared_state:
-            dbg('Borg::__init__: Preparing borg state for %s' % borgtype)
+            dbg(f'Borg::__init__: Preparing borg state for {borgtype}')
             self.__shared_state[borgtype] = {}
         self.__dict__ = self.__shared_state[borgtype]
 

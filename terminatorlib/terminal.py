@@ -140,7 +140,7 @@ class Terminal(Gtk.VBox):
             self.composite_support = False
         else:
             self.composite_support = True
-        dbg('composite_support: %s' % self.composite_support)
+        dbg(f'composite_support: {self.composite_support}')
 
         self.vte.show()
 
@@ -232,12 +232,12 @@ class Terminal(Gtk.VBox):
         self.cnxids.remove_widget(self.vte)
         self.emit('close-term')
         try:
-            dbg('close: killing %d' % self.pid)
+            dbg(f'close: killing {self.pid}')
             os.kill(self.pid, signal.SIGHUP)
         except Exception as ex:
             # We really don't want to care if this failed. Deep OS voodoo is
             # not what we should be doing.
-            dbg('os.kill failed: %s' % ex)
+            dbg(f'os.kill failed: {ex}')
             pass
 
         if self.vte:
@@ -312,20 +312,19 @@ class Terminal(Gtk.VBox):
                     name = urlplugin.handler_name
                     match = urlplugin.match
                     if name in self.matches:
-                        dbg('refusing to add duplicate match %s' % name)
+                        dbg(f'refusing to add duplicate match {name}')
                         continue
                     reg = GLib.Regex.new(match, self.regex_flags, 0)
                     self.matches[name] = self.vte.match_add_gregex(reg, 0)
-                    dbg('added plugin URL handler for %s (%s) as %d' %
-                        (name, urlplugin.__class__.__name__,
-                         self.matches[name]))
+                    dbg('added plugin URL handler for '
+                        f'{name} ({urlplugin.__class__.__name__}) as {self.matches[name]}')
             except Exception as ex:
-                err('Exception occurred adding plugin URL match: %s' % ex)
+                err(f'Exception occurred adding plugin URL match: {ex}')
 
     def match_add(self, name, match):
         """Register a URL match"""
         if name in self.matches:
-            err('Terminal::match_add: Refusing to create duplicate match %s' % name)
+            err(f'Terminal::match_add: Refusing to create duplicate match {name}')
             return
         reg = GLib.Regex.new(match, self.regex_flags, 0)
         self.matches[name] = self.vte.match_add_gregex(reg, 0)
@@ -333,7 +332,7 @@ class Terminal(Gtk.VBox):
     def match_remove(self, name):
         """Remove a previously registered URL match"""
         if name not in self.matches:
-            err('Terminal::match_remove: Unable to remove non-existent match %s' % name)
+            err(f'Terminal::match_remove: Unable to remove non-existent match {name}')
             return
         self.vte.match_remove(self.matches[name])
         del self.matches[name]
@@ -380,7 +379,7 @@ class Terminal(Gtk.VBox):
         srcvtetargets = [Gtk.TargetEntry.new(*tgt) for tgt in srcvtetargets]
         dsttargets = [Gtk.TargetEntry.new(*tgt) for tgt in dsttargets]
 
-        dbg('Finalised drag targets: %s' % dsttargets)
+        dbg(f'Finalised drag targets: {dsttargets}')
 
         for (widget, mask) in [
             (self.vte, Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.BUTTON3_MASK),
@@ -465,7 +464,7 @@ class Terminal(Gtk.VBox):
             menu.append(Gtk.SeparatorMenuItem())
 
         if self.group is not None:
-            item = Gtk.MenuItem(label=_('Remove group %s') % self.group)
+            item = Gtk.MenuItem(label=_(f'Remove group {self.group}'))
             item.connect('activate', self.ungroup, self.group)
             menu.append(item)
 
@@ -487,7 +486,7 @@ class Terminal(Gtk.VBox):
         if self.group is not None:
             menu.append(Gtk.SeparatorMenuItem())
 
-            item = Gtk.MenuItem(label=_('Close group %s') % self.group)
+            item = Gtk.MenuItem(label=_(f'Close group {self.group}'))
             item.connect('activate', lambda x:
             self.terminator.closegroupedterms(self.group))
             menu.append(item)
@@ -502,11 +501,9 @@ class Terminal(Gtk.VBox):
                            _('Broadcast _off'): 'off'}.items():
             item = Gtk.RadioMenuItem.new_with_mnemonic(groupitems, key)
             groupitems = item.get_group()
-            dbg('Terminal::populate_group_menu: %s active: %s' %
-                (key, self.terminator.groupsend ==
-                 self.terminator.groupsend_type[value]))
-            item.set_active(self.terminator.groupsend ==
-                            self.terminator.groupsend_type[value])
+            dbg(f'Terminal::populate_group_menu: {key} '
+                f'active: {self.terminator.groupsend == self.terminator.groupsend_type[value]}')
+            item.set_active(self.terminator.groupsend == self.terminator.groupsend_type[value])
             cnxs.append([item, 'activate', self.set_groupsend, self.terminator.groupsend_type[value]])
             menu.append(item)
 
@@ -565,7 +562,7 @@ class Terminal(Gtk.VBox):
         if self.group == name:
             # already in this group, no action needed
             return
-        dbg('Terminal::set_group: Setting group to %s' % name)
+        dbg(f'Terminal::set_group: Setting group to {name}')
         self.group = name
         self.titlebar.set_group_label(name)
         self.terminator.group_hoover()
@@ -592,7 +589,7 @@ class Terminal(Gtk.VBox):
         """Set the groupsend mode"""
         # FIXME: Can we think of a smarter way of doing this than poking?
         if value in self.terminator.groupsend_type.values():
-            dbg('Terminal::set_groupsend: setting groupsend to %s' % value)
+            dbg(f'Terminal::set_groupsend: setting groupsend to {value}')
             self.terminator.groupsend = value
 
     def do_splittogroup_toggle(self):
@@ -696,17 +693,19 @@ class Terminal(Gtk.VBox):
         if factor > 1.0:
             factor = 1.0
         self.fgcolor_inactive = self.fgcolor_active.copy()
-        dbg(('fgcolor_inactive set to: RGB(%s,%s,%s)', getattr(self.fgcolor_inactive, 'red'),
-             getattr(self.fgcolor_inactive, 'green'),
-             getattr(self.fgcolor_inactive, 'blue')))
+        dbg(('fgcolor_inactive set to: RGB('
+             f'{getattr(self.fgcolor_inactive, "red")},'
+             f'{getattr(self.fgcolor_inactive, "green")},'
+             f'{getattr(self.fgcolor_inactive, "blue")})'))
 
         for bit in ['red', 'green', 'blue']:
             setattr(self.fgcolor_inactive, bit,
                     getattr(self.fgcolor_inactive, bit) * factor)
 
-        dbg(('fgcolor_inactive set to: RGB(%s,%s,%s)', getattr(self.fgcolor_inactive, 'red'),
-             getattr(self.fgcolor_inactive, 'green'),
-             getattr(self.fgcolor_inactive, 'blue')))
+        dbg(('fgcolor_inactive set to: RGB('
+             f'{getattr(self.fgcolor_inactive, "red")},'
+             f'{getattr(self.fgcolor_inactive, "green")},'
+             f'{getattr(self.fgcolor_inactive, "blue")})'))
         colors = self.config['palette'].split(':')
         self.palette_active = []
         for color in colors:
@@ -745,12 +744,11 @@ class Terminal(Gtk.VBox):
         profiles = self.config.base.profiles
         terminal_box_style_context = self.terminalbox.get_style_context()
         for profile in profiles.keys():
-            munged_profile = 'terminator-profile-%s' % (
-                ''.join([c if c.isalnum() else '-' for c in profile]))
+            munged_profile = f'terminator-profile-{"".join([c if c.isalnum() else "-" for c in profile])}'
             if terminal_box_style_context.has_class(munged_profile):
                 terminal_box_style_context.remove_class(munged_profile)
         munged_profile = ''.join([c if c.isalnum() else '-' for c in self.get_profile()])
-        css_class_name = 'terminator-profile-%s' % munged_profile
+        css_class_name = f'terminator-profile-{munged_profile}'
         terminal_box_style_context.add_class(css_class_name)
         self.set_cursor_color()
         self.vte.set_cursor_shape(getattr(Vte.CursorShape, self.config['cursor_shape'].upper()))
@@ -853,7 +851,7 @@ class Terminal(Gtk.VBox):
     def on_keypress(self, widget, event):
         """Handler for keyboard events"""
         if not event:
-            dbg('Terminal::on_keypress: Called on %s with no event' % widget)
+            dbg(f'Terminal::on_keypress: Called on {widget} with no event')
             return False
 
         # Workaround for IBus interfering with broadcast when using dead keys
@@ -861,7 +859,7 @@ class Terminal(Gtk.VBox):
         # in the receivers.
         if self.terminator.ibus_running:
             if (event.state | Gdk.ModifierType.MODIFIER_MASK) ^ Gdk.ModifierType.MODIFIER_MASK != 0:
-                dbg('Terminal::on_keypress: Ingore processed event with event.state %d' % event.state)
+                dbg(f'Terminal::on_keypress: Ingore processed event with event.state {event.state}')
                 return False
 
         # FIXME: Does keybindings really want to live in Terminator()?
@@ -870,9 +868,8 @@ class Terminal(Gtk.VBox):
         if mapping == 'hide_window':
             return False
 
-        if mapping and mapping not in ['close_window',
-                                       'full_screen']:
-            dbg('Terminal::on_keypress: lookup found: %r' % mapping)
+        if mapping and mapping not in ['close_window', 'full_screen']:
+            dbg(f'Terminal::on_keypress: lookup found: {mapping}')
             # handle the case where user has re-bound copy to ctrl+<key>
             # we only copy if there is a selection otherwise let it fall through
             # to ^<key>
@@ -1005,7 +1002,7 @@ class Terminal(Gtk.VBox):
         """Handle the encoding changing"""
         current = self.vte.get_encoding()
         if current != encoding:
-            dbg('on_encoding_change: setting encoding to: %s' % encoding)
+            dbg(f'on_encoding_change: setting encoding to: {encoding}')
             self.custom_encoding = not (encoding == self.config['encoding'])
             self.vte.set_encoding(encoding)
 
@@ -1048,7 +1045,7 @@ class Terminal(Gtk.VBox):
         bottommiddle = (alloc.width / 2, alloc.height)
         middleleft = (0, alloc.height / 2)
         middleright = (alloc.width, alloc.height / 2)
-        # print('%f %f %d %d' %(coef1, coef2, b1,b2))
+        # print(f'{coef1} {coef2} {b1} {b2})
         coord = ()
         if pos == 'right':
             coord = (topright, topmiddle, bottommiddle, bottomright)
@@ -1091,7 +1088,7 @@ class Terminal(Gtk.VBox):
                               info, _time, data):
         """Something has been dragged into the terminal. Handle it as either a
         URL or another terminal."""
-        dbg('drag data received of type: %s' % (selection_data.get_data_type()))
+        dbg(f'drag data received of type: {selection_data.get_data_type()}')
         if Gtk.targets_include_text(drag_context.list_targets()) or \
                 Gtk.targets_include_uri(drag_context.list_targets()):
             # copy text with no modification yet to destination
@@ -1113,8 +1110,8 @@ class Terminal(Gtk.VBox):
                     # iterate over all elements except the last one.
                     str = ''
                     for fname in txt_lines[:-1]:
-                        dbg('drag data fname: %s' % fname)
-                        fname = '\'%s\'' % urllib.parse.unquote(fname[7:].replace('\'', '\'\\\'\''))
+                        dbg(f'drag data fname: {fname}')
+                        fname = '\'%s\''.format(urllib.parse.unquote(fname[7:].replace('\'', '\'\\\'\'')))
                         str += fname + ' '
                     txt = str
             for term in self.terminator.get_target_terms(self):
@@ -1294,11 +1291,9 @@ class Terminal(Gtk.VBox):
         new_rows = self.vte.get_row_count()
         new_font = self.vte.get_font()
 
-        dbg('Terminal::zoom_scale: Resized from %dx%d to %dx%d' % (
-            old_data['old_columns'],
-            old_data['old_rows'],
-            new_columns,
-            new_rows))
+        dbg('Terminal::zoom_scale: Resized from '
+            f'{old_data["old_columns"]}x{old_data["old_rows"]} to '
+            f'{new_columns}x{new_rows}')
 
         if new_rows == old_data['old_rows'] or \
                 new_columns == old_data['old_columns']:
@@ -1313,7 +1308,7 @@ class Terminal(Gtk.VBox):
             err('refusing to set a zero sized font')
             return
         new_font.set_size(new_size)
-        dbg('setting new font: %s' % new_font)
+        dbg(f'setting new font: {new_font}')
         self.set_font(new_font)
 
     def is_zoomed(self):
@@ -1367,9 +1362,8 @@ class Terminal(Gtk.VBox):
             command = self.layout_command
         elif debugserver is True:
             details = self.terminator.debug_address
-            dbg('spawning debug session with: %s:%s' % (details[0],
-                                                        details[1]))
-            command = 'telnet %s %s' % (details[0], details[1])
+            dbg(f'spawning debug session with: {details[0]}:{details[1]}')
+            command = f'telnet {details[0]} {details[1]}'
 
         # working directory set in layout config
         if self.directory:
@@ -1387,7 +1381,7 @@ class Terminal(Gtk.VBox):
             shell = util.shell_lookup()
 
             if self.config['login_shell']:
-                args.insert(0, '-%s' % shell)
+                args.insert(0, f'-{shell}')
             else:
                 args.insert(0, shell)
 
@@ -1399,18 +1393,18 @@ class Terminal(Gtk.VBox):
             return -1
 
         try:
-            os.putenv('WINDOWID', '%s' % self.vte.get_parent_window().xid)
+            os.putenv('WINDOWID', f'{self.vte.get_parent_window().xid}')
         except AttributeError:
             pass
 
-        envv = ['TERM=%s' % self.config['term'], 'COLORTERM=%s' % self.config['colorterm'], 'PWD=%s' % self.cwd,
-                'TERMINATOR_UUID=%s' % self.uuid.urn]
+        envv = [f'TERM={self.config["term"]}', f'COLORTERM={self.config["colorterm"],}',
+                f'PWD={self.cwd}', f'TERMINATOR_UUID={self.uuid.urn}']
         if self.terminator.dbus_name:
-            envv.append('TERMINATOR_DBUS_NAME=%s' % self.terminator.dbus_name)
+            envv.append(f'TERMINATOR_DBUS_NAME={self.terminator.dbus_name}')
         if self.terminator.dbus_path:
-            envv.append('TERMINATOR_DBUS_PATH=%s' % self.terminator.dbus_path)
+            envv.append(f'TERMINATOR_DBUS_PATH={self.terminator.dbus_path}')
 
-        dbg('Forking shell: "%s" with args: %s' % (shell, args))
+        dbg(f'Forking shell: "{shell}" with args: {args}')
         args.insert(0, shell)
         result, self.pid = self.vte.spawn_sync(Vte.PtyFlags.DEFAULT,
                                                self.cwd,
@@ -1450,12 +1444,11 @@ class Terminal(Gtk.VBox):
                     if match == self.matches[urlplugin.handler_name]:
                         newurl = urlplugin.callback(url)
                         if newurl is not None:
-                            dbg('Terminal::prepare_url: URL prepared by \
-%s plugin' % urlplugin.handler_name)
+                            dbg(f'Terminal::prepare_url: URL prepared by {urlplugin.handler_name} plugin')
                             url = newurl
                         break
             except Exception as ex:
-                err('Exception occurred preparing URL: %s' % ex)
+                err(f'Exception occurred preparing URL: {ex}')
 
         return url
 
@@ -1463,11 +1456,10 @@ class Terminal(Gtk.VBox):
         """Open a given URL, conditionally unpacking it from a VTE match"""
         if prepare:
             url = self.prepare_url(url)
-        dbg('open_url: URL: %s (prepared: %s)' % (url, prepare))
+        dbg(f'open_url: URL: {url} (prepared: {prepare})')
 
         if self.config['use_custom_url_handler']:
-            dbg("Using custom URL handler: %s" %
-                self.config['custom_url_handler'])
+            dbg(f'Using custom URL handler: {self.config["custom_url_handler"]}')
             try:
                 subprocess.run([self.config['custom_url_handler'], url])
                 return
@@ -1528,7 +1520,7 @@ class Terminal(Gtk.VBox):
             font = self.config.get_system_mono_font()
         else:
             font = self.config['font']
-        dbg("Terminal::zoom_orig: restoring font to: %s" % font)
+        dbg(f'Terminal::zoom_orig: restoring font to: {font}')
         self.set_font(Pango.FontDescription(font))
         self.custom_font_size = None
 
@@ -1605,7 +1597,7 @@ class Terminal(Gtk.VBox):
         if title:
             layout['title'] = title
         layout['uuid'] = self.uuid
-        name = 'terminal%d' % count
+        name = f'terminal{count}'
         count = count + 1
         global_layout[name] = layout
         return count

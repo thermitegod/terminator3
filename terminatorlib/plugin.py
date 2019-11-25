@@ -66,8 +66,7 @@ class PluginRegistry(borg.Borg):
             (head, _tail) = os.path.split(borg.__file__)
             self.path.append(os.path.join(head, 'plugins'))
             self.path.append(os.path.join(get_config_dir(), 'plugins'))
-            dbg('PluginRegistry::prepare_attributes: Plugin path: %s' %
-                self.path)
+            dbg(f'PluginRegistry::prepare_attributes: Plugin path: {self.path}')
         if not self.done:
             self.done = False
         if not self.available_plugins:
@@ -93,8 +92,7 @@ class PluginRegistry(borg.Borg):
                     continue
                 pluginpath = os.path.join(plugindir, plugin)
                 if os.path.isfile(pluginpath) and plugin[-3:] == '.py':
-                    dbg('PluginRegistry::load_plugins: Importing plugin %s' %
-                        plugin)
+                    dbg(f'PluginRegistry::load_plugins: Importing plugin {plugin}')
                     try:
                         module = __import__(plugin[:-3], None, None, [''])
                         for item in getattr(module, 'AVAILABLE'):
@@ -103,20 +101,20 @@ class PluginRegistry(borg.Borg):
                                 self.available_plugins[item] = func
 
                             if not testing and item not in config['enabled_plugins']:
-                                dbg('plugin %s not enabled, skipping' % item)
+                                dbg(f'plugin {item} not enabled, skipping')
                                 continue
                             if item not in self.instances:
                                 self.instances[item] = func()
                     except Exception as ex:
-                        err('PluginRegistry::load_plugins: Importing plugin %s failed: %s' % (plugin, ex))
+                        err(f'PluginRegistry::load_plugins: Importing plugin {plugin} failed: {ex}')
 
         self.done = True
 
     def get_plugins_by_capability(self, capability):
         """Return a list of plugins with a particular capability"""
         result = []
-        dbg('PluginRegistry::get_plugins_by_capability: searching %d plugins \
-for %s' % (len(self.instances), capability))
+        dbg('PluginRegistry::get_plugins_by_capability: '
+            f'searching {len(self.instances)} plugins for {capability}')
         for plugin in self.instances:
             if capability in self.instances[plugin].capabilities:
                 result.append(self.instances[plugin])
@@ -139,13 +137,13 @@ for %s' % (len(self.instances), capability))
     def enable(self, plugin):
         """Enable a plugin"""
         if plugin in self.instances:
-            err('Cannot enable plugin %s, already enabled' % plugin)
-        dbg('Enabling %s' % plugin)
+            err(f'Cannot enable plugin {plugin}, already enabled')
+        dbg(f'Enabling {plugin}')
         self.instances[plugin] = self.available_plugins[plugin]()
 
     def disable(self, plugin):
         """Disable a plugin"""
-        dbg('Disabling %s' % plugin)
+        dbg(f'Disabling {plugin}')
         self.instances[plugin].unload()
         del self.instances[plugin]
 

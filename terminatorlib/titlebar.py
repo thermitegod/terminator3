@@ -70,8 +70,7 @@ class Titlebar(Gtk.EventBox):
             icon_name = 'group'
         elif self.terminator.groupsend == groupsend_type['off']:
             icon_name = 'off'
-        self.set_from_icon_name('_active_broadcast_%s' % icon_name,
-                                Gtk.IconSize.MENU)
+        self.set_from_icon_name(f'_active_broadcast_{icon_name}')
 
         grouphbox.pack_start(self.groupicon, False, True, 2)
         grouphbox.pack_start(self.grouplabel, False, True, 2)
@@ -106,9 +105,9 @@ class Titlebar(Gtk.EventBox):
         """Update our contents"""
         default_bg = False
         if self.config['title_hide_sizetext']:
-            self.label.set_text('%s' % self.termtext)
+            self.label.set_text(f'{self.termtext}')
         else:
-            self.label.set_text('%s %s' % (self.termtext, self.sizetext))
+            self.label.set_text(f'{self.termtext} {self.sizetext}')
 
         if (not self.config['title_use_system_font']) and self.config['title_font']:
             title_font = Pango.FontDescription(self.config['title_font'])
@@ -198,7 +197,7 @@ class Titlebar(Gtk.EventBox):
             dbg('implicit desired visibility')
             return True
         else:
-            dbg('configured visibility: %s' % self.config['show_titlebar'])
+            dbg(f'configured visibility: {self.config["show_titlebar"]}')
             return self.config['show_titlebar']
 
     def set_from_icon_name(self, name, size=Gtk.IconSize.MENU):
@@ -212,7 +211,7 @@ class Titlebar(Gtk.EventBox):
 
     def update_terminal_size(self, width, height):
         """Update the displayed terminal size"""
-        self.sizetext = '%sx%s' % (width, height)
+        self.sizetext = f'{width}x{height}'
         self.update()
 
     def set_terminal_title(self, widget, title):
@@ -279,7 +278,7 @@ class Titlebar(Gtk.EventBox):
     def groupentry_activate(self, widget):
         """Actually cause a group to be created"""
         groupname = self.groupentry.get_text() or None
-        dbg('Titlebar::groupentry_activate: creating group: %s' % groupname)
+        dbg(f'Titlebar::groupentry_activate: creating group: {groupname}')
         self.groupentry_cancel(None, None)
         last_focused_term = self.terminator.last_focused_term
         if self.terminal.targets_for_new_group:

@@ -203,7 +203,7 @@ class PrefsEditor:
             self.config.inhibit_save()
             self.set_values()
         except Exception as e:
-            err('Unable to set values: %s' % e)
+            err(f'Unable to set values: {e}')
         self.config.uninhibit_save()
 
     def on_closebutton_clicked(self, _button):
@@ -409,7 +409,7 @@ class PrefsEditor:
         self.config.set_profile(profile)
         guiget = self.builder.get_object
 
-        dbg('PrefsEditor::set_profile_values: Setting profile %s' % profile)
+        dbg(f'PrefsEditor::set_profile_values: Setting profile {profile}')
 
         ## General tab
         # Use system font
@@ -560,7 +560,7 @@ class PrefsEditor:
         # Palette colour pickers
         colourpalette = self.config['palette'].split(':')
         for i in range(1, 17):
-            widget = guiget('palette_colorpicker_%d' % i)
+            widget = guiget(f'palette_colorpicker_{i}')
             widget.set_color(Gdk.color_parse(colourpalette[i - 1]))
         # Now set the palette selector widget
         widget = guiget('palette_combobox')
@@ -575,7 +575,7 @@ class PrefsEditor:
         widget = guiget('inactive_color_offset')
         widget.set_value(float(self.config['inactive_color_offset']))
         widget = guiget('inactive_color_offset_value_label')
-        widget.set_text('%d%%' % (int(float(self.config['inactive_color_offset']) * 100)))
+        widget.set_text(f'{int(float(self.config["inactive_color_offset"]) * 100)}%%')
         # Use custom URL handler
         widget = guiget('use_custom_url_handler_checkbox')
         widget.set_active(self.config['use_custom_url_handler'])
@@ -653,7 +653,7 @@ class PrefsEditor:
             if encoding[1] is None:
                 continue
 
-            label = '%s %s' % (encoding[2], encoding[1])
+            label = f'{encoding[2]} {encoding[1]}'
             rowiter = encodingstore.append([label, encoding[1]])
 
             if encoding[1] == value:
@@ -895,7 +895,7 @@ class PrefsEditor:
             sensitive = False
 
         for num in range(1, 17):
-            picker = guiget('palette_colorpicker_%d' % num)
+            picker = guiget(f'palette_colorpicker_{num}')
             picker.set_sensitive(sensitive)
 
         if value in self.palettes:
@@ -903,16 +903,16 @@ class PrefsEditor:
             palettebits = palette.split(':')
             for num in range(1, 17):
                 # Update the visible elements
-                picker = guiget('palette_colorpicker_%d' % num)
+                picker = guiget(f'palette_colorpicker_{num}')
                 picker.set_color(Gdk.color_parse(palettebits[num - 1]))
         elif value == 'custom':
             palettebits = []
             for num in range(1, 17):
-                picker = guiget('palette_colorpicker_%d' % num)
+                picker = guiget(f'palette_colorpicker_{num}')
                 palettebits.append(color2hex(picker))
             palette = ':'.join(palettebits)
         else:
-            err('Unknown palette value: %s' % value)
+            err(f'Unknown palette value: {value}')
             return
 
         self.config['palette'] = palette
@@ -936,7 +936,7 @@ class PrefsEditor:
 
         # FIXME: We do this at least once elsewhere. refactor!
         for num in range(1, 17):
-            picker = guiget('palette_colorpicker_%d' % num)
+            picker = guiget(f'palette_colorpicker_{num}')
             value = color2hex(picker)
             palettebits.append(value)
         palette = ':'.join(palettebits)
@@ -1057,7 +1057,7 @@ class PrefsEditor:
         self.config.save()
         guiget = self.builder.get_object
         label_widget = guiget('inactive_color_offset_value_label')
-        label_widget.set_text('%d%%' % (int(value * 100)))
+        label_widget.set_text(f'{int(value * 100)}%%')
 
     def on_handlesize_value_changed(self, widget):
         """Handle size changed"""
@@ -1138,7 +1138,7 @@ class PrefsEditor:
             i = 1
             while newprofile in values:
                 i = i + 1
-                newprofile = '%s %d' % (_('New Profile'), i)
+                newprofile = f'{_("New Profile")} {i}'
 
         if self.config.add_profile(newprofile):
             res = model.append([newprofile, True])
@@ -1183,7 +1183,7 @@ class PrefsEditor:
             i = 0
             while name in values:
                 i = i + 1
-                name = '%s %d' % (_('New Layout'), i)
+                name = f'{_("New Layout")} {i}'
 
         if self.config.add_layout(name, current_layout):
             res = model.append([name, True])
@@ -1385,8 +1385,7 @@ class PrefsEditor:
         oldname = cell.get_property('text')
         if oldname == newtext or oldname == 'default':
             return
-        dbg('PrefsEditor::on_profile_name_edited: Changing %s to %s' %
-            (oldname, newtext))
+        dbg(f'PrefsEditor::on_profile_name_edited: Changing {oldname} to {newtext}')
         self.config.rename_profile(oldname, newtext)
         self.config.save()
 
@@ -1423,7 +1422,7 @@ class PrefsEditor:
         oldname = cell.get_property('text')
         if oldname == newtext or oldname == 'default':
             return
-        dbg('Changing %s to %s' % (oldname, newtext))
+        dbg(f'Changing {oldname} to {newtext}')
         self.config.rename_layout(oldname, newtext)
         self.config.save()
 
@@ -1466,7 +1465,7 @@ class PrefsEditor:
             forecol = color2hex(fore)
             backcol = color2hex(back)
         else:
-            err('Unknown colourscheme value: %s' % value)
+            err(f'Unknown colourscheme value: {value}')
             return
 
         fore.set_color(Gdk.color_parse(forecol))
@@ -1558,7 +1557,7 @@ class LayoutEditor:
 
             if child_type != 'Window' and parent not in layout:
                 # We have an orphan!
-                err('%s is an orphan in this layout. Discarding' % child)
+                err(f'{child} is an orphan in this layout. Discarding')
                 continue
             try:
                 parentiter = listitems[parent]

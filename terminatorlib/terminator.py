@@ -155,18 +155,16 @@ class Terminator(Borg):
     def register_window(self, window):
         """Register a new window widget"""
         if window not in self.windows:
-            dbg('Terminator::register_window: registering %s:%s' % (id(window),
-                                                                    type(window)))
+            dbg(f'Terminator::register_window: registering {id(window)}:{type(window)}')
             self.windows.append(window)
 
     def deregister_window(self, window):
         """de-register a window widget"""
-        dbg('Terminator::deregister_window: de-registering %s:%s' %
-            (id(window), type(window)))
+        dbg(f'Terminator::deregister_window: de-registering {id(window)}:{type(window)}')
         if window in self.windows:
             self.windows.remove(window)
         else:
-            err('%s is not in registered window list' % window)
+            err(f'{window} is not in registered window list')
 
         if len(self.windows) == 0:
             # We have no windows left, we should exit
@@ -176,18 +174,16 @@ class Terminator(Borg):
     def register_launcher_window(self, window):
         """Register a new launcher window widget"""
         if window not in self.launcher_windows:
-            dbg('Terminator::register_launcher_window: registering %s:%s' % (id(window),
-                                                                             type(window)))
+            dbg(f'Terminator::register_launcher_window: registering {id(window)}:{type(window)}')
             self.launcher_windows.append(window)
 
     def deregister_launcher_window(self, window):
         """de-register a launcher window widget"""
-        dbg('Terminator::deregister_launcher_window: de-registering %s:%s' %
-            (id(window), type(window)))
+        dbg(f'Terminator::deregister_launcher_window: de-registering {id(window)}:{type(window)}')
         if window in self.launcher_windows:
             self.launcher_windows.remove(window)
         else:
-            err('%s is not in registered window list' % window)
+            err(f'{window} is not in registered window list')
 
         if len(self.launcher_windows) == 0 and len(self.windows) == 0:
             # We have no windows left, we should exit
@@ -197,14 +193,12 @@ class Terminator(Borg):
     def register_terminal(self, terminal):
         """Register a new terminal widget"""
         if terminal not in self.terminals:
-            dbg('Terminator::register_terminal: registering %s:%s' %
-                (id(terminal), type(terminal)))
+            dbg(f'Terminator::register_terminal: registering {id(terminal)}:{type(terminal)}')
             self.terminals.append(terminal)
 
     def deregister_terminal(self, terminal):
         """De-register a terminal widget"""
-        dbg('Terminator::deregister_terminal: de-registering %s:%s' %
-            (id(terminal), type(terminal)))
+        dbg(f'Terminator::deregister_terminal: de-registering {id(terminal)}:{type(terminal)}')
         self.terminals.remove(terminal)
 
         if len(self.terminals) == 0:
@@ -212,23 +206,22 @@ class Terminator(Borg):
             for window in self.windows:
                 window.destroy()
         else:
-            dbg('Terminator::deregister_terminal: %d terminals remain' %
-                len(self.terminals))
+            dbg(f'Terminator::deregister_terminal: {len(self.terminals)} terminals remain')
 
     def find_terminal_by_uuid(self, uuid):
         """Search our terminals for one matching the supplied UUID"""
-        dbg('searching self.terminals for: %s' % uuid)
+        dbg(f'searching self.terminals for: {uuid}')
         for terminal in self.terminals:
-            dbg('checking: %s (%s)' % (terminal.uuid.urn, terminal))
+            dbg(f'checking: {terminal.uuid.urn} ({terminal})')
             if terminal.uuid.urn == uuid:
                 return terminal
         return None
 
     def find_window_by_uuid(self, uuid):
         """Search our terminals for one matching the supplied UUID"""
-        dbg('searching self.terminals for: %s' % uuid)
+        dbg(f'searching self.terminals for: {uuid}')
         for window in self.windows:
-            dbg('checking: %s (%s)' % (window.uuid.urn, window))
+            dbg(f'checking: {window.uuid.urn} ({window})')
             if window.uuid.urn == uuid:
                 return window
         return None
@@ -260,7 +253,7 @@ class Terminator(Borg):
         layout = copy.deepcopy(self.config.layout_get_config(layoutname))
         if not layout:
             # User specified a non-existent layout. default to one Terminal
-            err('layout %s not defined' % layout)
+            err(f'layout {layout} not defined')
             self.new_window()
             return
 
@@ -289,7 +282,7 @@ class Terminator(Borg):
                 else:
                     # Now examine children to see if their parents exist yet
                     if 'parent' not in layout[obj]:
-                        err('Invalid object: %s' % obj)
+                        err(f'Invalid object: {obj}')
                         del layout[obj]
                         continue
                     if layout[obj]['parent'] in objects:
@@ -309,7 +302,7 @@ class Terminator(Borg):
 
         for windef in layout:
             if layout[windef]['type'] != 'Window':
-                err('invalid layout format. %s' % layout)
+                err(f'invalid layout format. {layout}')
                 raise ValueError
             dbg('Creating a window')
             window, terminal = self.new_window()
@@ -534,18 +527,16 @@ class Terminator(Borg):
                         gtk_version_string = '.'.join([str(Gtk.get_major_version()),
                                                        str(Gtk.get_minor_version()),
                                                        str(Gtk.get_micro_version())])
-                        err('Error(s) loading css from %s into Gtk %s' % (path_to_theme_specific_css,
-                                                                          gtk_version_string))
+                        err(f'Error(s) loading css from {path_to_theme_specific_css} into Gtk {gtk_version_string}')
                     self.style_providers.append(style_provider)
                     break
 
         # Size the GtkPaned splitter handle size.
         if self.config['handle_size'] in range(0, 21):
-            css = '''.terminator-terminal-window GtkPaned,
-            .terminator-terminal-window paned {{
-            min-width: {0}px;
-            min-height: {0}px; }}
-            '''.format(self.config['handle_size'])
+            hsize = self.config['handle_size']
+            css = f'''.terminator-terminal-window GtkPaned,
+            .terminator-terminal-window paned
+            {{min-width: {hsize}px;min-height: {hsize}px;}}'''
             style_provider = Gtk.CssProvider()
             style_provider.load_from_data(css.encode())
             self.style_providers.append(style_provider)
@@ -578,14 +569,12 @@ class Terminator(Borg):
         file_path = section.get_file().get_path()
         line_no = section.get_end_line() + 1
         col_no = section.get_end_position() + 1
-        err('%s, at line %d, column %d, of file %s' % (error.message,
-                                                       line_no, col_no,
-                                                       file_path))
+        err(f'{error.message}, at line {line_no}, column {col_no}, of file {file_path}')
 
     def create_group(self, name):
         """Create a new group"""
         if name not in self.groups:
-            dbg('Terminator::create_group: registering group %s' % name)
+            dbg(f'Terminator::create_group: registering group {name}')
             self.groups.append(name)
 
     def closegroupedterms(self, group):
@@ -610,15 +599,13 @@ class Terminator(Borg):
                 if group not in inuse:
                     todestroy.append(group)
 
-            dbg('Terminator::group_hoover: %d groups, hoovering %d' %
-                (len(self.groups), len(todestroy)))
+            dbg(f'Terminator::group_hoover: {len(self.groups)} groups, hoovering {len(todestroy)}')
             for group in todestroy:
                 self.groups.remove(group)
 
     def group_emit(self, terminal, group, type, event):
         """Emit to each terminal in a group"""
-        dbg('Terminator::group_emit: emitting a keystroke for group %s' %
-            group)
+        dbg(f'Terminator::group_emit: emitting a keystroke for group {group}')
         for term in self.terminals:
             if term != terminal and term.group == group:
                 term.vte.emit(type, eventkey2gdkevent(event))

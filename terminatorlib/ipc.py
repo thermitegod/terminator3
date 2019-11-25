@@ -24,7 +24,7 @@ BUS_PATH = '/net/tenshu/Terminator2'
 try:
     # Try and include the X11 display name in the dbus bus name
     DISPLAY = hex(hash(Gdk.get_display().partition('.')[0]))
-    BUS_NAME = '%s%s' % (BUS_BASE, DISPLAY)
+    BUS_NAME = f'{BUS_BASE}{DISPLAY}'
 except:
     BUS_NAME = BUS_BASE
 
@@ -44,13 +44,13 @@ class DBusService(Borg, dbus.service.Object):
     def prepare_attributes(self):
         """Ensure we are populated"""
         if not self.bus_name:
-            dbg('Checking for bus name availability: %s' % BUS_NAME)
+            dbg(f'Checking for bus name availability: {BUS_NAME}')
             bus = dbus.SessionBus()
             proxy = bus.get_object('org.freedesktop.DBus', '/org/freedesktop/DBus')
             flags = 1 | 4  # allow replacement | do not queue
             if not proxy.RequestName(BUS_NAME, dbus.UInt32(flags)) in (1, 4):
-                dbg('bus name unavailable: %s' % BUS_NAME)
-                raise dbus.exceptions.DBusException('Could not get DBus name %s: Name exists' % BUS_NAME)
+                dbg(f'bus name unavailable: {BUS_NAME}')
+                raise dbus.exceptions.DBusException(f'Could not get DBus name {BUS_NAME}: Name exists')
             self.bus_name = dbus.service.BusName(BUS_NAME, bus=dbus.SessionBus())
         if not self.bus_path:
             self.bus_path = BUS_PATH
@@ -60,7 +60,7 @@ class DBusService(Borg, dbus.service.Object):
     @dbus.service.method(BUS_NAME, in_signature='a{ss}')
     def new_window_cmdline(self, options=dbus.Dictionary()):
         """Create a new Window"""
-        dbg('dbus method called: new_window with parameters %s' % options)
+        dbg(f'dbus method called: new_window with parameters {options}')
         oldopts = self.terminator.config.options_get()
         oldopts.__dict__ = options
         self.terminator.config.options_set(oldopts)
@@ -70,7 +70,7 @@ class DBusService(Borg, dbus.service.Object):
     @dbus.service.method(BUS_NAME, in_signature='a{ss}')
     def new_tab_cmdline(self, options=dbus.Dictionary()):
         """Create a new tab"""
-        dbg('dbus method called: new_tab with parameters %s' % options)
+        dbg(f'dbus method called: new_tab with parameters {options}')
         oldopts = self.terminator.config.options_get()
         oldopts.__dict__ = options
         self.terminator.config.options_set(oldopts)
@@ -106,7 +106,7 @@ class DBusService(Borg, dbus.service.Object):
 
     def new_terminal(self, uuid, type):
         """Split a terminal horizontally or vertically, by UUID"""
-        dbg('dbus method called: %s' % type)
+        dbg(f'dbus method called: {type}')
         if not uuid:
             return 'ERROR: No UUID specified'
         terminal = self.terminator.find_terminal_by_uuid(uuid)
@@ -120,7 +120,7 @@ class DBusService(Borg, dbus.service.Object):
         elif type == 'vsplit':
             terminal.key_split_vert()
         else:
-            return 'ERROR: Unknown type "%s" specified' % type
+            return f'ERROR: Unknown type "{type}" specified'
         terminals_after = set(self.get_terminals())
         # Detect the new terminal UUID
         new_terminal_set = list(terminals_after - terminals_before)
@@ -184,7 +184,7 @@ class DBusService(Borg, dbus.service.Object):
 
 def with_proxy(func):
     """Decorator function to connect to the session dbus bus"""
-    dbg('dbus client call: %s' % func.func_name)
+    dbg(f'dbus client call: {func.func_name}')
 
     def _exec(*args, **argd):
         bus = dbus.SessionBus()

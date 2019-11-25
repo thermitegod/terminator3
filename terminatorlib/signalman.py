@@ -18,30 +18,30 @@ class Signalman(object):
     def __del__(self):
         """Class destructor. This is only used to check for stray signals"""
         if len(self.cnxids.keys()) > 0:
-            dbg('Remaining signals: %s' % self.cnxids)
+            dbg(f'Remaining signals: {self.cnxids}')
 
     def new(self, widget, signal, handler, *args):
         """Register a new signal on a widget"""
         if widget not in self.cnxids:
-            dbg('creating new bucket for %s' % type(widget))
+            dbg(f'creating new bucket for {type(widget)}')
             self.cnxids[widget] = {}
 
         if signal in self.cnxids[widget]:
-            err('%s already has a handler for %s' % (id(widget), signal))
+            err(f'{id(widget)} already has a handler for {signal}')
 
         self.cnxids[widget][signal] = widget.connect(signal, handler, *args)
-        dbg('connected %s::%s to %s' % (type(widget), signal, handler))
+        dbg(f'connected {type(widget)}::{signal} to {handler}')
         return self.cnxids[widget][signal]
 
     def remove_signal(self, widget, signal):
         """Remove a signal handler"""
         if widget not in self.cnxids:
-            dbg('%s is not registered' % widget)
+            dbg(f'{widget} is not registered')
             return
         if signal not in self.cnxids[widget]:
-            dbg('%s not registered for %s' % (signal, type(widget)))
+            dbg(f'{signal} not registered for {type(widget)}')
             return
-        dbg('removing %s::%s' % (type(widget), signal))
+        dbg(f'removing {type(widget)}::{signal}')
         widget.disconnect(self.cnxids[widget][signal])
         del self.cnxids[widget][signal]
         if len(self.cnxids[widget].keys()) == 0:
@@ -51,7 +51,7 @@ class Signalman(object):
     def remove_widget(self, widget):
         """Remove all signal handlers for a widget"""
         if widget not in self.cnxids:
-            dbg('%s not registered' % widget)
+            dbg(f'{widget} not registered')
             return
         signals = tuple(self.cnxids[widget].keys())
         for signal in signals:

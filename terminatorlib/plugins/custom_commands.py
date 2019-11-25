@@ -36,7 +36,7 @@ class CustomCommandsMenu(plugin.MenuItem):
         for part in sections:
             s = sections[part]
             if not ('name' in s and 'command' in s):
-                print('CustomCommandsMenu: Ignoring section %s' % s)
+                print(f'CustomCommandsMenu: Ignoring section {s}')
                 continue
             name = s['name']
             command = s['command']
@@ -326,7 +326,7 @@ class CustomCommandsMenu(plugin.MenuItem):
                 if not name_exist:
                     store.append((item['enabled'], item['name'], item['command']))
                 else:
-                    gerr(_('Name *%s* already exist') % item['name'])
+                    gerr(_(f'Name *{item["name"]}* already exist'))
         dialog.destroy()
 
     @staticmethod
@@ -442,7 +442,7 @@ class CustomCommandsMenu(plugin.MenuItem):
                               CC_COL_COMMAND, item['command']
                               )
                 else:
-                    gerr(_('Name *%s* already exist') % item['name'])
+                    gerr(_(f'Name *{item["name"]}* already exist'))
 
         dialog.destroy()
 

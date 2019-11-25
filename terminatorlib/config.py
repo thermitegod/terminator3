@@ -289,12 +289,12 @@ class Config(object):
         """Set our profile (which usually means change it)"""
         options = self.options_get()
         if not force and options and options.profile and profile == 'default':
-            dbg('overriding default profile to %s' % options.profile)
+            dbg(f'overriding default profile to {options.profile}')
             profile = options.profile
-        dbg('Config::set_profile: Changing profile to %s' % profile)
+        dbg(f'Config::set_profile: Changing profile to {profile}')
         self.profile = profile
         if profile not in self.base.profiles:
-            dbg('Config::set_profile: %s does not exist, creating' % profile)
+            dbg(f'Config::set_profile: {profile} does not exist, creating')
             self.base.profiles[profile] = copy(DEFAULTS['profiles']['default'])
 
     def add_profile(self, profile):
@@ -306,7 +306,7 @@ class Config(object):
         if profile == self.profile:
             # FIXME: We should solve this problem by updating terminals when we
             # remove a profile
-            err('Config::del_profile: Deleting in-use profile %s.' % profile)
+            err(f'Config::del_profile: Deleting in-use profile {profile}')
             self.set_profile('default')
         if profile in self.base.profiles:
             del self.base.profiles[profile]
@@ -496,7 +496,7 @@ class ConfigBase(Borg):
 
         self.config_filename = self.command_line_options.config or os.path.join(get_config_dir(), 'config.json')
 
-        dbg('load config file: %s' % self.config_filename)
+        dbg(f'load config file: {self.config_filename}')
 
         configdata = {}
         self.get_default_config(configdata)
@@ -504,7 +504,7 @@ class ConfigBase(Borg):
             with open(self.config_filename, mode='rt') as f:
                 configdata.update(json.load(f))
         except FileNotFoundError as ex:
-            err('ConfigBase::load: Unable to load %s (%s)' % (self.config_filename, ex))
+            err(f'ConfigBase::load: Unable to load {self.config_filename} ({ex})')
 
         for section_name in self.sections:
             section = getattr(self, section_name)
@@ -546,7 +546,7 @@ class ConfigBase(Borg):
                 json.dump(configdata, f,
                           indent=4, separators=(',', ':'), sort_keys=True)
         except Exception as ex:
-            err('ConfigBase::save: Unable to save config: %s' % ex)
+            err(f'ConfigBase::save: Unable to save config: {ex}')
 
     def get_item(self, key, profile='default', plugin=None, default=None):
         """Look up a configuration item"""
@@ -555,28 +555,24 @@ class ConfigBase(Borg):
             profile = 'default'
 
         if key in self.global_config:
-            dbg('ConfigBase::get_item: %s found in globals: %s' %
-                (key, self.global_config[key]))
+            dbg(f'ConfigBase::get_item: {key} found in globals: {self.global_config[key]}')
             return self.global_config[key]
         elif key in self.profiles[profile]:
-            dbg('ConfigBase::get_item: %s found in profile %s: %s' % (
-                key, profile, self.profiles[profile][key]))
+            dbg(f'ConfigBase::get_item: {key} found in profile {profile}: {self.profiles[profile][key]}')
             return self.profiles[profile][key]
         elif key == 'keybindings':
             return self.keybindings
         elif plugin and plugin in self.plugins and key in self.plugins[plugin]:
-            dbg('ConfigBase::get_item: %s found in plugin %s: %s' % (
-                key, plugin, self.plugins[plugin][key]))
+            dbg(f'ConfigBase::get_item: {key} found in plugin {plugin}: {self.plugins[plugin][key]}')
             return self.plugins[plugin][key]
         elif default:
             return default
         else:
-            raise KeyError('ConfigBase::get_item: unknown key %s' % key)
+            raise KeyError(f'ConfigBase::get_item: unknown key {key}')
 
     def set_item(self, key, value, profile='default', plugin=None):
         """Set a configuration item"""
-        dbg('ConfigBase::set_item: Setting %s=%s (profile=%s, plugin=%s)' %
-            (key, value, profile, plugin))
+        dbg(f'ConfigBase::set_item: Setting {key}={value} (profile={profile}, plugin={plugin})')
 
         if key in self.global_config:
             self.global_config[key] = value
@@ -589,7 +585,7 @@ class ConfigBase(Borg):
                 self.plugins[plugin] = {}
             self.plugins[plugin][key] = value
         else:
-            raise KeyError('ConfigBase::set_item: unknown key %s' % key)
+            raise KeyError(f'ConfigBase::set_item: unknown key {key}')
 
         return True
 
@@ -633,7 +629,7 @@ class ConfigBase(Borg):
         if layout in self.layouts:
             return self.layouts[layout]
         else:
-            err('layout does not exist: %s' % layout)
+            err(f'layout does not exist: {layout}')
 
     def set_layout(self, layout, tree):
         """Set a layout"""

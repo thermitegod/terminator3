@@ -23,7 +23,7 @@ class LaunchpadBugURLHandler(plugin.URLHandler):
     def callback(self, url):
         """Look for the number in the supplied string and return it as a URL"""
         for item in re.findall(r'[0-9]+', url):
-            url = 'https://bugs.launchpad.net/bugs/%s' % item
+            url = f'https://bugs.launchpad.net/bugs/{item}'
             return url
 
 
@@ -36,7 +36,7 @@ class LaunchpadCodeURLHandler(plugin.URLHandler):
     namecopy = 'Copy branch URL'
     lpfilters = {}
     lpfilters['project'] = '[a-z0-9]{1}[a-z0-9+.-]+'
-    lpfilters['group'] = '~%s' % lpfilters['project']
+    lpfilters['group'] = f'~{lpfilters["project"]}'
     lpfilters['series'] = lpfilters['project']
     lpfilters['branch'] = '[a-zA-Z0-9]{1}[a-zA-Z0-9_+@.-]+'
 
@@ -46,7 +46,7 @@ class LaunchpadCodeURLHandler(plugin.URLHandler):
         """Look for the number in the supplied string and return it as a URL"""
         if url.startswith('lp:'):
             url = url[3:]
-        return 'https://code.launchpad.net/+branch/%s' % url
+        return f'https://code.launchpad.net/+branch/{url}'
 
 
 class APTURLHandler(plugin.URLHandler):

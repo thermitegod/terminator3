@@ -36,7 +36,7 @@ def parse_options():
 
     argslist = [
         (('-v', '--version',),
-         dict(action='version', version='%(prog)s {}'.format(version.APP_VERSION),
+         dict(action='version', version=f'%(prog)s {version.APP_VERSION}',
               help=_('Display program version'))),
         (('-m', '--maximise',),
          dict(action='store_true', dest='maximise',
@@ -127,7 +127,7 @@ def parse_options():
             options.working_directory = path
             os.chdir(path)
         else:
-            err('OptionParse::parse_options: %s does not exist' % path)
+            err(f'OptionParse::parse_options: {path} does not exist')
             options.working_directory = None
 
     configobj = config.Config()
@@ -138,4 +138,4 @@ def parse_options():
         options.profile = 'default'
 
     if util.DEBUG:
-        dbg('OptionParse::parse_options: command line options: %s' % options)
+        dbg(f'OptionParse::parse_options: command line options: {options}')

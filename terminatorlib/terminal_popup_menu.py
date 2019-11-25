@@ -49,10 +49,10 @@ class TerminalPopupMenu(object):
             button = 3
 
         if url and url[0]:
-            dbg('URL matches id: %d' % url[1])
+            dbg(f'URL matches id: {url[1]}')
             if not url[1] in terminal.matches.values():
-                err('Unknown URL match id: %d' % url[1])
-                dbg('Available matches: %s' % terminal.matches)
+                err(f'Unknown URL match id: {url[1]}')
+                dbg(f'Available matches: {terminal.matches}')
 
             nameopen = None
             namecopy = None
@@ -68,15 +68,13 @@ class TerminalPopupMenu(object):
                     if terminal.matches[pluginname] == url[1]:
                         break
 
-                dbg('Found match ID (%d) in terminal.matches plugin %s' %
-                    (url[1], pluginname))
+                dbg(f'Found match ID ({url[1]}) in terminal.matches plugin {pluginname}')
                 registry = plugin.PluginRegistry()
                 registry.load_plugins()
                 plugins = registry.get_plugins_by_capability('url_handler')
                 for urlplugin in plugins:
                     if urlplugin.handler_name == pluginname:
-                        dbg('Identified matching plugin: %s' %
-                            urlplugin.handler_name)
+                        dbg(f'Identified matching plugin: {urlplugin.handler_name}')
                         nameopen = _(urlplugin.nameopen)
                         namecopy = _(urlplugin.namecopy)
                         break
@@ -226,7 +224,7 @@ class TerminalPopupMenu(object):
             for menuitem in menuitems:
                 menu.append(menuitem)
         except Exception as ex:
-            err('TerminalPopupMenu::show: %s' % ex)
+            err(f'TerminalPopupMenu::show: {ex}')
 
         menu.show_all()
         menu.popup(None, None, None, None, button, time)
@@ -252,10 +250,10 @@ class TerminalPopupMenu(object):
 
         for encoding in active_encodings:
             if encoding == terminal.default_encoding:
-                extratext = ' (%s)' % _('Default')
+                extratext = f' ({_("Default")})'
             elif encoding == current_encoding and \
                     terminal.custom_encoding is True:
-                extratext = ' (%s)' % _('User defined')
+                extratext = f' ({_("User defined")})'
             else:
                 extratext = ''
 
@@ -284,9 +282,9 @@ class TerminalPopupMenu(object):
                 continue
 
             if encoding[1] is None:
-                label = '%s %s' % (encoding[2], terminal.vte.get_encoding())
+                label = f'{encoding[2]} {terminal.vte.get_encoding()}'
             else:
-                label = '%s %s' % (encoding[2], encoding[1])
+                label = f'{encoding[2]} {encoding[1]}'
 
             radioitem = Gtk.RadioMenuItem(label=label)
             if group is None:

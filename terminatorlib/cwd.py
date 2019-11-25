@@ -58,7 +58,7 @@ def get_pid_cwd():
     elif psutil_avail:
         func = psutil_cwd
     else:
-        dbg('Unable to determine a get_pid_cwd for OS: %s' % system)
+        dbg(f'Unable to determine a get_pid_cwd for OS: {system}')
 
     return func
 
@@ -69,7 +69,7 @@ def proc_get_pid_cwd(pid, path):
     try:
         cwd = os.path.realpath(path % pid)
     except Exception as ex:
-        err('Unable to get cwd for PID %s: %s' % (pid, ex))
+        err(f'Unable to get cwd for PID {pid}: {ex}')
         cwd = '/'
 
     return cwd

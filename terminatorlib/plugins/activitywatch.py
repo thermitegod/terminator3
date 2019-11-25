@@ -84,8 +84,9 @@ class ActivityWatch(plugin.MenuItem):
         if terminal.vte.has_focus():
             return True
 
-        note = Notify.Notification.new(_('Terminator'), _('Activity in: %s') %
-                                       terminal.get_window_title(), 'terminator')
+        note = Notify.Notification.new(_('Terminator'),
+                                       _(f'Activity in: {terminal.get_window_title()}'),
+                                       'terminator')
 
         this_time = time.mktime(time.gmtime())
         if terminal not in self.last_notifies:
@@ -137,7 +138,7 @@ class InactivityWatch(plugin.MenuItem):
         self.watches[terminal] = vte.connect('contents-changed', self.reset_timer, terminal)
         timeout_id = GObject.timeout_add(watch_interval, self.check_times, terminal)
         self.timers[terminal] = timeout_id
-        dbg('timer %s added for %s' % (timeout_id, terminal))
+        dbg(f'timer {timeout_id} added for {terminal}')
 
     def unwatch(self, _vte, terminal):
         """Unwatch a terminal"""
@@ -151,20 +152,21 @@ class InactivityWatch(plugin.MenuItem):
         """Reset the last-changed time for a terminal"""
         time_now = time.mktime(time.gmtime())
         self.last_activities[terminal] = time_now
-        dbg('reset activity time for %s' % terminal)
+        dbg(f'reset activity time for {terminal}')
 
     def check_times(self, terminal):
         """Check if this terminal has gone silent"""
         time_now = time.mktime(time.gmtime())
         if terminal not in self.last_activities:
-            dbg('Terminal %s has no last activity' % terminal)
+            dbg(f'Terminal {terminal} has no last activity')
             return True
 
-        dbg('seconds since last activity: %f (%s)' % (time_now - self.last_activities[terminal], terminal))
+        dbg(f'seconds since last activity: {time_now - self.last_activities[terminal]} ({terminal})')
         if time_now - self.last_activities[terminal] >= inactive_period:
             del self.last_activities[terminal]
-            note = Notify.Notification.new(_('Terminator'), _('Silence in: %s') %
-                                           terminal.get_window_title(), 'terminator')
+            note = Notify.Notification.new(_('Terminator'),
+                                           _(f'Silence in: {terminal.get_window_title()}'),
+                                           'terminator')
             note.show()
 
         return True

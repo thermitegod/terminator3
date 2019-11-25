@@ -35,11 +35,9 @@ class Container(object):
         existing = GObject.signal_list_names(widget)
         for signal in self.signals:
             if signal['name'] in existing:
-                dbg('Container:: skipping signal %s for %s, already exists' % (
-                    signal['name'], widget))
+                dbg(f'Container:: skipping signal {signal["name"]} for {widget}, already exists')
             else:
-                dbg('Container:: registering signal for %s on %s' %
-                    (signal['name'], widget))
+                dbg(f'Container:: registering signal for {signal["name"]} on {widget}')
                 try:
                     GObject.signal_new(signal['name'],
                                        widget,
@@ -47,8 +45,7 @@ class Container(object):
                                        signal['return_type'],
                                        signal['param_types'])
                 except RuntimeError:
-                    err('Container:: registering signal for %s on %s failed' %
-                        (signal['name'], widget))
+                    err(f'Container:: registering signal for {signal["name"]} on {widget} failed')
 
     def connect_child(self, widget, signal, handler, *args):
         """Register the requested signal and record its connection ID"""
@@ -97,7 +94,7 @@ class Container(object):
         required for this operation. Containers should override it if they have
         more complex requirements"""
         if oldwidget not in self.get_children():
-            err('%s is not a child of %s' % (oldwidget, self))
+            err(f'{oldwidget} is not a child of {self}')
             return
         self.remove(oldwidget)
         self.add(newwidget)
@@ -123,7 +120,7 @@ class Container(object):
             pass
 
         if not self.remove(widget):
-            dbg('Container::closeterm: self.remove() failed for %s' % widget)
+            dbg(f'Container::closeterm: self.remove() failed for {widget}')
             return False
 
         self.terminator.deregister_terminal(widget)
@@ -143,8 +140,7 @@ class Container(object):
             else:
                 self.zoom(widget, fontscale)
         except TypeError:
-            err('Container::toggle_zoom: %s is unable to handle zooming, for \
-            %s' % (self, widget))
+            err(f'Container::toggle_zoom: {self} is unable to handle zooming, for {widget}')
 
     def zoom(self, widget, fontscale=False):
         """Zoom a terminal"""
@@ -242,7 +238,7 @@ class Container(object):
             elif maker.isinstance(child, 'Container'):
                 terminals.update(child.get_visible_terminals())
             else:
-                err('Unknown child type %s' % type(child))
+                err(f'Unknown child type {type(child)}')
 
         return terminals
 
@@ -252,7 +248,7 @@ class Container(object):
         maker = Factory()
         mytype = maker.type(self)
         if not mytype:
-            err('unable to detemine own type. %s' % self)
+            err(f'unable to detemine own type. {self}')
             return {}
 
         layout['type'] = mytype
@@ -301,7 +297,7 @@ class Container(object):
             else:
                 layout['last_active_window'] = False
 
-        name = 'child%d' % count
+        name = f'child{count}'
         count = count + 1
 
         global_layout[name] = layout

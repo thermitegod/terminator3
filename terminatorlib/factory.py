@@ -57,7 +57,7 @@ class Factory(Borg):
             #   almost every time
             # - cache everything we can
             try:
-                type_key = 'terminatorlib.%s' % self.types[classtype]
+                type_key = f'terminatorlib.{self.types[classtype]}'
                 if type_key not in self.instance_types_keys:
                     self.instance_types[type_key] = __import__(type_key, None, None, [''])
                     self.instance_types_keys.append(type_key)
@@ -70,7 +70,7 @@ class Factory(Borg):
                 module = self.instance_types[type_key]
             return isinstance(product, getattr(module, classtype))
         else:
-            err('Factory::isinstance: unknown class type: %s' % classtype)
+            err(f'Factory::isinstance: unknown class type: {classtype}')
             return False
 
     def type(self, product):
@@ -86,12 +86,12 @@ class Factory(Borg):
     def make(self, product, **kwargs):
         """Make the requested product"""
         try:
-            func = getattr(self, 'make_%s' % product.lower())
+            func = getattr(self, f'make_{product.lower()}')
         except AttributeError:
-            err('Factory::make: requested object does not exist: %s' % product)
+            err(f'Factory::make: requested object does not exist: {product}')
             return None
 
-        dbg('Factory::make: created a %s' % product)
+        dbg(f'Factory::make: created a {product}')
         output = func(**kwargs)
         inject_uuid(output)
         return output

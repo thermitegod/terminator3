@@ -50,11 +50,11 @@ class BuildData(build):
                     os.makedirs(directory)
 
                 if newer(po, mo):
-                    info('compiling %s -> %s' % (po, mo))
+                    info(f'compiling {po} -> {mo}')
                     try:
                         rc = subprocess.run(['msgfmt', '-o', mo, po]).returncode
                         if rc:
-                            raise Warning('msgfmt returned %d' % rc)
+                            raise Warning(f'msgfmt returned {rc}')
                     except Exception as e:
                         error('Building gettext files failed. Ensure you have gettext installed. Alternatively, try setup.py --without-gettext [build|install]')
                         error('Error: %s' % str(e))
