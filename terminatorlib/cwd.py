@@ -49,12 +49,9 @@ def get_pid_cwd():
         dbg('Using Linux get_pid_cwd')
         func = linux_get_pid_cwd
     elif system == 'FreeBSD':
-        try:
-            from terminatorlib import freebsd
-            func = freebsd.get_process_cwd
-            dbg('Using FreeBSD get_pid_cwd')
-        except (OSError, NotImplementedError, ImportError):
-            dbg('FreeBSD version too old for get_pid_cwd')
+        from terminatorlib import freebsd
+        func = freebsd.get_process_cwd
+        dbg('Using FreeBSD get_pid_cwd')
     elif system == 'SunOS':
         dbg('Using SunOS get_pid_cwd')
         func = sunos_get_pid_cwd
