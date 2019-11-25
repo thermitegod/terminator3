@@ -471,23 +471,9 @@ class Terminator(Borg):
                 background-color: alpha(%s, %s); }
             """
         profiles = self.config.base.profiles
+        bgcolor = None
         for profile in profiles.keys():
-            if profiles[profile]['use_theme_colors']:
-                # Create a dummy window/vte and realise it so it has correct
-                # values to read from
-                tmp_win = Gtk.Window()
-                tmp_vte = Vte.Terminal()
-                tmp_win.add(tmp_vte)
-                tmp_win.realize()
-                bgcolor = tmp_vte.get_style_context().get_background_color(Gtk.StateType.NORMAL)
-                bgcolor = '#{0:02x}{1:02x}{2:02x}'.format(int(bgcolor.red * 255),
-                                                          int(bgcolor.green * 255),
-                                                          int(bgcolor.blue * 255))
-                tmp_win.remove(tmp_vte)
-                del tmp_vte
-                del tmp_win
-            else:
-                bgcolor = Gdk.RGBA()
+            if not profiles[profile]['use_theme_colors']:
                 bgcolor = profiles[profile]['background_color']
             if profiles[profile]['background_type'] == 'transparent':
                 bgalpha = profiles[profile]['background_darkness']
