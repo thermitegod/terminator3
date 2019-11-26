@@ -1111,7 +1111,7 @@ class Terminal(Gtk.VBox):
                     str = ''
                     for fname in txt_lines[:-1]:
                         dbg(f'drag data fname: {fname}')
-                        fname = '\'%s\''.format(urllib.parse.unquote(fname[7:].replace('\'', '\'\\\'\'')))
+                        fname = '\'{}\''.format(urllib.parse.unquote(fname[7:].replace('\'', '\'\\\'\'')))
                         str += fname + ' '
                     txt = str
             for term in self.terminator.get_target_terms(self):
