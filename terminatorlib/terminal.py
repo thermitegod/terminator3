@@ -264,41 +264,30 @@ class Terminal(Gtk.VBox):
         hostchars = '-A-Za-z0-9:\[\]'
         pathchars = '-A-Za-z0-9_$.+!*(),;:@&=?/~#%\''
         schemes = '(news:|telnet:|nntp:|file:/|https?:|ftps?:|webcal:)'
-        user = '[' + userchars + ']+(:[' + passchars + ']+)?'
-        urlpath = '/[' + pathchars + ']*[^]\'.}>) \t\r\n,\\"]'
+        user = f'[{userchars}]+(:[{passchars}]+)?'
+        urlpath = f'/[{pathchars}]*[^]\'.}}>) \t\r\n,\\"]'
 
         lboundry = '\\b'
         rboundry = '\\b'
 
-        re = (lboundry + schemes +
-              '//(' + user + '@)?[' + hostchars + '.]+(:[0-9]+)?(' +
-              urlpath + ')?' + rboundry + '/?')
+        re = f'{lboundry}{schemes}//({user}@)?[{hostchars}.]+(:[0-9]+)?({urlpath})?{rboundry}/?'
         reg = GLib.Regex.new(re, self.regex_flags, 0)
         self.matches['full_uri'] = self.vte.match_add_gregex(reg, 0)
 
         if self.matches['full_uri'] == -1:
             err('Terminal::update_url_matches: Failed adding URL matches')
         else:
-            re = (lboundry +
-                  '(callto:|h323:|sip:)' + '[' + userchars + '+][' +
-                  userchars + '.]*(:[0-9]+)?@?[' + pathchars + ']+' +
-                  rboundry)
+            re = f'{lboundry}(callto:|h323:|sip:)[{userchars}+][{userchars}.]*(:[0-9]+)?@?[{pathchars}]+{rboundry}'
             reg = GLib.Regex.new(re, self.regex_flags, 0)
             self.matches['voip'] = self.vte.match_add_gregex(reg, 0)
-            re = (lboundry +
-                  '(www|ftp)[' + hostchars + ']*\.[' + hostchars +
-                  '.]+(:[0-9]+)?(' + urlpath + ')?' + rboundry + '/?')
+            re = f'{lboundry}(www|ftp)[{hostchars}]*\.[{hostchars}.]+(:[0-9]+)?({urlpath})?{rboundry}/?'
             reg = GLib.Regex.new(re, self.regex_flags, 0)
             self.matches['addr_only'] = self.vte.match_add_gregex(reg, 0)
-            re = (lboundry +
-                  '(mailto:)?[a-zA-Z0-9][a-zA-Z0-9.+-]*@[a-zA-Z0-9]' +
-                  '[a-zA-Z0-9-]*\.[a-zA-Z0-9][a-zA-Z0-9-]+' +
-                  '[.a-zA-Z0-9-]*' + rboundry)
+            re = f'{lboundry}(mailto:)?[a-zA-Z0-9][a-zA-Z0-9.+-]*@' \
+                 f'[a-zA-Z0-9][a-zA-Z0-9-]*\.[a-zA-Z0-9][a-zA-Z0-9-]+[.a-zA-Z0-9-]*{rboundry}'
             reg = GLib.Regex.new(re, self.regex_flags, 0)
             self.matches['email'] = self.vte.match_add_gregex(reg, 0)
-            re = (lboundry +
-                  'news:[-A-Z\^_a-z{|}~!"#$%&\'()*+,./0-9;:=?`]+@' +
-                  '[-A-Za-z0-9.]+(:[0-9]+)?' + rboundry)
+            re = f'{lboundry}news:[-A-Z\^_a-z{{|}}~!"#$%&\'()*+,./0-9;:=?`]+@[-A-Za-z0-9.]+(:[0-9]+)?{rboundry}'
             reg = GLib.Regex.new(re, self.regex_flags, 0)
             self.matches['nntp'] = self.vte.match_add_gregex(reg, 0)
 
