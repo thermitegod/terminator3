@@ -770,12 +770,12 @@ class Window(Container, Gtk.Window):
             if page == 0:
                 page = numpages
             else:
-                page = page - 1
+                page -= 1
         elif direction == 'right':
             if page == numpages - 1:
                 page = 0
             else:
-                page = page + 1
+                page += 1
         else:
             err(f'unknown direction: {direction}')
             return
@@ -877,7 +877,7 @@ class Window(Container, Gtk.Window):
             i = 2
             while i < len(child['children']):
                 self.tab_new()
-                i = i + 1
+                i += 1
         elif child['type'] == 'Terminal':
             pass
         else:

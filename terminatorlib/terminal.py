@@ -1598,7 +1598,7 @@ class Terminal(Gtk.VBox):
             layout['title'] = title
         layout['uuid'] = self.uuid
         name = f'terminal{count}'
-        count = count + 1
+        count += 1
         global_layout[name] = layout
         return count
 

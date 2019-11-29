@@ -112,7 +112,7 @@ class Notebook(Container, Gtk.Notebook):
             elif child['type'] == 'HPaned':
                 page = self.get_nth_page(num)
                 self.split_axis(page, False)
-            num = num + 1
+            num += 1
 
         num = 0
         for child_key in keys:
@@ -130,7 +130,7 @@ class Notebook(Container, Gtk.Notebook):
 
             if layout.get('last_active_term', None):
                 self.last_active_term[page] = make_uuid(layout['last_active_term'][num])
-            num = num + 1
+            num += 1
 
         if 'active_page' in layout:
             # Need to do it later, or layout changes result
@@ -414,7 +414,7 @@ class Notebook(Container, Gtk.Notebook):
         """Clean up any empty tabs and if we only have one tab left, die"""
         numpages = self.get_n_pages()
         while numpages > 0:
-            numpages = numpages - 1
+            numpages -= 1
             page = self.get_nth_page(numpages)
             if not page:
                 dbg(f'Removing empty page: {numpages}')

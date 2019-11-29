@@ -209,12 +209,12 @@ class Paned(Container):
                     childset = [child, [], 0, curr]
                     curr[1].append(childset)
                     toproc.append(childset)
-                    number_splits = number_splits + 1
+                    number_splits += 1
                 else:
                     curr[1].append([None, [], 1, None])
                     p = curr
                     while p:
-                        p[2] = p[2] + 1
+                        p[2] += 1
                         p = p[3]
                     # (1c) If Shift modifier, redistribute lower sections too
                     if recurse_down and (maker.isinstance(child, 'VPaned') or maker.isinstance(child, 'HPaned')):
@@ -227,7 +227,7 @@ class Paned(Container):
         single_size = (avail_pixels - (number_splits * handle_size)) / (number_splits + 1)
         arr_sizes = [single_size] * (number_splits + 1)
         for i in range(avail_pixels % (number_splits + 1)):
-            arr_sizes[i] = arr_sizes[i] + 1
+            arr_sizes[i] += 1
         # 5 Descend down setting the handle position to s
         #  (Has to handle nesting properly)
         toproc = [tree]
@@ -400,7 +400,7 @@ class Paned(Container):
                 self.split_axis(terminal, False)
             else:
                 err(f'unknown child type: {child["type"]}')
-            num = num + 1
+            num += 1
 
         self.get_child1().create_layout(children[keys[0]])
         self.get_child2().create_layout(children[keys[1]])

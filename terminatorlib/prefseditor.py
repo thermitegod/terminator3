@@ -1137,7 +1137,7 @@ class PrefsEditor:
         if newprofile in values:
             i = 1
             while newprofile in values:
-                i = i + 1
+                i += 1
                 newprofile = f'{_("New Profile")} {i}'
 
         if self.config.add_profile(newprofile):
@@ -1182,7 +1182,7 @@ class PrefsEditor:
         if name in values:
             i = 0
             while name in values:
-                i = i + 1
+                i += 1
                 name = f'{_("New Layout")} {i}'
 
         if self.config.add_layout(name, current_layout):
@@ -1591,7 +1591,7 @@ class LayoutEditor:
             self.profile_ids_to_profile[i] = profile
             self.profile_profile_to_ids[profile] = i
             chooser.append_text(profile)
-            i = i + 1
+            i += 1
 
     def on_layout_selection_changed(self, selection):
         """A different layout was selected"""

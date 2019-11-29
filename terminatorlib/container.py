@@ -298,7 +298,7 @@ class Container(object):
                 layout['last_active_window'] = False
 
         name = f'child{count}'
-        count = count + 1
+        count += 1
 
         global_layout[name] = layout
 
@@ -306,7 +306,7 @@ class Container(object):
         for child in self.get_children():
             if hasattr(child, 'describe_layout'):
                 count = child.describe_layout(count, name, global_layout, child_order)
-            child_order = child_order + 1
+            child_order += 1
 
         return count
 
